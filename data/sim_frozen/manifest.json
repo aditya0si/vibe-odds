@@ -1,0 +1,10 @@
+{
+ "cutoff": 20240101,
+ "files": {
+  "gbm.txt": "fd1cd137b8fc",
+  "gbm_features.json": "2525d145e7d2",
+  "weights.json": "836bb41e7a35",
+  "calibration.json": null
+ },
+ "note": "GBM trained on <=2023; weights/calibration as live at freeze time."
+}

@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vibe-Odds — ATP tennis analytics</title>
+<style>
+:root{--bg:#f1f5f9;--card:#ffffff;--line:#e2e8f0;--txt:#0f172a;--mut:#64748b;
+--grn:#15803d;--grnbg:#dcfce7;--navy:#1d4ed8;--navybg:#dbeafe;--amb:#b45309;--ambbg:#fef3c7;
+--red:#b91c1c;--redbg:#fee2e2;--radius:12px}
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;margin:0;background:var(--bg);color:var(--txt);font-size:15px;line-height:1.45}
+header.top{position:sticky;top:0;z-index:10;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:800;font-size:18px}.brand small{color:var(--mut);font-weight:400;font-size:13px}
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap}
+nav.tabs button{background:#f1f5f9;color:var(--txt);border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px}
+nav.tabs button.on{background:var(--txt);color:#fff;border-color:var(--txt)}
+.badge{font-size:12px;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}
+.badge.live{color:var(--grn);border-color:var(--grn);background:var(--grnbg)}
+.badge.cache{color:var(--amb);border-color:var(--amb);background:var(--ambbg)}
+.badge.mock{color:var(--red);border-color:var(--red);background:var(--redbg)}
+main{max-width:1100px;margin:0 auto;padding:16px;display:grid;gap:16px}
+.view{display:grid;gap:14px}
+.strip{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:12px}
+.stat b{font-size:22px}.stat small{color:var(--mut);display:block;font-size:12px}
+.stat.hl b{color:var(--grn)}.stat.hl2 b{color:var(--amb)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:10px}
+.card.value{border-color:var(--grn);box-shadow:0 0 0 1px var(--grn) inset}
+.card.stale{opacity:.65}
+.meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.pill{font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px}
+.pill.post{background:var(--grnbg);color:var(--grn)}
+.pill.pass{background:#f1f5f9;color:var(--mut)}
+.tag{font-size:12px;font-weight:800;padding:3px 10px;border-radius:6px;white-space:nowrap}
+.tag.value{background:var(--grn);color:#fff}
+.tag.dis{background:var(--ambbg);color:var(--amb)}
+.tag.hot{background:var(--grnbg);color:var(--grn)}
+.tag.solid{background:var(--navybg);color:var(--navy)}
+.tag.thin{background:#f1f5f9;color:var(--mut)}
+.tag.cold{background:var(--redbg);color:var(--red)}
+.tag.stale{background:#f1f5f9;color:var(--mut)}
+.players{font-size:18px;font-weight:700;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.players .vs{color:var(--mut);font-weight:400;font-size:14px}
+.players .star{color:var(--grn)}
+.bars{display:grid;gap:6px;font-size:13px}
+.brow{display:grid;grid-template-columns:64px 1fr 52px;gap:8px;align-items:center}
+.track{height:10px;background:#f1f5f9;border:1px solid var(--line);border-radius:6px;overflow:hidden}
+.fill{height:100%}.fill.model{background:var(--grn)}.fill.market{background:#94a3b8}
+.nums{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.nums b{color:var(--txt)}
+.pos{color:var(--grn);font-weight:700}.neg{color:var(--red)}
+.warn{font-size:13px;color:var(--amb);background:var(--ambbg);border-radius:8px;padding:8px 10px}
+.note{font-size:13px;color:var(--mut)}
+details.why{font-size:13px;color:var(--mut)}
+details.why summary{cursor:pointer;color:var(--txt);font-weight:600}
+.btns{display:flex;gap:8px;flex-wrap:wrap}
+button.act{background:#f8fafc;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:7px 12px;cursor:pointer;font-size:14px}
+button.act.primary{background:var(--grn);border-color:var(--grn);color:#fff}
+button.act.on{background:var(--txt);color:#fff;border-color:var(--txt)}
+h2{font-size:19px;margin:4px 0}h3{font-size:16px;margin:0 0 8px}
+.tblwrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--card)}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}
+th{color:var(--mut);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+tr.clickable{cursor:pointer}tr.clickable:hover td{background:#f8fafc}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:760px){.grid2{grid-template-columns:1fr}.players{font-size:16px}}
+input[type=text],select{background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14px;color:var(--txt)}
+.searchrow{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+pre{white-space:pre-wrap;background:#0f172a;color:#e2e8f0;padding:10px;border-radius:8px;font-size:12px;overflow-x:auto}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:14px}
+footer{color:var(--mut);font-size:13px;padding:8px 2px 24px}
+.day{color:var(--mut);font-weight:700;margin:8px 0 -6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em}
+svg.chart{background:#fff;border:1px solid var(--line);border-radius:8px}
+.legend{font-size:13px;color:var(--mut)}
+.rg{border-left:4px solid var(--amb);background:var(--ambbg);padding:12px 14px;border-radius:0 8px 8px 0;font-size:14px}
+</style></head>
+<body>
+<header class="top">
+<div class="brand">Vibe-Odds <small>ATP tennis model vs the market</small></div>
+<nav class="tabs" id="nav">
+<button data-v="matches" class="on">Matches</button>
+<button data-v="players">Players</button>
+<button data-v="model">Model</button>
+<button data-v="experiments">Experiments</button>
+<button data-v="method">Methodology</button>
+</nav>
+<span style="flex:1"></span>
+<span id="feed" class="badge">…</span>
+</header>
+<main>
+<section class="view" id="v-matches">
+<div class="searchrow">
+<div class="btns" role="group" aria-label="tour">
+<button class="act on" id="tab-usopen" onclick="setGroup('usopen')">US Open · best-of-5</button>
+<button class="act" id="tab-tennis" onclick="setGroup('tennis')">ATP Tour · best-of-3</button>
+</div>
+<span style="flex:1"></span>
+<button class="act primary" onclick="loadBoard()">Refresh</button>
+<span class="note" id="asof"></span>
+</div>
+<div class="strip" id="strip"></div>
+<div class="btns" id="filters">
+<button class="act on" data-f="all" onclick="setFilter('all')">All</button>
+<button class="act" data-f="value" onclick="setFilter('value')">Value</button>
+<button class="act" data-f="disagree" onclick="setFilter('disagree')">Disagreements</button>
+<button class="act" data-f="post" onclick="setFilter('post')">Policy: post</button>
+</div>
+<div id="board" class="view"><span class="note">Loading predictions…</span></div>
+</section>
+
+<section class="view" id="v-players" hidden>
+<h2>Players</h2>
+<span class="note">Blended surface Elo (live ratings snapshot). Click a row for detail: surface splits, form trend, recent matches, head-to-head.</span>
+<div class="searchrow">
+<input type="text" id="pq" placeholder="Search player…" oninput="loadPlayers()" style="min-width:200px">
+<select id="psurf" onchange="loadPlayers()"><option value="hard">Hard</option><option value="clay">Clay</option><option value="grass">Grass</option></select>
+<button class="act" onclick="loadPlayers()">Search</button>
+</div>
+<div class="tblwrap"><table id="ptable"><thead><tr><th>#</th><th>Player</th><th>Matches</th><th>Overall</th><th>Hard</th><th>Clay</th><th>Grass</th><th></th></tr></thead><tbody></tbody></table></div>
+<div id="pdetail"></div>
+</section>
+
+<section class="view" id="v-model" hidden>
+<h2>Model</h2>
+<span class="note">All numbers below are frozen evaluation results served from disk — no live recompute, no cherry-picking. Lower Brier is better; ECE measures calibration error.</span>
+<div class="strip" id="modelstrip"></div>
+<div class="grid2">
+<div class="card"><h3>Reliability diagram — GBM out-of-fold probs</h3><div id="relplot"></div><div class="legend" id="relcap"></div></div>
+<div class="card"><h3>Confidence slices (adaptive arm, 2024–25 sim)</h3><div class="tblwrap" id="conftbl"></div><div class="legend">The model knows when it knows: ≥65% confidence hit 76.9% (n=2318). Policy leans here.</div></div>
+</div>
+<div class="card"><h3>Calibration validation — fit 2022–23, test 2024–25</h3><div class="tblwrap" id="caltbl"></div><div class="legend">Verdict: raw GBM ships uncalibrated. Temperature, logistic and isotonic all hurt (gain ≤ 0).</div></div>
+<div class="card"><h3>Signal ablation — leave-one-out, 2024–25 walk-forward</h3><div class="tblwrap" id="abltbl"></div><div class="legend" id="ablcap"></div></div>
+<div class="card"><h3>Column-set tournament — 4 time folds (train ≤T−2, valid T−1, test T)</h3><div class="tblwrap" id="tountbl"></div><div class="legend">Ship <b>B</b> (shrunk serve states + missingness + age): +0.00082 mean Brier gain, positive in 4/4 folds, CI excludes zero. C/D extras killed (unproven over B). E dead (shrinkage k*=0 everywhere).</div></div>
+</section>
+
+<section class="view" id="v-experiments" hidden>
+<h2>Experiments — frozen vs adaptive, 2024–25 replay</h2>
+<span class="note">Both arms see identical matches (n=5978). The frozen arm holds weights/calibration fixed while ratings still advance — so the comparison isolates learning, not staleness. Paired CIs use tournament-month blocks (seed 7).</span>
+<div class="strip" id="expstrip"></div>
+<div class="card"><h3>Arms</h3><div class="tblwrap" id="armstbl"></div></div>
+<div class="card"><h3>Paired comparisons (block 95% CI on mean Brier diff — negative favours the first arm)</h3><div class="tblwrap" id="pairedtbl"></div><div class="legend">GBM now significantly beats the ensemble head-to-head — the only reason the ensemble is still served is reasons display + fallback, and GBM is the default number (GBM_DEFAULT).</div></div>
+<div class="card"><h3>Per surface</h3><div class="tblwrap" id="surftbl"></div></div>
+<div class="card"><h3>Policy bake-off (identical sim matches, paper trading)</h3><div class="tblwrap" id="poltbl"></div><div class="legend">Bandit demoted to shadow: frozen ev≥0.03 nearly doubles it (+20.57u vs +11.04u). Live action = frozen ev≥0.03 + bettable + cold-start guards. Caveat: the ev003 threshold was eyeballed on this window — re-verify on prospective data.</div></div>
+<div class="card"><h3>Paper-trading leg</h3><div id="bettbl"></div><div class="legend" id="betnote"></div></div>
+</section>
+
+<section class="view" id="v-method" hidden>
+<h2>Methodology</h2>
+<div class="card"><h3>Pipeline</h3>
+<div class="kv">
+<span><b>1 · Ratings</b></span><span>Surface-blended Elo + head-to-head + last-10 form/serve/fatigue + decayed opponent-adjusted point ratings (Barnett–Clarke style).</span>
+<span><b>2 · Markov</b></span><span>Exact point→game→tiebreak→set→match dynamic program, best-of-3/5 with 10-point deciders.</span>
+<span><b>3 · GBM</b></span><span>LightGBM on as-of features, time splits only (train ≤2022 / valid 2023 / test ≥2024), monotone constraints, Brier early-stopping. Gate: test Brier &lt; 0.215 and ECE &lt; 0.03, or it ships as REVIEW (ensemble member, not replacement).</span>
+<span><b>4 · Ensemble</b></span><span>Per-surface Hedge (eta hard 0.10 / clay 0.07 / grass+carpet 0.05). Sleeping signals keep exact share. GBM is the default served number; ensemble retained for reasons + fallback.</span>
+<span><b>5 · Edge</b></span><span>Computed vs the <b>market-free</b> model prob (the full prob saw the market at ~0.19 weight — edge-vs-full would dilute every signal).</span>
+<span><b>6 · Policy</b></span><span>Frozen ev≥0.03 + bettable-market + cold-start guards. Contextual bandit runs in shadow for comparison.</span>
+</div></div>
+<div class="card"><h3>Fair prices &amp; feed</h3>
+<span class="note">Fair price = Pinnacle when it agrees with the field, else consensus median (flags &gt;12pt disagreement as possibly stale). 60s locked file cache; quota guard stops live fetches under 25 remaining credits (serves cache, then mock). History CSVs are a non-commercial mirror — swap to a licensed feed before charging.</span></div>
+<div class="card"><h3>What this is not</h3>
+<span class="note">Paper-trading legs are skill-vs-line (half-Kelly vs Elo fair line, no vig), not real profit. Thin edges (&lt;3%) gate out until real market closes land. Monthly calibration refit stays OFF (hurt −0.003 in sim). Any threshold eyeballed on 2024–25 must be re-verified on prospective data.</span></div>
+<div class="rg"><b>Responsible gambling.</b> 18+ only. Check your state/country laws. This site sells information, not bets — nothing here is financial advice. Bet responsibly. If gambling stops being fun: US 1-800-GAMBLER, UK GamStop, EU check local helplines.</div>
+<details class="card"><summary><b>Lab</b> <span class="note">tracker · weights · upsets · learner (operational tooling)</span></summary>
+<div style="display:grid;gap:14px;margin-top:10px">
+<div><h3>Tracker</h3><button class="act" onclick="loadStats()">Refresh</button><div id="stats"></div></div>
+<div><h3>Signal weights</h3><button class="act" onclick="loadWeights()">Refresh</button> <button class="act" onclick="runLearn()">Run learner</button> <small id="learnmsg"></small><div id="weights"></div></div>
+<div><h3>Upset autopsies</h3><button class="act" onclick="loadUpsets()">Refresh</button><div id="upsets"></div></div>
+</div></details>
+</section>
+<footer>Model: surface Elo + H2H + form + Markov point model + LightGBM, per-surface Hedge, market-free edges. Edges are informational, not advice. 18+. Bet responsibly.</footer>
+</main>
+<script>
+let GROUP='usopen', FILTER='all', BOARD=null;
+document.getElementById('nav').addEventListener('click',e=>{
+  const b=e.target.closest('button'); if(!b) return;
+  document.querySelectorAll('#nav button').forEach(x=>x.className=x===b?'on':'');
+  document.querySelectorAll('main>section.view').forEach(s=>s.hidden=s.id!=='v-'+b.dataset.v);
+  if(b.dataset.v==='players'&&!document.querySelector('#ptable tbody').children.length) loadPlayers();
+  if(b.dataset.v==='model'&&!document.querySelector('#modelstrip').children.length) loadModel();
+  if(b.dataset.v==='experiments'&&!document.querySelector('#expstrip').children.length) loadExp();
+});
+async function api(p,m){const r=await fetch(p,{method:m||'GET',headers:m?{'Content-Type':'application/json'}:undefined,body:m?JSON.stringify((m&&m.body)||{}):undefined});return r.json()}
+function pct(x){return x==null?'—':(x*100).toFixed(1)+'%'}
+function edgeStr(e){return e==null?'—':((e>=0?'+':'')+(e*100).toFixed(1)+'%')}
+function when(iso){try{return new Date(iso).toLocaleString([],{weekday:'short',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}catch(e){return iso||''}}
+function dayKey(iso){try{const d=new Date(iso),t=new Date();const dd=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(t.getFullYear(),t.getMonth(),t.getDate()))/864e5);return dd<=0?'Today':(dd===1?'Tomorrow':d.toLocaleDateString([],{weekday:'long',month:'short',day:'numeric'}))}catch(e){return 'Upcoming'}}
+function setGroup(g){GROUP=g;document.getElementById('tab-usopen').className=g==='usopen'?'act on':'act';document.getElementById('tab-tennis').className=g==='tennis'?'act on':'act';loadBoard()}
+function setFilter(f){FILTER=f;document.querySelectorAll('#filters button').forEach(b=>b.className='act'+(b.dataset.f===f?' on':''));render()}
+/* ---------- matches ---------- */
+function badgeTag(b){if(!b||b.hist_acc==null)return '<span class="tag thin" title="below 55% confidence — thin edge zone">THIN</span>';const c=b.hot?'hot':'solid';return `<span class="tag ${c}" title="${b.label}">${b.hot?'HOT':'SOLID'} ${(b.hist_acc*100).toFixed(0)}% (n=${b.hist_n})</span>`}
+async function loadBoard(){
+document.getElementById('board').innerHTML='<span class="note">Loading predictions…</span>';
+try{BOARD=await api('/api/board?group='+GROUP)}catch(e){document.getElementById('board').innerHTML='<span class="note">board unavailable</span>';return}
+const f=document.getElementById('feed'),mode=BOARD.feed||'?';
+f.className='badge '+(mode==='live'?'live':(mode==='cache'?'cache':'mock'));
+f.textContent=mode==='live'?'● live':(mode==='cache'?('● cached '+(BOARD.cache_age_s!=null?Math.round(BOARD.cache_age_s/60)+'m ago':'')):'○ mock mode');
+document.getElementById('asof').textContent=BOARD.summary.n+' matches · fair: pinnacle-or-consensus · BO'+(GROUP==='usopen'?'5':'3');
+const s=BOARD.summary;
+document.getElementById('strip').innerHTML=
+`<div class="stat"><b>${s.n}</b><small>matches</small></div>`+
+`<div class="stat hl"><b>${s.value}</b><small>value picks (edge ≥3%)</small></div>`+
+`<div class="stat hl2"><b>${s.disagree}</b><small>model ≠ market fav</small></div>`+
+`<div class="stat"><b>${bestEdge()}</b><small>best edge</small></div>`;
+render();
+}
+function bestEdge(){let b=null;for(const m of (BOARD.matches||[])){const x=m.outcomes&&m.outcomes[m.pick];if(x&&x.edge!=null&&(b==null||x.edge>b))b=x.edge}return b==null?'—':edgeStr(b)}
+function visible(m){if(m.error)return FILTER==='all';if(FILTER==='value')return m.flags.value;if(FILTER==='disagree')return m.flags.disagree;if(FILTER==='post')return m.policy==='post';return true}
+function render(){
+if(!BOARD)return;
+const ms=(BOARD.matches||[]).filter(visible);
+if(!ms.length){document.getElementById('board').innerHTML='<span class="note">No matches under this filter.</span>';return}
+let html='',lastDay=null;
+const live=ms.filter(m=>!m.error&&m.status.bettable),stale=ms.filter(m=>m.error||!m.status.bettable);
+for(const m of live.concat(stale)){
+const dk=m.error?'':dayKey(m.commence_time);
+if(dk!==lastDay&&dk){html+=`<div class="day">${dk}</div>`;lastDay=dk}
+html+=card(m);
+}
+document.getElementById('board').innerHTML=html;
+}
+function card(m){
+if(m.error)return `<div class="card stale"><div class="meta">${when(m.commence_time)} · ${m.n_books} books</div><div class="players">${m.label}</div><span class="note">${m.error}</span></div>`;
+const names=Object.keys(m.outcomes),pk=m.pick,other=names.find(n=>n!==pk);
+const X=m.outcomes[pk],stale=!m.status.bettable;
+const reason=m.status.started?'likely started — market closed':(m.status.thin?'thin market (<5 books)':'');
+const unk=(m.unknown_players||[]).length?`<div class="warn">Low history: ${m.unknown_players.join(', ')} — treat with caution</div>`:'';
+const sig=Object.entries(m.signals).map(([k,p])=>`${k} ${p==null?'—':pct(p)}`).join(' · ');
+const why=(m.reasons||[]).map(r=>'• '+r).join('<br>');
+const tw=`[USO Model] ${pk} ${(m.conf*100).toFixed(0)}% over ${other} | best ${X.best_odds} ${X.best_book} edge ${edgeStr(X.edge)} (free)`;
+return `<div class="card${m.flags.value?' value':''}${stale?' stale':''}">
+<div class="meta"><span>${when(m.commence_time)}</span><span>·</span><span>${m.n_books} books</span><span>·</span><span>fair: ${m.fair_source}</span>
+<span class="pill ${m.policy}">${m.policy.toUpperCase()}</span>${badgeTag(m.badge)}
+${m.flags.value?'<span class="tag value">VALUE '+edgeStr(X.edge)+'</span>':''}
+${m.flags.disagree?'<span class="tag dis">MODEL ≠ MARKET</span>':''}
+${(m.cold_start&&m.cold_start.guarded)?'<span class="tag cold">COLD-START · shadow only</span>':''}
+${stale?'<span class="tag stale">NOT BETTABLE · '+reason+'</span>':''}</div>
+<div class="players"><span class="star">★ ${pk} <small>${pct(m.conf)}</small></span><span class="vs">vs</span><span>${other}</span></div>
+<div class="bars">
+<div class="brow"><span>Model</span><div class="track"><div class="fill model" style="width:${(X.model_prob_free*100).toFixed(1)}%"></div></div><span>${pct(X.model_prob_free)}</span></div>
+<div class="brow"><span>Market</span><div class="track"><div class="fill market" style="width:${(X.fair_prob*100).toFixed(1)}%"></div></div><span>${pct(X.fair_prob)}</span></div>
+</div>
+<div class="nums"><span>best <b>${X.best_odds}</b> ${X.best_book} <small>(field ${X.field_median})</small></span><span>edge <b class="${X.edge>0?'pos':'neg'}">${edgeStr(X.edge)}</b></span><span>Kelly½ <b>${X.kelly_half}</b></span><span>gap <b>${(m.flags.gap*100).toFixed(0)}pp</b></span></div>
+${unk}
+${m.warning?`<div class="warn">${m.warning}</div>`:''}
+<details class="why"><summary>Why</summary>${why}<br><br><small>${sig}</small></details>
+<div class="btns"><button class="act" onclick="navigator.clipboard.writeText(${JSON.stringify(tw).replace(/</g,'&lt;')})">Copy tweet</button>
+<button class="act" onclick="logPick('${m.id}')">Log pick</button></div>
+</div>`;
+}
+async function logPick(id){
+const m=(BOARD.matches||[]).find(x=>x.id===id);if(!m||m.error)return alert('no card');
+const X=m.outcomes[m.pick];
+await fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({sport:GROUP,event_id:m.id,event_label:m.label,market:'h2h',outcome:m.pick,book:X.best_book,odds_taken:X.best_odds,fair_prob:X.model_prob_free,ev:X.edge,model_prob:X.model_prob_free,surface:'hard',note:'board-pick'})});
+alert('logged: '+m.pick);
+}
+/* ---------- players ---------- */
+async function loadPlayers(){
+const q=document.getElementById('pq').value,s=document.getElementById('psurf').value;
+const d=await api('/api/players?q='+encodeURIComponent(q)+'&n=30&surface='+s);
+document.querySelector('#ptable tbody').innerHTML=d.players.map((p,i)=>
+`<tr class="clickable" data-name="${p.name.replace(/"/g,'&quot;')}"><td>${i+1}</td><td><b>${p.name}</b></td><td>${p.matches}</td><td>${p.overall}</td><td>${p.hard}</td><td>${p.clay}</td><td>${p.grass}</td><td>${p.cold_start?'<span class="tag cold">COLD</span>':''}</td></tr>`).join('')||'<tr><td colspan="8">No players found.</td></tr>';
+}
+document.querySelector('#ptable tbody').addEventListener('click',e=>{const tr=e.target.closest('tr[data-name]');if(tr)loadDetail(tr.dataset.name)});
+async function loadDetail(name,vs){
+const d=await api('/api/players/'+encodeURIComponent(name)+(vs?('?vs='+encodeURIComponent(vs)):''));
+const el=document.getElementById('pdetail');
+if(d.unknown){el.innerHTML=`<div class="card"><h3>${d.name}</h3><span class="note">${d.note}</span></div>`;return}
+const bars=['hard','clay','grass'].map(s=>{const v=d.surfaces[s];return `<div class="brow"><span style="text-transform:capitalize">${s}</span><div class="track"><div class="fill model" style="width:${Math.min(100,Math.max(0,(v.rating-1300)/10))}%"></div></div><span>${v.rating} (${v.n})</span></div>`}).join('');
+const splits=Object.entries(d.surface_splits).map(([s,v])=>`<tr><td style="text-transform:capitalize">${s}</td><td>${v.n}</td><td>${v.wins}</td><td>${(v.win_rate*100).toFixed(1)}%</td></tr>`).join('');
+const recent=d.recent.map(r=>`<tr><td>${r.date}</td><td>${r.opponent}</td><td style="text-transform:capitalize">${r.surface}</td><td>${r.round}</td><td><b class="${r.result==='W'?'pos':'neg'}">${r.result}</b></td></tr>`).join('');
+const spark=sparkline(d.form_trend);
+const h=d.h2h_vs?`<h3>Head-to-head vs ${d.h2h_vs.opponent}</h3><div class="nums"><span>overall <b>${d.h2h_vs.w_a}–${d.h2h_vs.w_b}</b> (${d.h2h_vs.total})</span>${['hard','clay','grass'].map(s=>`<span>${s} <b>${d.h2h_vs[s].surf_w_a}–${d.h2h_vs[s].surf_w_b}</b></span>`).join('')}</div>`:'';
+el.innerHTML=`<div class="card"><h3>${d.name} ${d.cold_start?'<span class="tag cold">COLD-START</span>':''}</h3>
+<div class="nums"><span><b>${d.matches}</b> tour matches</span><span>overall Elo <b>${d.overall}</b></span><span>last-10 <b>${d.form_last10.win_rate==null?'—':pct(d.form_last10.win_rate)}</b> (n=${d.form_last10.n})</span></div>
+<div class="bars">${bars}</div>
+<div class="grid2"><div><h3>Surface splits (history)</h3><div class="tblwrap"><table><thead><tr><th>Surface</th><th>N</th><th>W</th><th>Win%</th></tr></thead><tbody>${splits}</tbody></table></div></div>
+<div><h3>Form trend (rolling 10-match win rate)</h3>${spark}</div></div>
+<h3>Head-to-head</h3><div class="searchrow"><input type="text" id="h2hopp" placeholder="Opponent name…" value="${d.h2h_vs?d.h2h_vs.opponent:''}"><button class="act" onclick="loadDetail('${d.name.replace(/'/g,"\\'")}',document.getElementById('h2hopp').value)">Compare</button></div>${h}
+<h3>Recent matches</h3><div class="tblwrap"><table><thead><tr><th>Date</th><th>Opponent</th><th>Surface</th><th>Round</th><th>R</th></tr></thead><tbody>${recent}</tbody></table></div>
+</div>`;
+el.scrollIntoView({block:'nearest'});
+}
+function sparkline(tr){
+if(!tr||!tr.length)return '<span class="note">not enough history</span>';
+const W=320,H=90,P=8,n=tr.length;
+const X=i=>P+i*(W-2*P)/Math.max(1,n-1),Y=v=>H-P-v*(H-2*P);
+const pts=tr.map((t,i)=>X(i).toFixed(1)+','+Y(t.win_rate_10).toFixed(1)).join(' ');
+return `<svg class="chart" width="100%" viewBox="0 0 ${W} ${H}" role="img"><line x1="${P}" y1="${Y(0.5)}" x2="${W-P}" y2="${Y(0.5)}" stroke="#cbd5e1" stroke-dasharray="4 3"/><polyline points="${pts}" fill="none" stroke="#15803d" stroke-width="2"/><circle cx="${X(n-1)}" cy="${Y(tr[n-1].win_rate_10)}" r="3.5" fill="#15803d"><title>latest ${(tr[n-1].win_rate_10*100).toFixed(0)}%</title></circle></svg><div class="legend">0% bottom – 100% top, last ${n} points.</div>`;
+}
+/* ---------- model ---------- */
+function tbl(heads,rows){return `<table><thead><tr>${heads.map(h=>`<th>${h}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr>${r.map(c=>`<td>${c}</td>`).join('')}</tr>`).join('')}</tbody></table>`}
+async function loadModel(){
+const d=await api('/api/model'),arms=d.sim.arms;
+document.getElementById('modelstrip').innerHTML=
+`<div class="stat hl"><b>${arms.gbm.brier}</b><small>GBM Brier, 2024–25 sim (n=${arms.gbm.n})</small></div>`+
+`<div class="stat"><b>${(d.calibration_validation.methods.none.ece*100).toFixed(2)}%</b><small>GBM ECE (test) — naturally calibrated</small></div>`+
+`<div class="stat hl2"><b>${(arms.gbm.acc*100).toFixed(1)}%</b><small>GBM accuracy (n=${arms.gbm.n})</small></div>`+
+`<div class="stat"><b>${d.sim.paired_mean.blocks}</b><small>tournament-month blocks in paired CIs</small></div>`;
+const rel=await api('/api/reliability?n_bins=10');
+document.getElementById('relplot').innerHTML=relSVG(rel);
+document.getElementById('relcap').textContent=`n=${rel.n} out-of-fold predictions · OOF ECE ${rel.ece_oof}. ${rel.note}`;
+const c=d.sim.confidence.adaptive;
+document.getElementById('conftbl').innerHTML=tbl(['Slice','N','Accuracy','Brier'],Object.entries(c).map(([t,v])=>[t,v.n,pct(v.acc),v.brier]));
+const m=d.calibration_validation.methods;
+document.getElementById('caltbl').innerHTML=tbl(['Method','Brier','ECE','Gain vs none','Ships?'],Object.entries(m).map(([k,v])=>[k,v.brier,v.ece,(v.gain_vs_none==null?'—':v.gain_vs_none.toFixed(5)),(v.adopt===false?'killed':(k==='none'?'yes — raw':'—'))]));
+const ab=d.ablation;
+if(ab.rows){document.getElementById('abltbl').innerHTML=tbl(['Dropped','Brier','Δ Brier','Acc','Verdict'],ab.rows.map(r=>[r.variant,r.brier,(r.delta_brier>0?'+':'')+r.delta_brier.toFixed(5),r.acc,(r.variant==='no_gbm'?'KEEP — only signal that earns weight':(r.delta_brier<=0?'noise/passenger':''))]));
+document.getElementById('ablcap').textContent=`Full Brier ${ab.full_brier} (n=${ab.rows[0].n}). +Δ means dropping it hurt. Only no_gbm hurts (+0.0024): GBM already contains elo_surf_diff (top gain feature) → double counting confirmed.`}
+else document.getElementById('abltbl').innerHTML=`<span class="note">${ab.error}</span>`;
+const B=d.column_tournament.B_folds;
+document.getElementById('tountbl').innerHTML=tbl(['Fold','N (tr/va/te)','Acc','Brier','ECE','Best iter'],Object.entries(B).map(([f,v])=>[f,v.n.join('/'),v.acc,v.brier,v.ece,v.best_iter]));
+}
+function relSVG(rel){
+const W=340,H=300,P=34,X=p=>P+p*(W-2*P),Y=f=>H-P-f*(H-2*P);
+let s=`<svg class="chart" width="100%" viewBox="0 0 ${W} ${H}" role="img">`;
+s+=`<line x1="${P}" y1="${H-P}" x2="${W-P}" y2="${P}" stroke="#94a3b8" stroke-dasharray="5 4"/>`;
+for(const t of [0,.25,.5,.75,1]){s+=`<text x="${X(t)-8}" y="${H-P+14}" font-size="10" fill="#64748b">${t}</text><text x="4" y="${Y(t)+3}" font-size="10" fill="#64748b">${t}</text>`}
+const maxn=Math.max(...rel.bins.map(b=>b.n));
+for(const b of rel.bins){const r=3+7*b.n/maxn;s+=`<circle cx="${X(b.p_mean)}" cy="${Y(b.frac_pos)}" r="${r.toFixed(1)}" fill="#15803d" opacity="0.75"><title>p=${b.p_mean} actual=${b.frac_pos} n=${b.n}</title></circle>`}
+return s+'<text x="'+P+'" y="14" font-size="11" fill="#64748b">actual win rate vs predicted prob (diagonal = perfect)</text></svg>';
+}
+/* ---------- experiments ---------- */
+async function loadExp(){
+const d=(await api('/api/model')).sim,a=d.arms;
+document.getElementById('expstrip').innerHTML=
+`<div class="stat hl"><b>${a.gbm.brier}</b><small>GBM Brier (best arm)</small></div>`+
+`<div class="stat"><b>${d.paired_mean.mean_diff}</b><small>adaptive−frozen mean Brier diff</small></div>`+
+`<div class="stat hl2"><b>${d.betting.profit_u}u</b><small>paper profit (skill-vs-line)</small></div>`+
+`<div class="stat"><b>${a.adaptive.n}</b><small>sim matches</small></div>`;
+document.getElementById('armstbl').innerHTML=tbl(['Arm','N','Accuracy','Brier'],['adaptive','frozen','gbm','elo'].map(k=>[k,a[k].n,(a[k].acc*100).toFixed(2)+'%',a[k].brier]));
+const pcs=[['adaptive vs frozen',d.paired_mean],['gbm vs adaptive',d.gbm_vs_adaptive],['gbm vs frozen',d.gbm_vs_frozen]];
+document.getElementById('pairedtbl').innerHTML=tbl(['Comparison','Mean diff','95% CI','Verdict'],pcs.map(([t,v])=>[t,v.mean_diff,`[${v.ci95[0]}, ${v.ci95[1]}]`,v.verdict]));
+const surfs=[...new Set(Object.values(d.per_surface.adaptive).length?Object.keys(d.per_surface.adaptive):[])];
+document.getElementById('surftbl').innerHTML=tbl(['Arm','Hard','Clay','Grass'],['adaptive','frozen','gbm','elo'].map(k=>[k,surfs.map(s=>d.per_surface[k][s].brier+' (n='+d.per_surface[k][s].n+')')] .map(x=>x).flat()));
+const p=d.policies;
+document.getElementById('poltbl').innerHTML=tbl(['Policy','Posts','Profit (u)'],[['bandit (shadow)',p.bandit.n_posts,p.bandit.profit_u],['post_all',p.post_all.n_posts,p.post_all.profit_u],['ev003 (live rule)',p.ev003.n_posts,p.ev003.profit_u],['ev003+conf60',p.ev003_conf60.n_posts,p.ev003_conf60.profit_u]]);
+const b=d.betting;
+document.getElementById('bettbl').innerHTML=`<div class="nums"><span>posts <b>${b.n_posts}</b></span><span>win <b>${(b.win_rate*100).toFixed(1)}%</b></span><span>profit <b class="pos">+${b.profit_u}u</b></span><span>ROI on staked <b>${b.roi_on_staked_pct}%</b></span><span>max drawdown <b>${b.max_drawdown_u}u</b></span></div>`+
+tbl(['Edge bucket','N','Expected u','Realized u'],Object.entries(b.by_edge).map(([k,v])=>[k,v.n,v.expected_u,v.realized_u]))+
+`<div class="legend">Passed ${b.passed_n} would-be ${b.passed_profit_u}u — policy leaves money vs the Elo line (with vig, thin passes likely negative).</div>`;
+document.getElementById('betnote').textContent=d.line_note+' Half-Kelly sizing.';
+}
+/* ---------- lab ---------- */
+async function loadStats(){document.getElementById('stats').innerHTML=`<pre>${JSON.stringify(await api('/api/stats'),null,2)}</pre>`}
+async function loadWeights(){const d=await api('/api/weights');const row=([k,w])=>`${k} <span style="display:inline-block;background:#1d4ed8;height:8px;width:${Math.round(w*200)}px"></span> ${w}`;document.getElementById('weights').innerHTML='<b>global</b><br>'+Object.entries(d.global).map(row).join('<br>')+Object.entries(d.surfaces).map(([s,w])=>`<br><br><b>${s}</b> (eta ${d.eta[s]??d.eta})<br>`+Object.entries(w).map(row).join('<br>')).join('')}
+async function loadUpsets(){const d=await api('/api/upsets?n=10');document.getElementById('upsets').innerHTML=`<span class="note">patterns: ${JSON.stringify(d.patterns)}</span><br><br>`+((d.upsets||[]).map(u=>`<b>${u.event}</b> — model had ${u.loser} ${(u.model_conf_loser*100).toFixed(0)}%<br>• ${u.lessons.join('<br>• ')}`).join('<br><br>')||'no upsets logged')}
+async function runLearn(){document.getElementById('learnmsg').textContent='training… (~30s)';await fetch('/api/learn',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});document.getElementById('learnmsg').textContent='done';loadWeights();loadUpsets()}
+loadBoard();
+</script></body></html>
