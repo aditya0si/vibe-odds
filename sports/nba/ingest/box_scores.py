@@ -194,7 +194,10 @@ def ingest(con: sqlite3.Connection, seasons: list[str], workers: int = 4, limit:
                 print(f"  {s}: already complete (skip)")
             continue
         ids = [r["game_id"] for r in con.execute(
-            """SELECT game_id FROM games WHERE season=? AND season_type='regular' ORDER BY game_date""", (s,))]
+            """SELECT g.game_id FROM games g
+               WHERE g.season=? AND g.season_type='regular'
+                 AND (? OR NOT EXISTS (SELECT 1 FROM game_traditional t WHERE t.game_id=g.game_id))
+               ORDER BY g.game_date""", (s, 1 if force else 0))]
         if limit:
             ids = ids[:limit]
         todo.extend(ids)
@@ -233,8 +236,8 @@ def ingest(con: sqlite3.Connection, seasons: list[str], workers: int = 4, limit:
                     break
             else:
                 consecutive_summary_fail = 0
-            if done % 20 == 0:                       # commit often: a killed run must keep its work
-                con.commit()
+            con.commit()          # per game: never hold SQLite's write lock between API calls
+            if done % 20 == 0:    # progress line (and a cheap rate/ETA estimate)
                 rate = done / max(1e-9, time.time() - t0)
                 eta = (len(todo) - done) / max(1e-9, rate)
                 print(f"  {done}/{len(todo)} games  ({rate:.2f}/s, eta {eta/60:.1f} min)", flush=True)

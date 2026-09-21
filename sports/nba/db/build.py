@@ -17,16 +17,25 @@ from sports.nba.db import paths
 
 def connect() -> sqlite3.Connection:
     paths.DATA.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(paths.DB)
+    # timeout + busy_timeout: ingest jobs run as separate processes (e.g. box scores while odds
+    # ingest), and SQLite allows one writer at a time - wait for it instead of failing.
+    con = sqlite3.connect(paths.DB, timeout=30)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
+    con.execute("PRAGMA busy_timeout = 30000")
     return con
 
 
 def init(verbose: bool = True) -> sqlite3.Connection:
     """Apply the schema (CREATE IF NOT EXISTS everywhere, so this is safe to re-run)."""
     con = connect()
-    con.executescript(paths.SCHEMA.read_text(encoding="utf-8"))
+    # Skip the schema script when the DB already has tables: executescript needs a write lock,
+    # and a concurrent ingest (separate process) legitimately holds one. This keeps parallel
+    # ingest jobs from fighting at startup.
+    have_tables = con.execute(
+        "SELECT COUNT(*) AS n FROM sqlite_master WHERE type='table' AND name='games'").fetchone()["n"] > 0
+    if not have_tables:
+        con.executescript(paths.SCHEMA.read_text(encoding="utf-8"))
     con.execute(
         "INSERT OR REPLACE INTO meta(key, value) VALUES ('db_built_at', ?)",
         (datetime.now(timezone.utc).isoformat(timespec="seconds"),),
