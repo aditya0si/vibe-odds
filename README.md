@@ -36,7 +36,9 @@ If gambling stops being fun, US: 1-800-GAMBLER.
 ## Quick start
 ```bash
 cd vibe-odds
-pip install -r requirements.txt   # pinned; bump one pin at a time, then pytest
+python -m venv .venv && .venv/Scripts/python.exe -m pip install -r requirements.txt
+# pinned; use THIS venv - the suite and the ingest must not resolve to a shared interpreter.
+# (bump one pin at a time, then run the suite)
 copy .env.example .env            # add ODDS_API_KEY from https://the-odds-api.com/
 python -m pytest -q               # must be green before anything else
 python -m backend.ratings.snapshot  # one-off: kills the 3s cold-start replay
