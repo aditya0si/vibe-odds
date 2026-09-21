@@ -148,7 +148,11 @@ def summarise(probs: dict[str, float], labels: dict[str, int], games: list[str])
 
 def paired_stats(pa: dict[str, float], pb: dict[str, float], labels: dict[str, int],
                  games: list[str], dates: dict[str, str], block: int = 10) -> dict:
-    """Paired loss difference a-b, with sigma_d (pre-registration) and blocked bootstrap CI."""
+    """Paired loss difference, with sigma_d (pre-registration) and a blocked bootstrap CI.
+
+    Sign convention, used everywhere in this module: mean_diff = mean(Brier(b) - Brier(a)),
+    so a POSITIVE mean_diff means arm a is better than arm b.
+    """
     diffs = {g: brier(pb[g], labels[g]) - brier(pa[g], labels[g]) for g in games}
     if not diffs:
         return {"n": 0}
@@ -233,10 +237,12 @@ def arm_probs(rows: list[dict], market: dict[str, float]) -> dict[str, dict[str,
 
 def evaluate(con: sqlite3.Connection, formula: dict, rows: list[dict],
              market_close: dict[str, float], market_open: dict[str, float]) -> dict:
-    """The pre-registered test, produced once: T1 vs naive baselines, T2 vs the OPEN line,
-    T3 vs the CLOSE. Sign convention: paired mean_diff = Brier(baseline) - Brier(formula), so a
-    NEGATIVE value means the formula is better and the tier passes only if the blocked 95% CI
-    lies entirely below zero."""
+    """The pre-registered test, produced once: T1 vs naive baselines (point estimate, per the
+    pre-registration's wording), T2 vs the OPEN line and T3 vs the CLOSE (both significance tests).
+
+    Sign convention for the paired stats: mean_diff = Brier(baseline) - Brier(formula), so a POSITIVE
+    value means the formula is better; T2/T3 pass only if the blocked 95% CI lies entirely above zero.
+    """
     labels = {r["game_id"]: r["home_win"] for r in rows}
     dates = {r["game_id"]: r["game_date"] for r in rows}
     formula_probs = {r["game_id"]: predict(formula, r) for r in rows}
@@ -244,6 +250,7 @@ def evaluate(con: sqlite3.Connection, formula: dict, rows: list[dict],
     arms["market_open"] = {g: p for g, p in market_open.items()}
 
     test = [r for r in rows if r["season"] in TEST_SEASONS]
+    all_test = [r["game_id"] for r in test]
     have_close = [r["game_id"] for r in test if r["game_id"] in market_close]
     have_open = [r["game_id"] for r in test if r["game_id"] in market_open]
 
@@ -258,8 +265,24 @@ def evaluate(con: sqlite3.Connection, formula: dict, rows: list[dict],
 
     def tier(name: str, target_probs: dict[str, float], games: list[str]) -> dict:
         st = paired_stats(formula_probs, target_probs, labels, games, dates)
-        passes = bool(st.get("n") and st["mean_diff"] < 0 and st["ci95_blocked"][1] < 0)
+        passes = bool(st.get("n") and st["mean_diff"] > 0 and st["ci95_blocked"][0] > 0)
         return {"tier": name, "n_games": st.get("n"), "formula_vs": st, "passes": passes}
+
+    pooled = table(all_test)
+    t1 = {
+        "criterion": "point estimate: formula Brier below climatological AND below Elo-only "
+                     "on the pooled pre-registered test block (no significance gate, per the pre-registration)",
+        "formula_brier": pooled["formula"].get("brier"),
+        "climatological_brier": pooled["climatological"].get("brier"),
+        "elo_only_brier": pooled["elo_only"].get("brier"),
+        "passes": bool(pooled["formula"].get("brier") is not None
+                       and pooled["formula"]["brier"] < pooled["climatological"].get("brier", 9)
+                       and pooled["formula"]["brier"] < pooled["elo_only"].get("brier", 9)),
+        "supporting_paired_tests": {
+            "vs_climatological": paired_stats(formula_probs, arms["climatological"], labels, all_test, dates),
+            "vs_elo_only": paired_stats(formula_probs, arms["elo_only"], labels, all_test, dates),
+        },
+    }
 
     ledger = {
         "generated_by": "python -m sports.nba.model.formula --evaluate",
@@ -268,26 +291,23 @@ def evaluate(con: sqlite3.Connection, formula: dict, rows: list[dict],
                     "test_seasons": list(TEST_SEASONS), "train_end": TRAIN_END,
                     "tuned_on": formula.get("tuned_on")},
         "n_test_games": {"all": len(test), "with_close": len(have_close), "with_open": len(have_open)},
-        "pooled_all_test": table([r["game_id"] for r in test]),
+        "pooled_all_test": pooled,
         "pooled_with_close": table(have_close),
         "pooled_with_open": table(have_open),
         "tiers": {
-            "T1_beats_naive_baselines": {
-                "vs_climatological": tier("T1", arms["climatological"], [r["game_id"] for r in test]),
-                "vs_elo_only": tier("T1", arms["elo_only"], [r["game_id"] for r in test]),
-            },
+            "T1_beats_naive_baselines": t1,
             "T2_beats_opening_line": tier("T2", arms["market_open"], have_open),
             "T3_beats_closing_line": tier("T3", arms["market_close"], have_close),
         },
         "notes": [
-            "T2/T3 are two-sided paired tests at alpha=0.05 with 2,000-sample blocked bootstrap CIs "
-            "(blocks of 10 games by date); a tier passes only if the CI excludes zero in the formula's favour.",
+            "T2/T3 are paired tests at alpha=0.05 with 2,000-sample blocked bootstrap CIs (blocks of 10 "
+            "games by date); a tier passes only if the CI excludes zero in the formula's favour.",
             "sigma_d was locked on 2021-22 before this ledger was produced (docs/preregistration.md).",
             "Per-season descriptive metrics may have been visible during development; this ledger is the "
             "claim-bearing artifact and the exposure is disclosed in the pre-registration.",
+            "If a tier fails, the failure is published with the same prominence as a pass.",
         ],
     }
-    ledger["tiers"]["T1_passes"] = all(v["passes"] for v in ledger["tiers"]["T1_beats_naive_baselines"].values())
     out = paths.DATA / "nba_walkforward_v1.json"
     out.write_text(json.dumps(ledger, indent=1), encoding="utf-8")
     print(f"ledger -> {out}")
@@ -379,9 +399,10 @@ def main(argv: list[str] | None = None) -> int:
         ledger = evaluate(con, formula, rows, market, market_open)
         print(f"test games: all={ledger['n_test_games']['all']}, with close={ledger['n_test_games']['with_close']}, "
               f"with open={ledger['n_test_games']['with_open']}")
-        print("T1 (vs naive baselines):",
-              {k: v["passes"] for k, v in ledger["tiers"]["T1_beats_naive_baselines"].items()},
-              "| overall:", ledger["tiers"]["T1_passes"])
+        print("T1 (vs naive baselines):", ledger["tiers"]["T1_beats_naive_baselines"]["passes"],
+              "| formula", ledger["tiers"]["T1_beats_naive_baselines"]["formula_brier"],
+              "vs climatological", ledger["tiers"]["T1_beats_naive_baselines"]["climatological_brier"],
+              "vs elo", ledger["tiers"]["T1_beats_naive_baselines"]["elo_only_brier"])
         print("T2 (vs opening line):", ledger["tiers"]["T2_beats_opening_line"])
         print("T3 (vs closing line):", ledger["tiers"]["T3_beats_closing_line"])
         return 0

@@ -39,7 +39,7 @@ def main() -> int:
     if "49 modelling tests" not in README:
         problems.append("README no longer states '49 modelling tests'")
 
-    modelling = collected(["tests", "--ignore=tests/evidence"])
+    modelling = collected(["tests", "--ignore=tests/evidence", "--ignore=tests/sports"])
     if modelling != MODELLING_CLAIM:
         problems.append(f"modelling suite collects {modelling}, README claims {MODELLING_CLAIM}")
 
@@ -47,8 +47,13 @@ def main() -> int:
     if guards < 1:
         problems.append("evidence guard suite collects no tests")
 
-    print(f"modelling tests: {modelling} (claimed {MODELLING_CLAIM})")
-    print(f"evidence guard tests: {guards}")
+    nba = collected(["tests/sports"])
+    if nba < 5:
+        problems.append(f"NBA adapter suite collects only {nba} tests")
+
+    print(f"tennis modelling tests: {modelling} (claimed {MODELLING_CLAIM})")
+    print(f"evidence guard tests:   {guards}")
+    print(f"nba adapter tests:      {nba}")
     if problems:
         for p in problems:
             print(f"CLAIM FAILED: {p}")
