@@ -77,11 +77,11 @@ def load_dataset(con: sqlite3.Connection, version: str = FEATURE_VERSION) -> lis
     return rows
 
 
-def market_close_probs(con: sqlite3.Connection) -> dict[str, float]:
-    """Median no-vig fair P(home) from all books' CLOSING moneylines."""
+def market_probs(con: sqlite3.Connection, kind: str = "close") -> dict[str, float]:
+    """Median no-vig fair P(home) from all books at a given snapshot kind (close | open | mid)."""
     per_game: dict[str, dict[str, dict[str, float]]] = defaultdict(lambda: defaultdict(dict))
     for r in con.execute("""SELECT game_id, book, side, price_decimal FROM odds_snapshots
-                            WHERE market='moneyline' AND snapshot_kind='close'"""):
+                            WHERE market='moneyline' AND snapshot_kind=?""", (kind,)):
         if r["price_decimal"]:
             per_game[r["game_id"]][r["book"]][r["side"]] = r["price_decimal"]
     out: dict[str, float] = {}
@@ -97,6 +97,10 @@ def market_close_probs(con: sqlite3.Connection) -> dict[str, float]:
             ps.sort()
             out[gid] = ps[(len(ps) - 1) // 2]
     return out
+
+
+def market_close_probs(con: sqlite3.Connection) -> dict[str, float]:
+    return market_probs(con, "close")
 
 
 # ------------------------------------------------------------------ metrics
@@ -227,10 +231,75 @@ def arm_probs(rows: list[dict], market: dict[str, float]) -> dict[str, dict[str,
     return arms
 
 
+def evaluate(con: sqlite3.Connection, formula: dict, rows: list[dict],
+             market_close: dict[str, float], market_open: dict[str, float]) -> dict:
+    """The pre-registered test, produced once: T1 vs naive baselines, T2 vs the OPEN line,
+    T3 vs the CLOSE. Sign convention: paired mean_diff = Brier(baseline) - Brier(formula), so a
+    NEGATIVE value means the formula is better and the tier passes only if the blocked 95% CI
+    lies entirely below zero."""
+    labels = {r["game_id"]: r["home_win"] for r in rows}
+    dates = {r["game_id"]: r["game_date"] for r in rows}
+    formula_probs = {r["game_id"]: predict(formula, r) for r in rows}
+    arms = arm_probs(rows, market_close)
+    arms["market_open"] = {g: p for g, p in market_open.items()}
+
+    test = [r for r in rows if r["season"] in TEST_SEASONS]
+    have_close = [r["game_id"] for r in test if r["game_id"] in market_close]
+    have_open = [r["game_id"] for r in test if r["game_id"] in market_open]
+
+    def table(games: list[str]) -> dict:
+        out = {}
+        for name, probs in (("formula", formula_probs), ("market_close", arms["market_close"]),
+                            ("market_open", arms["market_open"]), ("elo_only", arms["elo_only"]),
+                            ("climatological", arms["climatological"]), ("home_rate", arms["home_rate"]),
+                            ("ratings_only", arms["ratings_only"])):
+            out[name] = summarise(probs, labels, [g for g in games if g in probs])
+        return out
+
+    def tier(name: str, target_probs: dict[str, float], games: list[str]) -> dict:
+        st = paired_stats(formula_probs, target_probs, labels, games, dates)
+        passes = bool(st.get("n") and st["mean_diff"] < 0 and st["ci95_blocked"][1] < 0)
+        return {"tier": name, "n_games": st.get("n"), "formula_vs": st, "passes": passes}
+
+    ledger = {
+        "generated_by": "python -m sports.nba.model.formula --evaluate",
+        "formula": {"features": formula["features"], "coef_raw": formula["coef_raw"],
+                    "intercept_raw": formula["intercept_raw"], "n_train": formula["n_train"],
+                    "test_seasons": list(TEST_SEASONS), "train_end": TRAIN_END,
+                    "tuned_on": formula.get("tuned_on")},
+        "n_test_games": {"all": len(test), "with_close": len(have_close), "with_open": len(have_open)},
+        "pooled_all_test": table([r["game_id"] for r in test]),
+        "pooled_with_close": table(have_close),
+        "pooled_with_open": table(have_open),
+        "tiers": {
+            "T1_beats_naive_baselines": {
+                "vs_climatological": tier("T1", arms["climatological"], [r["game_id"] for r in test]),
+                "vs_elo_only": tier("T1", arms["elo_only"], [r["game_id"] for r in test]),
+            },
+            "T2_beats_opening_line": tier("T2", arms["market_open"], have_open),
+            "T3_beats_closing_line": tier("T3", arms["market_close"], have_close),
+        },
+        "notes": [
+            "T2/T3 are two-sided paired tests at alpha=0.05 with 2,000-sample blocked bootstrap CIs "
+            "(blocks of 10 games by date); a tier passes only if the CI excludes zero in the formula's favour.",
+            "sigma_d was locked on 2021-22 before this ledger was produced (docs/preregistration.md).",
+            "Per-season descriptive metrics may have been visible during development; this ledger is the "
+            "claim-bearing artifact and the exposure is disclosed in the pre-registration.",
+        ],
+    }
+    ledger["tiers"]["T1_passes"] = all(v["passes"] for v in ledger["tiers"]["T1_beats_naive_baselines"].values())
+    out = paths.DATA / "nba_walkforward_v1.json"
+    out.write_text(json.dumps(ledger, indent=1), encoding="utf-8")
+    print(f"ledger -> {out}")
+    return ledger
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="NBA formula: fit, evaluate, measure sigma_d")
     ap.add_argument("--fit", action="store_true")
     ap.add_argument("--sigma", action="store_true")
+    ap.add_argument("--evaluate", action="store_true",
+                    help="produce the pre-registered T1/T2/T3 ledger (run ONCE, on the full test block)")
     ap.add_argument("--version", default=FEATURE_VERSION)
     args = ap.parse_args(argv)
 
@@ -303,6 +372,18 @@ def main(argv: list[str] | None = None) -> int:
         n_needed = math.ceil(((1.96 + 0.8416) ** 2) * st["sigma_d"] ** 2 / 0.005 ** 2)
         print(f"-> games needed to detect delta=0.005 Brier at 80% power: {n_needed:,}")
         print("   (write this sigma_d into docs/preregistration.md before evaluating test seasons)")
+        return 0
+
+    if args.evaluate:
+        market_open = market_probs(con, "open")
+        ledger = evaluate(con, formula, rows, market, market_open)
+        print(f"test games: all={ledger['n_test_games']['all']}, with close={ledger['n_test_games']['with_close']}, "
+              f"with open={ledger['n_test_games']['with_open']}")
+        print("T1 (vs naive baselines):",
+              {k: v["passes"] for k, v in ledger["tiers"]["T1_beats_naive_baselines"].items()},
+              "| overall:", ledger["tiers"]["T1_passes"])
+        print("T2 (vs opening line):", ledger["tiers"]["T2_beats_opening_line"])
+        print("T3 (vs closing line):", ledger["tiers"]["T3_beats_closing_line"])
         return 0
 
     print("nothing to do: pass --fit or --sigma")

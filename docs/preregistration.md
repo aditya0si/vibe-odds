@@ -60,8 +60,17 @@ test season is evaluated.** It may not be re-estimated on test seasons.
 
 | Quantity | Value | Measured on |
 |---|---|---|
-| σ_d (formula A5 vs market close) | _pending — filled before test evaluation_ | 2021-22 |
-| needed n for δ = 0.005 at α=.05, 80% power | n ≈ 7.84 · σ_d² / 0.005² | derived |
+| σ_d (formula A5 vs market close) | **0.08497** (n = 1,227) | 2021-22, committed 2026-09-22 |
+| needed n for δ = 0.005 at α=.05, 80% power | **n ≈ 2,267 games** (= 7.84·σ_d²/0.005²) | derived from the locked σ_d |
+
+Measured with `python -m sports.nba.model.formula --sigma` (paired per-game Brier difference
+`d_t = L_market,t − L_model,t` on the tuning season). Our test block (2022-23 → 2025-26, ≈ 4,900 games with
+market prices) is therefore powered to detect δ ≈ 0.005 — the pre-registered test is feasible.
+
+**Disclosure (recorded 2026-09-22):** the development report printed per-season and pooled *descriptive*
+metrics in the same run that measured σ_d, so those numbers were visible before this lock. The
+claim-bearing statistic is still produced once, by the pre-registered procedure below, from the frozen
+ledger — but the exposure is disclosed here rather than hidden.
 
 ## 6. Significance test (frozen)
 
