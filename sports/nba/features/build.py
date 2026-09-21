@@ -1,6 +1,7 @@
 """Build as-of feature rows for every NBA game (no network, no market data).
 
     python -m sports.nba.features.build --version v1
+    python -m sports.nba.features.build --version v2   # v1 + pre-game availability
     python -m sports.nba.features.build --check-leakage     # proves the pass is as-of
 
 The pass walks games in chronological order and, for each game, emits a feature row from
@@ -19,6 +20,14 @@ Features (all market-free):
   rest_{home,away}, b2b_{home,away} - days since last game; back-to-back flag
   games_last7_{home,away}           - schedule density
   is_neutral, season_game_no, era flags (covid, empty_arena, rule_break_14s, season_length)
+
+Versions:
+  v1 - the keys above (frozen: the published A5 arm depends on v1 rows being
+       byte-identical, so the v1 path must never change).
+  v2 - every v1 key plus the pre-game availability keys from features/availability.py
+       (avail_missing_home/away, avail_diff, avail_top_out_home/away,
+       avail_n_inactive_home/away). v2 rows are stored under feature_version "v2",
+       so v1 rows are untouched.
 """
 
 from __future__ import annotations
@@ -31,9 +40,11 @@ from collections import defaultdict
 from datetime import date as _date, timedelta
 
 from sports.nba.db import build, paths
+from sports.nba.features import availability as AV
 from sports.nba.features import ratings as R
 
 FEATURE_VERSION = "v1"
+AVAIL_VERSION = "v2"
 EMPTY_ARENA_SEASON = "2020-21"
 COVID_SEASONS = {"2019-20", "2020-21"}
 RULE_BREAK_FROM = "2018-19"      # 14-second offensive-rebound reset
@@ -60,9 +71,15 @@ def load_team_lines(con: sqlite3.Connection) -> dict[tuple[str, int], sqlite3.Ro
 
 
 def build_rows(con: sqlite3.Connection, upto: str | None = None,
-               verbose: bool = True) -> tuple[dict[str, dict], dict]:
+               verbose: bool = True, version: str = FEATURE_VERSION) -> tuple[dict[str, dict], dict]:
+    if version not in (FEATURE_VERSION, AVAIL_VERSION):
+        raise ValueError(f"unknown feature version {version!r} (want 'v1' or 'v2')")
     games = load_games(con, upto)
     lines = load_team_lines(con)
+    # v2 merges the pre-game availability pass. It takes the same `upto` cut, and it is
+    # as-of by the same construction (state updated only after each game's row is
+    # emitted), so the merged rows inherit the leakage guarantee - see test_asof_v2.
+    avail = AV.build_availability(con, upto=upto, verbose=False) if version == AVAIL_VERSION else {}
     elo = R.EloState()
     hist: dict[int, R.TeamHistory] = defaultdict(R.TeamHistory)
 
@@ -99,7 +116,7 @@ def build_rows(con: sqlite3.Connection, upto: str | None = None,
         rest_a, b2b_a, g7_a = rest_of(away_id)
 
         rows[g["game_id"]] = {
-            "feature_version": FEATURE_VERSION,
+            "feature_version": version,
             "game_id": g["game_id"], "season": season, "game_date": g["game_date"],
             "home_team_id": home_id, "away_team_id": away_id,
             "home_win": int(g["home_score"] > g["away_score"]),
@@ -119,6 +136,11 @@ def build_rows(con: sqlite3.Connection, upto: str | None = None,
             "era_empty_arena": 1 if season == EMPTY_ARENA_SEASON else 0,
             "era_rule_break_14s": 1 if season >= RULE_BREAK_FROM else 0,
         }
+        if version == AVAIL_VERSION:
+            # v1 keys above are untouched (byte-identical to the v1 pass); the
+            # availability keys are appended after them.
+            for k in AV.AVAIL_KEYS:
+                rows[g["game_id"]][k] = avail.get(g["game_id"], {}).get(k)
 
         # ---- state updates (only now may the current game's result be used) ----
         margin = float(g["home_score"] - g["away_score"])
@@ -137,7 +159,7 @@ def build_rows(con: sqlite3.Connection, upto: str | None = None,
             hist[away_id].last_date = g["game_date"]
 
     evidence = {
-        "feature_version": FEATURE_VERSION,
+        "feature_version": version,
         "n_games": len(rows),
         "seasons": {s: {"games": n, "hca_elo": hca_by_season.get(s)} for s, n in sorted(season_length.items())},
         "home_win_rate_by_season": {s: (sum(w) / len(w) if w else None) for s, w in sorted(season_home_wins.items())},
@@ -159,18 +181,18 @@ def write_rows(con: sqlite3.Connection, rows: dict[str, dict]) -> int:
     return len(rows)
 
 
-def leakage_check(con: sqlite3.Connection) -> int:
+def leakage_check(con: sqlite3.Connection, version: str = FEATURE_VERSION) -> int:
     """Re-run the pass over a truncated game list; every overlapping row must be identical."""
     games = load_games(con)
     if not games:
         print("no games")
         return 1
     cut = games[int(len(games) * 0.6)]["game_date"]
-    full, _ = build_rows(con, verbose=False)
-    trunc, _ = build_rows(con, upto=cut, verbose=False)
+    full, _ = build_rows(con, verbose=False, version=version)
+    trunc, _ = build_rows(con, upto=cut, verbose=False, version=version)
     overlap = [gid for gid, r in trunc.items() if r["game_date"] <= cut]
     bad = [gid for gid in overlap if json.dumps(full[gid], sort_keys=True) != json.dumps(trunc[gid], sort_keys=True)]
-    print(f"leakage check: {len(overlap)} rows rebuilt from a truncated history (cut {cut}); mismatches: {len(bad)}")
+    print(f"leakage check (version {version}): {len(overlap)} rows rebuilt from a truncated history (cut {cut}); mismatches: {len(bad)}")
     for gid in bad[:5]:
         print(f"  MISMATCH {gid}: {json.dumps(full[gid])[:200]} vs {json.dumps(trunc[gid])[:200]}")
     return 1 if bad else 0
@@ -178,16 +200,17 @@ def leakage_check(con: sqlite3.Connection) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Build as-of NBA feature rows")
-    ap.add_argument("--version", default=FEATURE_VERSION)
+    ap.add_argument("--version", default=FEATURE_VERSION, choices=(FEATURE_VERSION, AVAIL_VERSION),
+                    help="v1 (frozen) or v2 (v1 + pre-game availability)")
     ap.add_argument("--check-leakage", action="store_true")
     ap.add_argument("--no-write", action="store_true", help="build and report without touching the DB")
     args = ap.parse_args(argv)
 
     con = build.init(verbose=False)
     if args.check_leakage:
-        return leakage_check(con)
+        return leakage_check(con, version=args.version)
 
-    rows, evidence = build_rows(con)
+    rows, evidence = build_rows(con, version=args.version)
     ev_path = paths.DATA / f"features_{args.version}_evidence.json"
     ev_path.write_text(json.dumps(evidence, indent=1), encoding="utf-8")
     print(f"evidence -> {ev_path.name}")

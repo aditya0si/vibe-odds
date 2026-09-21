@@ -17,8 +17,34 @@ Derived features per game:
   avail_top_out_home / avail_top_out_away: is one of the roster's top-3 rated players inactive?
   avail_n_inactive_home / _away          : count of inactive players
 
+COMPLETENESS RULE (the trap this module must not fall into): a team with NO rows in
+`game_inactives` for a game is ambiguous - it either means "nobody is out" (the league
+published an empty list for that team) or "the list was never ingested" (unknown). These
+must not be conflated, because scoring the unknown case as 0.0 silently zeroes the
+feature for every game whose inactive list is missing.
+
+The rule: game-level presence in `game_inactives` means the league published that game's
+lists. A team with an empty official list legitimately has zero rows, but the GAME still
+has rows (for the other team, or its own) - so publication is attributed at the GAME
+level, and from there to BOTH teams. Consequences:
+
+  * a game with >= 1 inactive row has an authoritative list for BOTH teams: a team with
+    zero rows in such a game is scored as "nobody is out" (missing 0.0, subject to the
+    roster-history caveat below);
+  * a game with ZERO inactive rows is "unknown": avail_missing_home/away,
+    avail_top_out_home/away, avail_n_inactive_home/away and avail_diff are ALL None
+    for that game - never 0.0.
+
+Caveat: even for an authoritative game, avail_missing_* is None when the as-of roster
+carries no rated quality yet (no prior games in the window) - a missing denominator,
+not a missing list. avail_diff is None whenever either side's missing share is None.
+
+See games_with_authoritative_inactives() for the membership test.
+
 The as-of property is enforced the same way as the main feature pass: state is updated only after a
 game's features have been emitted, so `build_availability(upto=...)` reproduces identical rows.
+(Note: per-game list membership depends only on that game's own inactive rows, so loading
+the whole game_inactives table up front cannot leak the future into an earlier game.)
 """
 
 from __future__ import annotations
@@ -30,6 +56,12 @@ ROSTER_WINDOW = 10        # team games used to define the as-of roster
 RATING_WINDOW = 20        # a player's last N appearances for the quality estimate
 TOP_N = 3
 
+AVAIL_KEYS = (
+    "avail_missing_home", "avail_missing_away", "avail_diff",
+    "avail_top_out_home", "avail_top_out_away",
+    "avail_n_inactive_home", "avail_n_inactive_away",
+)
+
 
 def production(row: sqlite3.Row) -> float:
     """Simple, explainable player production score (points + playmaking + rebounding - turnovers)."""
@@ -38,6 +70,23 @@ def production(row: sqlite3.Row) -> float:
     reb = row["reb"] or 0
     tov = row["tov"] or 0
     return float(pts) + 1.5 * float(ast) + 1.0 * float(reb) - 1.0 * float(tov)
+
+
+def games_with_authoritative_inactives(con: sqlite3.Connection) -> set[str]:
+    """Game IDs whose inactive lists were actually published (game-level presence rule).
+
+    A game is authoritative iff it has >= 1 row in `game_inactives`. A team with an
+    empty official list legitimately contributes zero rows, but the GAME still has
+    rows for the other team (or its own) - so publication is a game-level fact, and
+    an authoritative game yields numeric avail_* values for BOTH teams (the side
+    with zero rows scores "nobody is out"). A game with zero rows is unknown and
+    must score None everywhere (see the module docstring) - never 0.0.
+
+    As-of safe: membership of a game depends only on that game's own inactive rows,
+    so this set may be computed once up front even for truncated (`upto=...`)
+    rebuilds; games past the cut are never consulted.
+    """
+    return {r["game_id"] for r in con.execute("SELECT DISTINCT game_id FROM game_inactives")}
 
 
 def build_availability(con: sqlite3.Connection, upto: str | None = None,
@@ -64,27 +113,32 @@ def build_availability(con: sqlite3.Connection, upto: str | None = None,
 
     player_hist: dict[int, deque] = defaultdict(lambda: deque(maxlen=RATING_WINDOW))
     team_recent: dict[int, deque] = defaultdict(lambda: deque(maxlen=ROSTER_WINDOW))
+    authoritative = games_with_authoritative_inactives(con)
     out: dict[str, dict] = {}
 
     for g in games:
         gid, home, away = g["game_id"], g["home_team_id"], g["away_team_id"]
-        feats: dict[str, float | int | None] = {}
-        for side, tid in (("home", home), ("away", away)):
-            roster = set()
-            for players in team_recent.get(tid, []):
-                roster |= players
-            ratings = {p: (sum(player_hist[p]) / len(player_hist[p])) if player_hist[p] else 0.0
-                       for p in roster}
-            total = sum(ratings.values())
-            inactive = inactive_by_game.get(gid, {}).get(tid, set())
-            missing = sum(ratings.get(p, 0.0) for p in inactive)
-            top = sorted(ratings.items(), key=lambda kv: -kv[1])[:TOP_N]
-            feats[f"avail_missing_{side}"] = round(missing / total, 4) if total > 0 else None
-            feats[f"avail_n_inactive_{side}"] = len(inactive)
-            feats[f"avail_top_out_{side}"] = 1 if any(p in inactive for p, _ in top) else 0
-        mh, ma = feats.get("avail_missing_home"), feats.get("avail_missing_away")
-        feats["avail_diff"] = round(ma - mh, 4) if (mh is not None and ma is not None) else None
-        out[gid] = feats
+        if gid not in authoritative:
+            # Completeness trap: no published list for this game -> unknown, never 0.0.
+            out[gid] = {k: None for k in AVAIL_KEYS}
+        else:
+            feats: dict[str, float | int | None] = {}
+            for side, tid in (("home", home), ("away", away)):
+                roster = set()
+                for players in team_recent.get(tid, []):
+                    roster |= players
+                ratings = {p: (sum(player_hist[p]) / len(player_hist[p])) if player_hist[p] else 0.0
+                           for p in roster}
+                total = sum(ratings.values())
+                inactive = inactive_by_game.get(gid, {}).get(tid, set())
+                missing = sum(ratings.get(p, 0.0) for p in inactive)
+                top = sorted(ratings.items(), key=lambda kv: -kv[1])[:TOP_N]
+                feats[f"avail_missing_{side}"] = round(missing / total, 4) if total > 0 else None
+                feats[f"avail_n_inactive_{side}"] = len(inactive)
+                feats[f"avail_top_out_{side}"] = 1 if any(p in inactive for p, _ in top) else 0
+            mh, ma = feats.get("avail_missing_home"), feats.get("avail_missing_away")
+            feats["avail_diff"] = round(ma - mh, 4) if (mh is not None and ma is not None) else None
+            out[gid] = feats
 
         # ---- state updates, after emitting the row ----
         for r in boxes.get(gid, []):
