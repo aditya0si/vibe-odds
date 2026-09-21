@@ -59,7 +59,7 @@ class Policy:
         arm[2] += reward * reward
 
     def save(self) -> None:
-        from backend.core.io import atomic_write_json
+        from core.io import atomic_write_json
         atomic_write_json(PATH, self.t)
 
     @classmethod

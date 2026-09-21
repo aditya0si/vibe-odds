@@ -18,7 +18,7 @@ from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
-from backend.core.odds import (best_per_outcome, ev_per_unit, find_arbitrage,
+from core.odds import (best_per_outcome, ev_per_unit, find_arbitrage,
                                kelly_fraction, no_vig_probs)
 from backend.api import analytics as _analytics
 from backend.providers import the_odds_api as prov
@@ -410,7 +410,7 @@ def reliability(n_bins: int = 10):
 def rollback(payload: dict, x_api_key: str | None = Header(default=None)):
     """Restore a learned-state file from its newest backup. target: weights|calibration|policy."""
     _require_key(x_api_key)
-    from backend.core.io import rollback as _rb
+    from core.io import rollback as _rb
     from backend.model import calibrate as _cal
     from backend.model.ensemble import WEIGHTS_PATH
     from backend.policy.bandit import PATH as _pol

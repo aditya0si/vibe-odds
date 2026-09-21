@@ -42,7 +42,7 @@ def apply_isotonic(fn: list[tuple[float, float]], p: float) -> float:
 
 
 def save_fn(fn: list[tuple[float, float]], surface: str = "_global") -> None:
-    from backend.core.io import atomic_write_json
+    from core.io import atomic_write_json
     if surface == "_global":
         # legacy single-file layout still supported by load_fn()
         atomic_write_json(CAL_PATH, fn)

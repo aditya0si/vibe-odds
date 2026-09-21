@@ -1,6 +1,6 @@
 """Regression tests for P0/P1 reliability work (tennis-only)."""
 
-from backend.core.io import atomic_write_json, backups_for, rollback
+from core.io import atomic_write_json, backups_for, rollback
 from backend.model.ensemble import Ensemble
 from backend.ratings.names import canonical, familiarity
 

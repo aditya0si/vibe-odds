@@ -1,4 +1,4 @@
-from backend.core.odds import (american_to_decimal, best_per_outcome, clv_pct,
+from core.odds import (american_to_decimal, best_per_outcome, clv_pct,
                                ev_per_unit, find_arbitrage, implied_prob, no_vig_probs)
 
 

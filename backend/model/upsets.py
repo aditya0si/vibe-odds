@@ -54,7 +54,7 @@ def analyze(a: str, b: str, surface: str, probs: dict[str, float | None],
 
 
 def log_upset(report: dict, cap: int = 200) -> None:
-    from backend.core.io import atomic_write_json
+    from core.io import atomic_write_json
     try:
         data = json.loads(UPSETS_PATH.read_text())
     except Exception:

@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from backend.core.odds import best_per_outcome, ev_per_unit, no_vig_probs
+from core.odds import best_per_outcome, ev_per_unit, no_vig_probs
 from backend.providers import the_odds_api as prov
 
 

@@ -90,7 +90,7 @@ class Ensemble:
         return snap
 
     def save(self) -> None:
-        from backend.core.io import atomic_write_json
+        from core.io import atomic_write_json
         atomic_write_json(WEIGHTS_PATH, {"global": self.global_w, "surfaces": self.surf,
                                          "eta": self.eta, "eta_by": self.eta_by})
 

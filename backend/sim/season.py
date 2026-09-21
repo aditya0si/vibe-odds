@@ -232,7 +232,7 @@ def run(since: int = CUTOFF, last: int = 2025, save: bool = True,
             conf = max(p_ad, 1 - p_ad)
             dec = policy.decide(m["surface"], edge, conf)
             bk = bucket(m["surface"], edge, conf)
-            from backend.core.odds import kelly_fraction
+            from core.odds import kelly_fraction
             stake = kelly_fraction(p_pick, odds)  # half-Kelly units
             won = (p_ad >= 0.5) == (y == 1)
             profit = stake * (odds - 1.0) if won else -stake
@@ -389,7 +389,7 @@ def run(since: int = CUTOFF, last: int = 2025, save: bool = True,
         curve.append(pt)
     res["curve"] = curve
     if save:
-        from backend.core.io import atomic_write_json
+        from core.io import atomic_write_json
         atomic_write_json(LEDGER, res, backup=True)
     if verbose:
         print(f"sim {since}->{last}: " +
