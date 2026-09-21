@@ -24,6 +24,10 @@ import requests
 BASE = "https://api.the-odds-api.com/v4"
 CACHE_PATH = Path(__file__).resolve().parents[2] / "data" / "cache.json"
 QUOTA_PATH = Path(__file__).resolve().parents[2] / "data" / "quota.json"
+# Accountability log for quotes killed by the stale-tick sanitizer. Module-level
+# so tests can redirect it (tests/conftest.py): the suite must never mutate
+# evidence under data/.
+DROPPED_LOG = Path(__file__).resolve().parents[2] / "data" / "dropped_quotes.jsonl"
 CACHE_TTL_SEC = 60  # pre-match polling 60s is plenty
 QUOTA_RESERVE = 25  # stop live fetches when fewer than this remain
 
@@ -297,8 +301,7 @@ def to_books_map(event: dict, market_key: str = "h2h") -> dict[str, dict[str, fl
             books.setdefault(bk, {})[o] = p
     if dropped:
         try:  # accountability: every killed quote is logged, never silent
-            dp = Path(__file__).resolve().parents[2] / "data" / "dropped_quotes.jsonl"
-            with open(dp, "a", encoding="utf-8") as f:
+            with open(DROPPED_LOG, "a", encoding="utf-8") as f:
                 for d in dropped:
                     f.write(json.dumps({"ts": time.time(), **d}) + "\n")
         except Exception:

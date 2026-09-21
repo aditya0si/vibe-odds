@@ -15,6 +15,8 @@ import shutil
 from pathlib import Path
 
 DATA = Path(__file__).resolve().parents[2] / "data"
+# FROZEN is a module constant so tests can redirect it (tests/conftest.py):
+# the suite must never rewrite frozen evidence under data/.
 FROZEN = DATA / "sim_frozen"
 CUTOFF = 20240101
 

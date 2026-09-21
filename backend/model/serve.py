@@ -104,7 +104,9 @@ def _cal_for(cal_tables: dict, legacy, surface: str):
 
 def _log_verdict(card: dict) -> None:
     try:
-        DATA.mkdir(parents=True, exist_ok=True)
+        # VERDICTS_LOG is a module constant so tests can redirect it
+        # (tests/conftest.py): the suite must never mutate evidence under data/.
+        VERDICTS_LOG.parent.mkdir(parents=True, exist_ok=True)
         with open(VERDICTS_LOG, "a", encoding="utf-8") as f:
             f.write(json.dumps({"ts": time.time(), **card}) + "\n")
     except Exception:
