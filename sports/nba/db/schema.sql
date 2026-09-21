@@ -64,6 +64,7 @@ CREATE TABLE IF NOT EXISTS games (
     ot_count          INTEGER,
     arena             TEXT,
     attendance        INTEGER,
+    is_neutral        INTEGER DEFAULT 0,                 -- Paris/Mexico City/NBA Cup neutral sites
     source            TEXT,                              -- which ingest produced the row
     source_updated_at TEXT,
     asof_ts           TEXT NOT NULL

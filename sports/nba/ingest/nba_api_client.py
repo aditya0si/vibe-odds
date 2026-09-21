@@ -18,7 +18,12 @@ from typing import Callable, Iterable
 
 from sports.nba.db import paths
 
-BACKOFF = (2.0, 5.0, 15.0)          # seconds between attempts
+BACKOFF = (1.0, 3.0, 8.0)          # seconds between attempts (short: see note below)
+# Note on timeouts: stats.nba.com intermittently stalls for 20-60s and then answers
+# normally (measured: 25.13s timeout followed by 0.75s success on the same URL).
+# So a SHORT timeout with cheap retries beats a long timeout: a 60s timeout with a
+# 3-attempt ladder costs ~200s per stalled endpoint, which is fatal at 27k games.
+CALL_TIMEOUT = 20
 SEASONS = [f"{y}-{str(y + 1)[-2:]}" for y in range(2005, 2026)]   # 2005-06 .. 2025-26
 
 
@@ -26,7 +31,7 @@ def now_iso() -> str:
     return datetime.now(timezone.utc).isoformat(timespec="seconds")
 
 
-def call_with_retry(fn: Callable[[], object], *, label: str = "", attempts: int = 3,
+def call_with_retry(fn: Callable[[], object], *, label: str = "", attempts: int = 4,
                     verbose: bool = False) -> tuple[object | None, list[str]]:
     """Call fn with the backoff ladder. Returns (result, errors)."""
     errors: list[str] = []
