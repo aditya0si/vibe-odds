@@ -153,6 +153,21 @@ CREATE TABLE IF NOT EXISTS odds_snapshots (
 );
 CREATE INDEX IF NOT EXISTS idx_odds_kind ON odds_snapshots(snapshot_kind, source);
 
+-- Team-level line per game, parsed from the cached LeagueGameFinder payloads
+-- (FGA/FTA/OREB/TOV are enough to derive possessions, pace, ORtg/DRtg without
+-- needing the per-game box-score ingest - which is the slow, rate-limited path).
+CREATE TABLE IF NOT EXISTS game_team_stats (
+    game_id     TEXT NOT NULL REFERENCES games(game_id),
+    team_id     INTEGER NOT NULL,
+    is_home     INTEGER NOT NULL,
+    minutes     REAL,
+    pts INTEGER, fgm INTEGER, fga INTEGER, fg3m INTEGER, fg3a INTEGER, ftm INTEGER, fta INTEGER,
+    oreb INTEGER, dreb INTEGER, reb INTEGER, ast INTEGER, stl INTEGER, blk INTEGER, tov INTEGER,
+    pf INTEGER, plus_minus REAL,
+    asof_ts     TEXT NOT NULL,
+    PRIMARY KEY (game_id, team_id)
+);
+
 CREATE TABLE IF NOT EXISTS ratings_daily (
     team_id     INTEGER NOT NULL,
     as_of_date  TEXT NOT NULL,

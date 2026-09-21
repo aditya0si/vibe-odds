@@ -67,63 +67,37 @@ def _pick(stats: dict, names: tuple[str, ...]):
     return None
 
 
-def fetch_game(game_id: str, debug_keys: bool = False, verbose: bool = False) -> dict:
-    """Network phase only: fetch + parse one game into row tuples."""
+def fetch_game(game_id: str, debug_keys: bool = False, verbose: bool = False,
+               skip_advanced: bool = False, only_advanced: bool = False) -> dict:
+    """Network phase only: fetch + parse one game into row tuples.
+
+    skip_advanced: the advanced endpoint is the slowest of the three (~0.77s vs ~0.43s) and
+    most of its content is derivable from the traditional box score (TS%, usage, PIE), so the
+    first pass can run without it; back-fill later with only_advanced=True.
+    """
     from nba_api.stats.endpoints import boxscoresummaryv3, boxscoretraditionalv3, boxscoreadvancedv3
 
     ts = api.now_iso()
     out: dict = {"game_id": game_id, "errors": [], "traditional": [], "advanced": [],
                  "inactives": [], "officials": [], "game_update": None}
 
-    sresp, errs = api.call_with_retry(
-        lambda: boxscoresummaryv3.BoxScoreSummaryV3(game_id=game_id, timeout=api.CALL_TIMEOUT),
-        label=f"summary {game_id}", verbose=verbose)
-    out["errors"] += [f"summary: {e}" for e in errs]
-    if sresp is not None:
-        bs = sresp.get_dict().get("boxScoreSummary", {}) or {}
-        out["game_update"] = {
-            "game_id": game_id,
-            "home_team_id": bs.get("homeTeamId"), "away_team_id": bs.get("awayTeamId"),
-            "tipoff_ts": bs.get("gameTimeUTC") or bs.get("gameEt"),
-            "attendance": bs.get("attendance"),
-            "arena": (bs.get("arena") or {}).get("arenaName"),
-            "is_neutral": 1 if bs.get("isNeutral") else 0,
-            "home_score": _pick(((bs.get("homeTeam") or {}).get("statistics") or {}), ("points",)),
-            "away_score": _pick(((bs.get("awayTeam") or {}).get("statistics") or {}), ("points",)),
-            "asof_ts": ts,
-        }
-        for o in bs.get("officials") or []:
-            out["officials"].append((game_id, o.get("personId"), o.get("firstName"),
-                                     o.get("familyName"), (o.get("jerseyNum") or "").strip(), ts))
-        for side in ("homeTeam", "awayTeam"):
-            team = bs.get(side) or {}
-            tid = team.get("teamId")
-            for p in team.get("inactives") or []:
-                out["inactives"].append((game_id, tid, p.get("personId"), None, ts))
-            for p in team.get("players") or []:                 # some seasons carry players here too
-                if p.get("personId") and (p.get("status") or "").lower().startswith("inactive"):
-                    out["inactives"].append((game_id, tid, p.get("personId"), None, ts))
+    if not only_advanced:
+        sresp, errs = api.call_with_retry(
+            lambda: boxscoresummaryv3.BoxScoreSummaryV3(game_id=game_id, timeout=api.CALL_TIMEOUT),
+            label=f"summary {game_id}", verbose=verbose)
+        out["errors"] += [f"summary: {e}" for e in errs]
+        if sresp is not None:
+            _parse_summary(sresp, out, ts)
 
-    tresp, errs = api.call_with_retry(
-        lambda: boxscoretraditionalv3.BoxScoreTraditionalV3(game_id=game_id, timeout=api.CALL_TIMEOUT),
-        label=f"traditional {game_id}", verbose=verbose)
-    out["errors"] += [f"traditional: {e}" for e in errs]
-    if tresp is not None:
-        bt = tresp.get_dict().get("boxScoreTraditional", {}) or {}
-        for side in ("homeTeam", "awayTeam"):
-            team = bt.get(side) or {}
-            tid = team.get("teamId")
-            starters = set(team.get("starters") or [])
-            for p in team.get("players") or []:
-                st = p.get("statistics") or {}
-                out["traditional"].append((
-                    game_id, tid, p.get("personId"), 1 if p.get("personId") in starters else 0,
-                    _min_to_float(st.get("minutes")), st.get("points"), st.get("reboundsTotal"),
-                    st.get("assists"), st.get("steals"), st.get("blocks"), st.get("turnovers"),
-                    st.get("foulsPersonal"), st.get("fieldGoalsMade"), st.get("fieldGoalsAttempted"),
-                    st.get("threePointersMade"), st.get("threePointersAttempted"),
-                    st.get("freeThrowsMade"), st.get("freeThrowsAttempted"),
-                    st.get("plusMinusPoints"), ts))
+        tresp, errs = api.call_with_retry(
+            lambda: boxscoretraditionalv3.BoxScoreTraditionalV3(game_id=game_id, timeout=api.CALL_TIMEOUT),
+            label=f"traditional {game_id}", verbose=verbose)
+        out["errors"] += [f"traditional: {e}" for e in errs]
+        if tresp is not None:
+            _parse_traditional(tresp, out, ts)
+
+    if skip_advanced:
+        return out
 
     aresp, errs = api.call_with_retry(
         lambda: boxscoreadvancedv3.BoxScoreAdvancedV3(game_id=game_id, timeout=api.CALL_TIMEOUT),
@@ -145,6 +119,48 @@ def fetch_game(game_id: str, debug_keys: bool = False, verbose: bool = False) ->
                     _pick(st, ADV_MAP["usg_pct"]), _pick(st, ADV_MAP["pace"]),
                     _pick(st, ADV_MAP["pie"]), ts))
     return out
+
+
+def _parse_summary(sresp, out: dict, ts: str) -> None:
+    bs = sresp.get_dict().get("boxScoreSummary", {}) or {}
+    out["game_update"] = {
+        "game_id": out["game_id"],
+        "home_team_id": bs.get("homeTeamId"), "away_team_id": bs.get("awayTeamId"),
+        "tipoff_ts": bs.get("gameTimeUTC") or bs.get("gameEt"),
+        "attendance": bs.get("attendance"),
+        "arena": (bs.get("arena") or {}).get("arenaName"),
+        "is_neutral": 1 if bs.get("isNeutral") else 0,
+        "home_score": _pick(((bs.get("homeTeam") or {}).get("statistics") or {}), ("points",)),
+        "away_score": _pick(((bs.get("awayTeam") or {}).get("statistics") or {}), ("points",)),
+        "asof_ts": ts,
+    }
+    for o in bs.get("officials") or []:
+        out["officials"].append((out["game_id"], o.get("personId"), o.get("firstName"),
+                                 o.get("familyName"), (o.get("jerseyNum") or "").strip(), ts))
+    for side in ("homeTeam", "awayTeam"):
+        team = bs.get(side) or {}
+        tid = team.get("teamId")
+        for p in team.get("inactives") or []:
+            out["inactives"].append((out["game_id"], tid, p.get("personId"), None, ts))
+
+
+def _parse_traditional(tresp, out: dict, ts: str) -> None:
+    game_id = out["game_id"]
+    bt = tresp.get_dict().get("boxScoreTraditional", {}) or {}
+    for side in ("homeTeam", "awayTeam"):
+        team = bt.get(side) or {}
+        tid = team.get("teamId")
+        starters = set(team.get("starters") or [])
+        for p in team.get("players") or []:
+            st = p.get("statistics") or {}
+            out["traditional"].append((
+                game_id, tid, p.get("personId"), 1 if p.get("personId") in starters else 0,
+                _min_to_float(st.get("minutes")), st.get("points"), st.get("reboundsTotal"),
+                st.get("assists"), st.get("steals"), st.get("blocks"), st.get("turnovers"),
+                st.get("foulsPersonal"), st.get("fieldGoalsMade"), st.get("fieldGoalsAttempted"),
+                st.get("threePointersMade"), st.get("threePointersAttempted"),
+                st.get("freeThrowsMade"), st.get("freeThrowsAttempted"),
+                st.get("plusMinusPoints"), ts))
 
 
 def write_game(con: sqlite3.Connection, g: dict) -> None:
@@ -186,17 +202,19 @@ def season_complete(con: sqlite3.Connection, season: str) -> bool:
 
 
 def ingest(con: sqlite3.Connection, seasons: list[str], workers: int = 4, limit: int | None = None,
-           force: bool = False, debug_keys: bool = False, verbose: bool = True) -> dict:
+           force: bool = False, debug_keys: bool = False, verbose: bool = True,
+           skip_advanced: bool = False, only_advanced: bool = False) -> dict:
+    table = "game_advanced" if only_advanced else "game_traditional"
     todo: list[str] = []
     for s in seasons:
-        if season_complete(con, s) and not force:
+        if season_complete(con, s) and not force and not only_advanced:
             if verbose:
                 print(f"  {s}: already complete (skip)")
             continue
         ids = [r["game_id"] for r in con.execute(
-            """SELECT g.game_id FROM games g
+            f"""SELECT g.game_id FROM games g
                WHERE g.season=? AND g.season_type='regular'
-                 AND (? OR NOT EXISTS (SELECT 1 FROM game_traditional t WHERE t.game_id=g.game_id))
+                 AND (? OR NOT EXISTS (SELECT 1 FROM {table} t WHERE t.game_id=g.game_id))
                ORDER BY g.game_date""", (s, 1 if force else 0))]
         if limit:
             ids = ids[:limit]
@@ -213,7 +231,8 @@ def ingest(con: sqlite3.Connection, seasons: list[str], workers: int = 4, limit:
     consecutive_summary_fail = 0
     aborted: str | None = None
     pool = ThreadPoolExecutor(max_workers=workers)
-    futures = {pool.submit(fetch_game, gid, debug_keys, False): gid for gid in todo}
+    futures = {pool.submit(fetch_game, gid, debug_keys, False, skip_advanced, only_advanced): gid
+               for gid in todo}
     try:
         for fut in as_completed(futures):
             gid = futures[fut]
@@ -248,7 +267,7 @@ def ingest(con: sqlite3.Connection, seasons: list[str], workers: int = 4, limit:
         raise RuntimeError(aborted)
 
     for s in seasons:
-        if season_complete(con, s):
+        if not only_advanced and season_complete(con, s):
             api.mark_complete(con, f"season:{s}:box_scores")
     p = api.log_failures("box_scores", failures)
     print(f"done: {done} games in {(time.time()-t0)/60:.1f} min; failures: {len(failures)}"
@@ -264,13 +283,18 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--limit", type=int, default=None, help="cap games per season (canary)")
     ap.add_argument("--force", action="store_true")
     ap.add_argument("--debug-keys", action="store_true", help="print advanced-stat keys once")
+    ap.add_argument("--skip-advanced", action="store_true",
+                    help="first pass without the slow advanced endpoint (its data is derivable)")
+    ap.add_argument("--only-advanced", action="store_true",
+                    help="back-fill game_advanced for games that lack it")
     args = ap.parse_args(argv)
     seasons = api.SEASONS if args.all else args.season
     if not seasons:
         ap.error("give --all or --season YYYY-YY")
     con = build.init(verbose=False)
     ingest(con, seasons, workers=args.workers, limit=args.limit, force=args.force,
-           debug_keys=args.debug_keys)
+           debug_keys=args.debug_keys, skip_advanced=args.skip_advanced,
+           only_advanced=args.only_advanced)
     return 0
 
 
