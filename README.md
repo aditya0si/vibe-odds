@@ -31,7 +31,7 @@ If gambling stops being fun, US: 1-800-GAMBLER.
 - Column tournament (4 time folds): ship set **B** (shrunk serve states +
   missingness + age), +0.00082 mean Brier, 4/4 folds positive. C/D extras
   killed, E dead (k*=0).
-- Tests: **49 passed** (`python -m pytest -q`), modelling code untouched.
+- Tests: **49 modelling tests + evidence guards** (`python -m pytest -q`), modelling code untouched.
 
 ## Quick start
 ```bash
