@@ -12,3 +12,6 @@ pyarrow==25.0.1
 numpy==2.4.3
 scikit-learn==1.9.0
 scipy==1.17.1
+# NBA adapter (sports/nba/): verified 1.11.4 on 2026-09-21 against
+# leaguegamefinder + box scoresummary v2/v3 for seasons 2005-06..2025-26.
+nba_api==1.11.4
