@@ -242,11 +242,13 @@ def ingest(con: sqlite3.Connection, seasons: list[str], workers: int = 4, limit:
                     print(f"    {i}/{len(refs)} events, {matched} matched, {len(all_rows)} rows", flush=True)
         finally:
             pool.shutdown(wait=False, cancel_futures=True)
-        con.executemany(
-            """INSERT OR REPLACE INTO odds_snapshots(game_id, source, book, market, side, price_decimal,
-                   price_raw, line, captured_at, snapshot_kind, asof_ts) VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
-            all_rows)
-        con.commit()
+        for i in range(0, len(all_rows), 5000):     # chunked: never hold the write lock for a season
+            con.executemany(
+                """INSERT OR REPLACE INTO odds_snapshots(game_id, source, book, market, side,
+                       price_decimal, price_raw, line, captured_at, snapshot_kind, asof_ts)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+                all_rows[i:i + 5000])
+            con.commit()
         api.mark_complete(con, unit)
         print(f"  {season}: matched {matched}/{len(refs)} events, {len(all_rows)} snapshot rows", flush=True)
     p = api.log_failures("odds_espn", failures)

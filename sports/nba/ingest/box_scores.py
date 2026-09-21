@@ -255,7 +255,16 @@ def ingest(con: sqlite3.Connection, seasons: list[str], workers: int = 4, limit:
                     break
             else:
                 consecutive_summary_fail = 0
-            con.commit()          # per game: never hold SQLite's write lock between API calls
+            # A parallel ingest can hold SQLite's write lock; wait it out rather than dying
+            # (this killed a 2,300-game run once).
+            for attempt in range(6):
+                try:
+                    con.commit()
+                    break
+                except sqlite3.OperationalError as exc:
+                    if "locked" not in str(exc).lower() or attempt == 5:
+                        raise
+                    time.sleep(10)
             if done % 20 == 0:    # progress line (and a cheap rate/ETA estimate)
                 rate = done / max(1e-9, time.time() - t0)
                 eta = (len(todo) - done) / max(1e-9, rate)

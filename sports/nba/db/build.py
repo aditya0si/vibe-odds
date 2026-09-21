@@ -18,11 +18,12 @@ from sports.nba.db import paths
 def connect() -> sqlite3.Connection:
     paths.DATA.mkdir(parents=True, exist_ok=True)
     # timeout + busy_timeout: ingest jobs run as separate processes (e.g. box scores while odds
-    # ingest), and SQLite allows one writer at a time - wait for it instead of failing.
-    con = sqlite3.connect(paths.DB, timeout=30)
+    # ingest), and SQLite allows one writer at a time - wait for it instead of failing. 120s is
+    # deliberate: a season-sized odds write can legitimately hold the lock for tens of seconds.
+    con = sqlite3.connect(paths.DB, timeout=120)
     con.row_factory = sqlite3.Row
     con.execute("PRAGMA foreign_keys = ON")
-    con.execute("PRAGMA busy_timeout = 30000")
+    con.execute("PRAGMA busy_timeout = 120000")
     return con
 
 
