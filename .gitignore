@@ -10,3 +10,5 @@ venv/
 .venv/
 .DS_Store
 .hermes/
+# NBA adapter data: sqlite DB, parquet mirrors and the raw API cache are local artifacts.
+sports/nba/data/
