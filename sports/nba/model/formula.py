@@ -77,11 +77,30 @@ def load_dataset(con: sqlite3.Connection, version: str = FEATURE_VERSION) -> lis
     return rows
 
 
-def market_probs(con: sqlite3.Connection, kind: str = "close") -> dict[str, float]:
-    """Median no-vig fair P(home) from all books at a given snapshot kind (close | open | mid)."""
+LIVE_LIKE = "%live%"
+# Providers that are MODELS, not books: they are not prices a bettor could take, so they do not
+# belong in the market benchmark. (teamrankings' movement series is still used for the OPEN arm as
+# a market proxy - see the pre-registration's deviations log.)
+MODEL_FEEDS = ("teamrankings", "numberfire", "accuscore", "consensus")
+
+
+def market_probs(con: sqlite3.Connection, kind: str = "close", books_only: bool = True) -> dict[str, float]:
+    """Median no-vig fair P(home) across providers at a snapshot kind (close | open | mid).
+
+    Excludes in-play feed rows ('... - Live Odds'): an in-play price encodes the game state and
+    would leak the outcome into the benchmark (this contamination inflated the 2024-25 closing
+    line to a Brier of 0.164 with 75% accuracy before it was caught).
+    With books_only=True (default for the closing arm) model feeds are excluded too, so the
+    benchmark is real sportsbook prices.
+    """
+    sql = ("SELECT game_id, book, side, price_decimal FROM odds_snapshots "
+           "WHERE market='moneyline' AND snapshot_kind=? AND LOWER(book) NOT LIKE ?")
+    params: list = [kind, LIVE_LIKE]
+    if books_only:
+        sql += "".join(" AND LOWER(book) NOT LIKE ?" for _ in MODEL_FEEDS)
+        params += [f"%{m}%" for m in MODEL_FEEDS]
     per_game: dict[str, dict[str, dict[str, float]]] = defaultdict(lambda: defaultdict(dict))
-    for r in con.execute("""SELECT game_id, book, side, price_decimal FROM odds_snapshots
-                            WHERE market='moneyline' AND snapshot_kind=?""", (kind,)):
+    for r in con.execute(sql, params):
         if r["price_decimal"]:
             per_game[r["game_id"]][r["book"]][r["side"]] = r["price_decimal"]
     out: dict[str, float] = {}
@@ -100,7 +119,7 @@ def market_probs(con: sqlite3.Connection, kind: str = "close") -> dict[str, floa
 
 
 def market_close_probs(con: sqlite3.Connection) -> dict[str, float]:
-    return market_probs(con, "close")
+    return market_probs(con, "close", books_only=True)
 
 
 # ------------------------------------------------------------------ metrics
@@ -395,8 +414,11 @@ def main(argv: list[str] | None = None) -> int:
         return 0
 
     if args.evaluate:
-        market_open = market_probs(con, "open")
-        ledger = evaluate(con, formula, rows, market, market_open)
+        # closing arm: real sportsbook prices only; opening arm: books + the teamrankings movement
+        # proxy (the only free source of openers for 2017-18..2022-23)
+        market_open = market_probs(con, "open", books_only=False)
+        market_close = market_probs(con, "close", books_only=True)
+        ledger = evaluate(con, formula, rows, market_close, market_open)
         print(f"test games: all={ledger['n_test_games']['all']}, with close={ledger['n_test_games']['with_close']}, "
               f"with open={ledger['n_test_games']['with_open']}")
         print("T1 (vs naive baselines):", ledger["tiers"]["T1_beats_naive_baselines"]["passes"],

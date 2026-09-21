@@ -92,6 +92,23 @@ def test_features_are_complete_and_finite(con) -> None:
         assert payload["home_win"] in (0, 1)
 
 
+def test_market_arm_only_uses_real_book_quotes(con) -> None:
+    """The closing arm must be built from real sportsbook prices: every game in it needs at least
+    one non-live, non-model quote. This is the regression guard for the contamination that made
+    the 2024-25 closing line look like a Brier of 0.164 (in-play prices encode the outcome)."""
+    from sports.nba.model import formula as F
+    skip_like = ("%live%", "%teamrankings%", "%numberfire%", "%accuscore%", "%consensus%")
+    cond = " AND ".join(["LOWER(book) NOT LIKE ?"] * len(skip_like))
+    ok_games = {r[0] for r in con.execute(
+        f"""SELECT DISTINCT game_id FROM odds_snapshots
+            WHERE market='moneyline' AND snapshot_kind='close' AND {cond}""", skip_like)}
+    arm = F.market_probs(con, "close")
+    if not arm:
+        pytest.skip("no odds ingested yet")
+    assert set(arm) <= ok_games, (
+        f"{len(set(arm) - ok_games)} games entered the closing arm without a real book quote")
+
+
 def test_no_feature_row_uses_a_future_opponent(con) -> None:
     """Cheap structural check: a game's feature row must carry its own teams' identities and a
     date that exists in the games table (no synthetic or shifted rows)."""
