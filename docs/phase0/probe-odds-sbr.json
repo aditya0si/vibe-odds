@@ -1,0 +1,329 @@
+{
+ "probe": "SBR (sportsbookreviewsonline.com) NBA odds archive",
+ "probed_on": "2026-09-21",
+ "direct_fetch": [
+  {
+   "label": "index (nbaoddsarchives.htm)",
+   "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba/nbaoddsarchives.htm",
+   "http": 307,
+   "location": "https://45.112.151.2:8090/ips/block/webcat?cat=21&pl=1&lu=0&url=aHR0cHM6Ly93d3cuc3BvcnRzYm9va3Jldmlld3NvbmxpbmUuY29t",
+   "content_type": null
+  },
+  {
+   "label": "parent index",
+   "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/",
+   "http": 307,
+   "location": "https://45.112.151.2:8090/ips/block/webcat?cat=21&pl=1&lu=0&url=aHR0cHM6Ly93d3cuc3BvcnRzYm9va3Jldmlld3NvbmxpbmUuY29t",
+   "content_type": null
+  },
+  {
+   "label": "season 2013-14",
+   "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba-odds-2013-14",
+   "http": 307,
+   "location": "https://45.112.151.2:8090/ips/block/webcat?cat=21&pl=1&lu=0&url=aHR0cHM6Ly93d3cuc3BvcnRzYm9va3Jldmlld3NvbmxpbmUuY29t",
+   "content_type": null
+  },
+  {
+   "label": "season 2007-08",
+   "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba-odds-2007-08",
+   "http": 307,
+   "location": "https://45.112.151.2:8090/ips/block/webcat?cat=21&pl=1&lu=0&url=aHR0cHM6Ly93d3cuc3BvcnRzYm9va3Jldmlld3NvbmxpbmUuY29t",
+   "content_type": null
+  }
+ ],
+ "via_reader": {
+  "index_http": 200,
+  "index_bytes": 40533,
+  "index_first_500_bytes": "<html lang=\"en-us\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n<title>\ud83c\udfc0Historical NBA Scores and Odds Archives @ Guide to NBA Odds & Betting Lines</title>\n<link rel=\"canonical\" href=\"https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba/nbaoddsarchives.htm\">\n<link rel=\"icon\" type=\"image/png\" href=\"/wp-content/uploads/sportsbookreviewsonline_com_737/sportsbook-reviews-online-192.png\">\n<meta property=\"og:type\" conte",
+  "season_file_links": [
+   "/scoresoddsarchives/nba-odds-2007-08",
+   "/scoresoddsarchives/nba-odds-2008-09",
+   "/scoresoddsarchives/nba-odds-2009-10",
+   "/scoresoddsarchives/nba-odds-2010-11",
+   "/scoresoddsarchives/nba-odds-2011-12",
+   "/scoresoddsarchives/nba-odds-2012-13",
+   "/scoresoddsarchives/nba-odds-2013-14",
+   "/scoresoddsarchives/nba-odds-2014-15",
+   "/scoresoddsarchives/nba-odds-2015-16",
+   "/scoresoddsarchives/nba-odds-2016-17",
+   "/scoresoddsarchives/nba-odds-2017-18",
+   "/scoresoddsarchives/nba-odds-2018-19",
+   "/scoresoddsarchives/nba-odds-2019-20",
+   "/scoresoddsarchives/nba-odds-2020-21",
+   "/scoresoddsarchives/nba-odds-2021-22",
+   "/scoresoddsarchives/nba-odds-2022-23"
+  ],
+  "index_title": "\ud83c\udfc0Historical NBA Scores and Odds Archives @ Guide to NBA Odds & Betting Lines"
+ },
+ "season_page": {
+  "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba-odds-2013-14",
+  "canonical": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba-odds-2013-14/",
+  "via_reader_http": 200,
+  "total_bytes": 490712,
+  "first_500_bytes": "<html lang=\"en-us\"><head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n<title>NBA 2013-14 - Sportsbook Reviews Online</title>\n<link rel=\"canonical\" href=\"https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba-odds-2013-14/\">\n<link rel=\"icon\" type=\"image/png\" href=\"/wp-content/uploads/sportsbookreviewsonline_com_737/sportsbook-reviews-online-192.png\">\n<meta property=\"og:type\" content=\"article\">\n<meta property=\"og:site_name\" ",
+  "header_row_offset": 9992,
+  "first_500_bytes_contains_table": false,
+  "n_tr": 2639,
+  "n_data_rows": 2639,
+  "header_row": [
+   "Date",
+   "Rot",
+   "VH",
+   "Team",
+   "1st",
+   "2nd",
+   "3rd",
+   "4th",
+   "Final",
+   "Open",
+   "Close",
+   "ML",
+   "2H"
+  ],
+  "first_rows": [
+   [
+    "1029",
+    "501",
+    "V",
+    "Orlando",
+    "18",
+    "26",
+    "20",
+    "23",
+    "87",
+    "187",
+    "188.5",
+    "675",
+    "94.5"
+   ],
+   [
+    "1029",
+    "502",
+    "H",
+    "Indiana",
+    "23",
+    "17",
+    "29",
+    "28",
+    "97",
+    "12.5",
+    "12",
+    "-1025",
+    "9.5"
+   ],
+   [
+    "1029",
+    "503",
+    "V",
+    "Chicago",
+    "15",
+    "18",
+    "25",
+    "37",
+    "95",
+    "187.5",
+    "188.5",
+    "180",
+    "3.5"
+   ],
+   [
+    "1029",
+    "504",
+    "H",
+    "Miami",
+    "17",
+    "37",
+    "24",
+    "29",
+    "107",
+    "5",
+    "5",
+    "-220",
+    "93.5"
+   ]
+  ],
+  "last_rows": [
+   [
+    "612",
+    "708",
+    "H",
+    "Miami",
+    "17",
+    "19",
+    "21",
+    "29",
+    "86",
+    "5",
+    "5",
+    "-233",
+    "9.5"
+   ],
+   [
+    "615",
+    "709",
+    "V",
+    "Miami",
+    "29",
+    "11",
+    "18",
+    "29",
+    "87",
+    "195",
+    "197.5",
+    "180",
+    "101"
+   ],
+   [
+    "615",
+    "710",
+    "H",
+    "SanAntonio",
+    "22",
+    "25",
+    "30",
+    "27",
+    "104",
+    "5.5",
+    "5.5",
+    "-215",
+    "1"
+   ]
+  ],
+  "date_tokens_first_last": [
+   "1029",
+   "615"
+  ]
+ },
+ "cross_check": {
+  "espn_event_400489439": {
+   "name": "Chicago Bulls at Orlando Magic",
+   "tipoff_utc": "2014-01-16T00:00Z",
+   "espn_5Dimes": {
+    "spread": "CHI -6",
+    "overUnder": 181.0,
+    "ml_home_orl": 210,
+    "ml_away_chi": -230
+   },
+   "espn_Opening_provider": {
+    "spread": "CHI -4",
+    "overUnder": 182.0,
+    "ml_home_orl": 165,
+    "ml_away_chi": -190
+   }
+  },
+  "sbr_2013-14_date_token_115_rows": [
+   [
+    "115",
+    "701",
+    "V",
+    "Chicago",
+    "26",
+    "20",
+    "27",
+    "28",
+    "128",
+    "3.5",
+    "6",
+    "-240",
+    "6"
+   ],
+   [
+    "115",
+    "702",
+    "H",
+    "Orlando",
+    "20",
+    "29",
+    "31",
+    "21",
+    "125",
+    "181",
+    "180.5",
+    "200",
+    "91"
+   ]
+  ]
+ },
+ "season_page_2007_08": {
+  "total_bytes": 487680,
+  "first_500_bytes": "<html lang=\"en-us\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1, shrink-to-fit=no\">\n<title>NBA 2007-08 - Sportsbook Reviews Online</title>\n<link rel=\"canonical\" href=\"https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba-odds-2007-08/\">\n<link rel=\"icon\" type=\"image/png\" href=\"/wp-content/uploads/sportsbookreviewsonline_com_737/sportsbook-reviews-online-192.png\">\n<meta property=\"og:type\" content=\"article\">\n<meta property=\"og:site_name\"",
+  "n_data_rows": 2633,
+  "header_row": [
+   "Date",
+   "Rot",
+   "VH",
+   "Team",
+   "1st",
+   "2nd",
+   "3rd",
+   "4th",
+   "Final",
+   "Open",
+   "Close",
+   "ML",
+   "2H"
+  ],
+  "first_rows": [
+   [
+    "1030",
+    "501",
+    "V",
+    "Portland",
+    "26",
+    "23",
+    "28",
+    "20",
+    "97",
+    "184",
+    "189.5",
+    "900",
+    "95"
+   ],
+   [
+    "1030",
+    "502",
+    "H",
+    "SanAntonio",
+    "29",
+    "30",
+    "22",
+    "25",
+    "106",
+    "12.5",
+    "13",
+    "-1400",
+    "5"
+   ],
+   [
+    "1030",
+    "503",
+    "V",
+    "Utah",
+    "28",
+    "34",
+    "24",
+    "31",
+    "117",
+    "214.5",
+    "212",
+    "100",
+    "105.5"
+   ],
+   [
+    "1030",
+    "504",
+    "H",
+    "GoldenState",
+    "30",
+    "21",
+    "21",
+    "24",
+    "96",
+    "3",
+    "1",
+    "-120",
+    "3"
+   ]
+  ]
+ }
+}

@@ -1,0 +1,2130 @@
+{
+ "probe": "ESPN core API (sports.core.api.espn.com)",
+ "probed_on": "2026-09-21",
+ "endpoints": [
+  {
+   "label": "season listing (regular)",
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/types/2/events?limit=5&page=1",
+   "http": 200,
+   "keys": [
+    "count",
+    "items",
+    "pageCount",
+    "pageIndex",
+    "pageSize"
+   ],
+   "count": 1233,
+   "pageCount": 247,
+   "pageSize": 5,
+   "pageIndex": 1,
+   "items_len": 5,
+   "first_item": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400488874?lang=en&region=us"
+   }
+  },
+  {
+   "label": "season listing (postseason)",
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/types/3/events?limit=3",
+   "http": 200,
+   "keys": [
+    "count",
+    "items",
+    "pageCount",
+    "pageIndex",
+    "pageSize"
+   ],
+   "count": 89,
+   "pageCount": 30,
+   "pageSize": 3,
+   "pageIndex": 1,
+   "items_len": 3,
+   "first_item": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400553085?lang=en&region=us"
+   }
+  },
+  {
+   "label": "season listing, no /types/ (expected 404)",
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/events?limit=10",
+   "http": 404,
+   "keys": [
+    "error"
+   ]
+  },
+  {
+   "label": "date listing",
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events?dates=20140115&limit=10",
+   "http": 200,
+   "keys": [
+    "count",
+    "items",
+    "pageCount",
+    "pageIndex",
+    "pageSize"
+   ],
+   "count": 12,
+   "pageCount": 2,
+   "pageSize": 10,
+   "pageIndex": 1,
+   "items_len": 10,
+   "first_item": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439?lang=en&region=us"
+   }
+  },
+  {
+   "label": "odds",
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds",
+   "http": 200,
+   "keys": [
+    "count",
+    "items",
+    "pageCount",
+    "pageIndex",
+    "pageSize"
+   ],
+   "count": 9,
+   "pageCount": 1,
+   "pageSize": 25,
+   "pageIndex": 1,
+   "items_len": 9,
+   "first_item": {
+    "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/18?lang=en&region=us",
+    "provider": {
+     "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/18?lang=en&region=us",
+     "id": "18",
+     "name": "5Dimes.eu",
+     "priority": 0
+    },
+    "details": "CHI -6",
+    "overUnder": 181.0,
+    "spread": 6.0,
+    "initialSpread": 4.0,
+    "initialOverUnder": 182.0,
+    "overOdds": -108.0,
+    "underOdds": -102.0,
+    "awayTeamOdds": {
+     "favorite": true,
+     "underdog": false,
+     "moneyLine": -230,
+     "spreadOdds": -101.0,
+     "current": {
+      "pointSpread": {
+       "alternateDisplayValue": "-6",
+       "american": "-6"
+      },
+      "spread": {
+       "alternateDisplayValue": "-101",
+       "american": "-101"
+      },
+      "moneyLine": {
+       "alternateDisplayValue": "-230",
+       "american": "-230"
+      }
+     },
+     "team": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+     }
+    },
+    "homeTeamOdds": {
+     "favorite": false,
+     "underdog": true,
+     "moneyLine": 210,
+     "spreadOdds": -109.0,
+     "current": {
+      "pointSpread": {
+       "alternateDisplayValue": "+6",
+       "american": "+6"
+      },
+      "spread": {
+       "alternateDisplayValue": "-109",
+       "american": "-109"
+      },
+      "moneyLine": {
+       "alternateDisplayValue": "+210",
+       "american": "+210"
+      }
+     },
+     "team": {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+     }
+    },
+    "moneylineWinner": false,
+    "spreadWinner": false,
+    "current": {
+     "over": {
+      "alternateDisplayValue": "-108",
+      "american": "-108"
+     },
+     "under": {
+      "alternateDisplayValue": "-102",
+      "american": "-102"
+     },
+     "total": {
+      "alternateDisplayValue": "181",
+      "american": "181"
+     }
+    }
+   }
+  },
+  {
+   "label": "history (teamrankings 1002, moneyline)",
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1002/history/0",
+   "http": 200,
+   "keys": [
+    "$ref",
+    "highlights",
+    "moneylineWinner",
+    "movement",
+    "spreadWinner",
+    "type"
+   ]
+  },
+  {
+   "label": "history movement (teamrankings 1002, moneyline)",
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1002/history/0/movement",
+   "http": 200,
+   "keys": [
+    "count",
+    "items",
+    "pageCount",
+    "pageIndex",
+    "pageSize"
+   ],
+   "count": 17,
+   "pageCount": 1,
+   "pageSize": 25,
+   "pageIndex": 1,
+   "items_len": 17,
+   "first_item": {
+    "overOdds": 0.0,
+    "underOdds": 0.0,
+    "drawOdds": 0.0,
+    "awayOdds": -185.0,
+    "homeOdds": 166.0,
+    "lineDate": "2014-01-15T15:22Z",
+    "moneylineWinner": false,
+    "spreadWinner": false,
+    "line": 0.0
+   }
+  },
+  {
+   "label": "history for a real book (5Dimes 18, expected 404)",
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/18/history/0",
+   "http": 404,
+   "keys": [
+    "error"
+   ]
+  }
+ ],
+ "season_table": [
+  {
+   "season": "2012-13",
+   "event_id": "400278284",
+   "http": 200,
+   "n_items": 3,
+   "providers": [
+    "consensus",
+    "numberfire",
+    "teamrankings"
+   ],
+   "real_books": [],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2013-14",
+   "event_id": "400489439",
+   "http": 200,
+   "n_items": 9,
+   "providers": [
+    "5Dimes.eu",
+    "BETONLINE.ag",
+    "BOVADA.lv",
+    "Fantasy911.com",
+    "Opening",
+    "SportsBetting.ag",
+    "consensus",
+    "numberfire",
+    "teamrankings"
+   ],
+   "real_books": [
+    "5Dimes.eu",
+    "BETONLINE.ag",
+    "BOVADA.lv",
+    "Fantasy911.com",
+    "Opening",
+    "SportsBetting.ag"
+   ],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2014-15",
+   "event_id": "400578877",
+   "http": 200,
+   "n_items": 9,
+   "providers": [
+    "5Dimes.eu",
+    "BETONLINE.ag",
+    "BOVADA.lv",
+    "Fantasy911.com",
+    "Opening",
+    "SportsBetting.ag",
+    "consensus",
+    "numberfire",
+    "teamrankings"
+   ],
+   "real_books": [
+    "5Dimes.eu",
+    "BETONLINE.ag",
+    "BOVADA.lv",
+    "Fantasy911.com",
+    "Opening",
+    "SportsBetting.ag"
+   ],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2015-16",
+   "event_id": "400828480",
+   "http": 200,
+   "n_items": 10,
+   "providers": [
+    "5Dimes.eu",
+    "BETONLINE.ag",
+    "BOVADA.lv",
+    "Opening",
+    "PinnacleSports.com",
+    "SportsBetting.ag",
+    "Westgate",
+    "consensus",
+    "numberfire",
+    "teamrankings"
+   ],
+   "real_books": [
+    "5Dimes.eu",
+    "BETONLINE.ag",
+    "BOVADA.lv",
+    "Opening",
+    "PinnacleSports.com",
+    "SportsBetting.ag",
+    "Westgate"
+   ],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2016-17",
+   "event_id": "400900029",
+   "http": 200,
+   "n_items": 13,
+   "providers": [
+    "5Dimes.eu",
+    "BETNOW.eu",
+    "BETONLINE.ag",
+    "BOVADA.lv",
+    "BetUS.COM",
+    "Opening",
+    "SportsBetting.ag",
+    "SportsInteraction.com",
+    "Sportsbook.com",
+    "Westgate",
+    "consensus",
+    "numberfire",
+    "teamrankings"
+   ],
+   "real_books": [
+    "5Dimes.eu",
+    "BETNOW.eu",
+    "BETONLINE.ag",
+    "BOVADA.lv",
+    "BetUS.COM",
+    "Opening",
+    "SportsBetting.ag",
+    "SportsInteraction.com",
+    "Sportsbook.com",
+    "Westgate"
+   ],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2017-18",
+   "event_id": "400975384",
+   "http": 200,
+   "n_items": 10,
+   "providers": [
+    "CG Technology",
+    "Caesar's",
+    "Caesars Sportsbook",
+    "Unibet",
+    "Westgate",
+    "Wynn",
+    "accuscore",
+    "consensus",
+    "numberfire",
+    "teamrankings"
+   ],
+   "real_books": [
+    "CG Technology",
+    "Caesar's",
+    "Caesars Sportsbook",
+    "Unibet",
+    "Westgate",
+    "Wynn"
+   ],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2018-19",
+   "event_id": "401071327",
+   "http": 200,
+   "n_items": 9,
+   "providers": [
+    "Caesar's",
+    "Caesars",
+    "Caesars Sportsbook",
+    "Unibet",
+    "Westgate",
+    "Wynn",
+    "accuscore",
+    "numberfire",
+    "teamrankings"
+   ],
+   "real_books": [
+    "Caesar's",
+    "Caesars",
+    "Caesars Sportsbook",
+    "Unibet",
+    "Westgate",
+    "Wynn"
+   ],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2019-20",
+   "event_id": "401161246",
+   "http": 200,
+   "n_items": 11,
+   "providers": [
+    "CG Technology",
+    "Caesars",
+    "Caesars Sportsbook",
+    "DraftKings",
+    "SugarHouse",
+    "Unibet",
+    "Westgate",
+    "accuscore",
+    "consensus",
+    "numberfire",
+    "teamrankings"
+   ],
+   "real_books": [
+    "CG Technology",
+    "Caesars",
+    "Caesars Sportsbook",
+    "DraftKings",
+    "SugarHouse",
+    "Unibet",
+    "Westgate"
+   ],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2020-21",
+   "event_id": "401267339",
+   "http": 200,
+   "n_items": 2,
+   "providers": [
+    "numberfire",
+    "teamrankings"
+   ],
+   "real_books": [],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": false,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2021-22",
+   "event_id": "401360460",
+   "http": 200,
+   "n_items": 14,
+   "providers": [
+    "Caesars Sportsbook",
+    "Caesars Sportsbook (Colorado)",
+    "Caesars Sportsbook (New Jersey)",
+    "Caesars Sportsbook (New Jersey) - Live Odds",
+    "Caesars Sportsbook (Pennsylvania)",
+    "DraftKings",
+    "MGM",
+    "SugarHouse",
+    "Titanbets",
+    "Unibet",
+    "Westgate",
+    "accuscore",
+    "consensus",
+    "teamrankings"
+   ],
+   "real_books": [
+    "Caesars Sportsbook",
+    "Caesars Sportsbook (Colorado)",
+    "Caesars Sportsbook (New Jersey)",
+    "Caesars Sportsbook (New Jersey) - Live Odds",
+    "Caesars Sportsbook (Pennsylvania)",
+    "DraftKings",
+    "MGM",
+    "SugarHouse",
+    "Titanbets",
+    "Unibet",
+    "Westgate"
+   ],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2022-23",
+   "event_id": "401468803",
+   "http": 200,
+   "n_items": 16,
+   "providers": [
+    "BetfairSportsbook",
+    "Caesars Sportsbook",
+    "Caesars Sportsbook (Colorado)",
+    "Caesars Sportsbook (New Jersey)",
+    "Caesars Sportsbook (New Jersey) - Live Odds",
+    "DraftKings",
+    "ESPN BET",
+    "Holland Casino",
+    "MGM",
+    "PointsBet",
+    "SugarHouse",
+    "Titanbets",
+    "Unibet",
+    "accuscore",
+    "consensus",
+    "teamrankings"
+   ],
+   "real_books": [
+    "BetfairSportsbook",
+    "Caesars Sportsbook",
+    "Caesars Sportsbook (Colorado)",
+    "Caesars Sportsbook (New Jersey)",
+    "Caesars Sportsbook (New Jersey) - Live Odds",
+    "DraftKings",
+    "ESPN BET",
+    "Holland Casino",
+    "MGM",
+    "PointsBet",
+    "SugarHouse",
+    "Titanbets",
+    "Unibet"
+   ],
+   "has_item_open_close": false,
+   "has_team_open": false,
+   "has_team_close": false,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2023-24",
+   "event_id": "401585183",
+   "http": 200,
+   "n_items": 12,
+   "providers": [
+    "BetfairSportsbook",
+    "Caesars Sportsbook (Colorado)",
+    "Caesars Sportsbook (New Jersey)",
+    "Caesars Sportsbook (New Jersey) - Live Odds",
+    "Caesars Sportsbook (Tennessee)",
+    "DraftKings",
+    "ESPN BET",
+    "MGM",
+    "SugarHouse",
+    "Titanbets",
+    "Unibet",
+    "accuscore"
+   ],
+   "real_books": [
+    "BetfairSportsbook",
+    "Caesars Sportsbook (Colorado)",
+    "Caesars Sportsbook (New Jersey)",
+    "Caesars Sportsbook (New Jersey) - Live Odds",
+    "Caesars Sportsbook (Tennessee)",
+    "DraftKings",
+    "ESPN BET",
+    "MGM",
+    "SugarHouse",
+    "Titanbets",
+    "Unibet"
+   ],
+   "has_item_open_close": true,
+   "has_team_open": true,
+   "has_team_close": true,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2024-25",
+   "event_id": "401705127",
+   "http": 200,
+   "n_items": 2,
+   "providers": [
+    "ESPN BET",
+    "ESPN Bet - Live Odds"
+   ],
+   "real_books": [
+    "ESPN BET",
+    "ESPN Bet - Live Odds"
+   ],
+   "has_item_open_close": true,
+   "has_team_open": true,
+   "has_team_close": true,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  },
+  {
+   "season": "2025-26",
+   "event_id": "401810433",
+   "http": 200,
+   "n_items": 1,
+   "providers": [
+    "DraftKings"
+   ],
+   "real_books": [
+    "DraftKings"
+   ],
+   "has_item_open_close": true,
+   "has_team_open": true,
+   "has_team_close": true,
+   "any_moneyline": true,
+   "any_spread": true,
+   "any_total": true
+  }
+ ],
+ "full_payloads": {
+  "2013-14_season": {
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds",
+   "http": 200,
+   "payload": {
+    "count": 9,
+    "pageIndex": 1,
+    "pageSize": 25,
+    "pageCount": 1,
+    "items": [
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/18?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/18?lang=en&region=us",
+       "id": "18",
+       "name": "5Dimes.eu",
+       "priority": 0
+      },
+      "details": "CHI -6",
+      "overUnder": 181.0,
+      "spread": 6.0,
+      "initialSpread": 4.0,
+      "initialOverUnder": 182.0,
+      "overOdds": -108.0,
+      "underOdds": -102.0,
+      "awayTeamOdds": {
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -230,
+       "spreadOdds": -101.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-6",
+         "american": "-6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-101",
+         "american": "-101"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "-230",
+         "american": "-230"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 210,
+       "spreadOdds": -109.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+6",
+         "american": "+6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-109",
+         "american": "-109"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "+210",
+         "american": "+210"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+       }
+      },
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "current": {
+       "over": {
+        "alternateDisplayValue": "-108",
+        "american": "-108"
+       },
+       "under": {
+        "alternateDisplayValue": "-102",
+        "american": "-102"
+       },
+       "total": {
+        "alternateDisplayValue": "181",
+        "american": "181"
+       }
+      }
+     },
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/19?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/19?lang=en&region=us",
+       "id": "19",
+       "name": "BETONLINE.ag",
+       "priority": 0
+      },
+      "details": "CHI -6",
+      "overUnder": 181.0,
+      "spread": 6.0,
+      "initialSpread": 4.0,
+      "initialOverUnder": 182.0,
+      "overOdds": -110.0,
+      "underOdds": -110.0,
+      "awayTeamOdds": {
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -240,
+       "spreadOdds": -110.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-6",
+         "american": "-6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-110",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "-240",
+         "american": "-240"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 200,
+       "spreadOdds": -110.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+6",
+         "american": "+6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-110",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "+200",
+         "american": "+200"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+       }
+      },
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "current": {
+       "over": {
+        "alternateDisplayValue": "-110",
+        "american": "-110"
+       },
+       "under": {
+        "alternateDisplayValue": "-110",
+        "american": "-110"
+       },
+       "total": {
+        "alternateDisplayValue": "181",
+        "american": "181"
+       }
+      }
+     },
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/20?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/20?lang=en&region=us",
+       "id": "20",
+       "name": "BOVADA.lv",
+       "priority": 0
+      },
+      "details": "CHI -6",
+      "overUnder": 181.0,
+      "spread": 6.0,
+      "initialSpread": 4.0,
+      "initialOverUnder": 182.0,
+      "overOdds": -115.0,
+      "underOdds": -105.0,
+      "awayTeamOdds": {
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -245,
+       "spreadOdds": -110.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-6",
+         "american": "-6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-110",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "-245",
+         "american": "-245"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 205,
+       "spreadOdds": -110.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+6",
+         "american": "+6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-110",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "+205",
+         "american": "+205"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+       }
+      },
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "current": {
+       "over": {
+        "alternateDisplayValue": "-115",
+        "american": "-115"
+       },
+       "under": {
+        "alternateDisplayValue": "-105",
+        "american": "-105"
+       },
+       "total": {
+        "alternateDisplayValue": "181",
+        "american": "181"
+       }
+      }
+     },
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/21?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/21?lang=en&region=us",
+       "id": "21",
+       "name": "Fantasy911.com",
+       "priority": 0
+      },
+      "details": "CHI -6",
+      "overUnder": 180.5,
+      "spread": 6.0,
+      "initialSpread": 4.0,
+      "initialOverUnder": 182.0,
+      "overOdds": -110.0,
+      "underOdds": -110.0,
+      "awayTeamOdds": {
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -250,
+       "spreadOdds": -110.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-6",
+         "american": "-6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-110",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "-250",
+         "american": "-250"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 210,
+       "spreadOdds": -110.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+6",
+         "american": "+6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-110",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "+210",
+         "american": "+210"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+       }
+      },
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "current": {
+       "over": {
+        "alternateDisplayValue": "-110",
+        "american": "-110"
+       },
+       "under": {
+        "alternateDisplayValue": "-110",
+        "american": "-110"
+       },
+       "total": {
+        "alternateDisplayValue": "180.5",
+        "american": "180.5"
+       }
+      }
+     },
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/23?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/23?lang=en&region=us",
+       "id": "23",
+       "name": "Opening",
+       "priority": 0
+      },
+      "details": "CHI -4",
+      "overUnder": 182.0,
+      "spread": 4.0,
+      "initialSpread": 4.0,
+      "initialOverUnder": 182.0,
+      "overOdds": -110.0,
+      "underOdds": -110.0,
+      "awayTeamOdds": {
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -190,
+       "spreadOdds": -110.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-4",
+         "american": "-4"
+        },
+        "spread": {
+         "alternateDisplayValue": "-110",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "-190",
+         "american": "-190"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 165,
+       "spreadOdds": 100.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+4",
+         "american": "+4"
+        },
+        "spread": {
+         "alternateDisplayValue": "+100",
+         "american": "+100"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "+165",
+         "american": "+165"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+       }
+      },
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "current": {
+       "over": {
+        "alternateDisplayValue": "-110",
+        "american": "-110"
+       },
+       "under": {
+        "alternateDisplayValue": "-110",
+        "american": "-110"
+       },
+       "total": {
+        "alternateDisplayValue": "182",
+        "american": "182"
+       }
+      }
+     },
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/15?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/15?lang=en&region=us",
+       "id": "15",
+       "name": "SportsBetting.ag",
+       "priority": 0
+      },
+      "details": "CHI -6",
+      "overUnder": 181.0,
+      "spread": 6.0,
+      "initialSpread": 4.0,
+      "initialOverUnder": 182.0,
+      "overOdds": -110.0,
+      "underOdds": -110.0,
+      "awayTeamOdds": {
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -240,
+       "spreadOdds": -110.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-6",
+         "american": "-6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-110",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "-240",
+         "american": "-240"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 200,
+       "spreadOdds": -110.0,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+6",
+         "american": "+6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-110",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "+200",
+         "american": "+200"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+       }
+      },
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "current": {
+       "over": {
+        "alternateDisplayValue": "-110",
+        "american": "-110"
+       },
+       "under": {
+        "alternateDisplayValue": "-110",
+        "american": "-110"
+       },
+       "total": {
+        "alternateDisplayValue": "181",
+        "american": "181"
+       }
+      }
+     },
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1004?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/1004?lang=en&region=us",
+       "id": "1004",
+       "name": "consensus",
+       "priority": 0
+      },
+      "details": "CHI -4",
+      "spread": 4.0,
+      "initialSpread": 4.0,
+      "initialOverUnder": 182.0,
+      "awayTeamOdds": {
+       "winPercentage": 49.0,
+       "favorite": true,
+       "underdog": false,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-4",
+         "american": "-4"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "winPercentage": 51.0,
+       "favorite": false,
+       "underdog": true,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+4",
+         "american": "+4"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+       }
+      },
+      "moneylineWinner": false,
+      "spreadWinner": false
+     },
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1003?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/1003?lang=en&region=us",
+       "id": "1003",
+       "name": "numberfire",
+       "priority": 0
+      },
+      "details": "CHI -6",
+      "overUnder": 181.0,
+      "spread": 6.0,
+      "initialSpread": 4.0,
+      "initialOverUnder": 182.0,
+      "overOdds": 60.11,
+      "underOdds": 38.05,
+      "awayTeamOdds": {
+       "averageScore": 95.6,
+       "winPercentage": 64.62,
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -255,
+       "moneyLineOdds": 64.62,
+       "moneyLineReturn": -0.1,
+       "spreadOdds": 43.91,
+       "similarities": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/competitors/4/odds/1003/similarities?lang=en&region=us"
+       },
+       "spreadReturn": -0.162,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-6",
+         "american": "-6"
+        },
+        "spread": {
+         "alternateDisplayValue": "+44",
+         "american": "+44"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "-255",
+         "american": "-255"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "averageScore": 91.64,
+       "winPercentage": 35.38,
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 212,
+       "moneyLineOdds": 35.38,
+       "moneyLineReturn": 0.104,
+       "spreadOdds": 53.0,
+       "similarities": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/competitors/19/odds/1003/similarities?lang=en&region=us"
+       },
+       "spreadReturn": 0.012,
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+6",
+         "american": "+6"
+        },
+        "spread": {
+         "alternateDisplayValue": "+53",
+         "american": "+53"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "+212",
+         "american": "+212"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+       }
+      },
+      "headToHeads": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1003/head-to-heads?lang=en&region=us"
+      },
+      "predictors": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1003/predictors?lang=en&region=us"
+      },
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "current": {
+       "over": {
+        "alternateDisplayValue": "+60",
+        "american": "+60"
+       },
+       "under": {
+        "alternateDisplayValue": "+38",
+        "american": "+38"
+       },
+       "total": {
+        "alternateDisplayValue": "181",
+        "american": "181"
+       }
+      }
+     },
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1002?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/1002?lang=en&region=us",
+       "id": "1002",
+       "name": "teamrankings",
+       "priority": 0
+      },
+      "details": "CHI -6",
+      "overUnder": 181.5,
+      "spread": 6.0,
+      "initialSpread": 4.0,
+      "initialOverUnder": 182.0,
+      "overOdds": -101.0,
+      "underOdds": -109.0,
+      "awayTeamOdds": {
+       "averageScore": 94.1,
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -234,
+       "spreadRecord": {
+        "wins": 41,
+        "losses": 39,
+        "pushes": 3,
+        "summary": "41-39-3"
+       },
+       "spreadOdds": -104.0,
+       "pastPerformances": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/teams/4/odds/1002/past-performances?lang=en&region=us"
+       },
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-6",
+         "american": "-6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-104",
+         "american": "-104"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "-234",
+         "american": "-234"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/4?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "averageScore": 88.1,
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 209,
+       "spreadRecord": {
+        "wins": 45,
+        "losses": 35,
+        "pushes": 2,
+        "summary": "45-35-2"
+       },
+       "spreadOdds": -106.0,
+       "pastPerformances": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/teams/19/odds/1002/past-performances?lang=en&region=us"
+       },
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+6",
+         "american": "+6"
+        },
+        "spread": {
+         "alternateDisplayValue": "-106",
+         "american": "-106"
+        },
+        "moneyLine": {
+         "alternateDisplayValue": "+209",
+         "american": "+209"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014/teams/19?lang=en&region=us"
+       }
+      },
+      "moneyLineHistory": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1002/history/0?lang=en&region=us"
+      },
+      "spreadHistory": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1002/history/1?lang=en&region=us"
+      },
+      "totalHistory": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1002/history/2?lang=en&region=us"
+      },
+      "headToHeads": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1002/head-to-heads?lang=en&region=us"
+      },
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "current": {
+       "over": {
+        "alternateDisplayValue": "-101",
+        "american": "-101"
+       },
+       "under": {
+        "alternateDisplayValue": "-109",
+        "american": "-109"
+       },
+       "total": {
+        "alternateDisplayValue": "181.5",
+        "american": "181.5"
+       }
+      }
+     }
+    ]
+   },
+   "event_meta": {
+    "id": "400489439",
+    "name": "Chicago Bulls at Orlando Magic",
+    "shortName": "CHI @ ORL",
+    "date": "2014-01-16T00:00Z",
+    "season": {
+     "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2014?lang=en&region=us"
+    }
+   }
+  },
+  "2024-25_season": {
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/401705127/competitions/401705127/odds",
+   "http": 200,
+   "payload": {
+    "count": 2,
+    "pageIndex": 1,
+    "pageSize": 25,
+    "pageCount": 1,
+    "items": [
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/401705127/competitions/401705127/odds/58?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/58?lang=en&region=us",
+       "id": "58",
+       "name": "ESPN BET",
+       "priority": 0
+      },
+      "details": "NY -5.5",
+      "overUnder": 219.5,
+      "spread": 5.5,
+      "overOdds": -105.0,
+      "underOdds": -115.0,
+      "awayTeamOdds": {
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -210,
+       "spreadOdds": -110.0,
+       "open": {
+        "favorite": true,
+        "pointSpread": {
+         "alternateDisplayValue": "-6.5",
+         "american": "-6.5"
+        },
+        "spread": {
+         "value": 1.87,
+         "displayValue": "20/23",
+         "alternateDisplayValue": "-115",
+         "decimal": 1.87,
+         "fraction": "20/23",
+         "american": "-115"
+        },
+        "moneyLine": {
+         "value": 1.37,
+         "displayValue": "10/27",
+         "alternateDisplayValue": "-270",
+         "decimal": 1.37,
+         "fraction": "10/27",
+         "american": "-270"
+        }
+       },
+       "close": {
+        "pointSpread": {
+         "alternateDisplayValue": "-5.5",
+         "american": "-5.5"
+        },
+        "spread": {
+         "value": 1.909,
+         "displayValue": "10/11",
+         "alternateDisplayValue": "-110",
+         "decimal": 1.909,
+         "fraction": "10/11",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "value": 1.476,
+         "displayValue": "10/21",
+         "alternateDisplayValue": "-210",
+         "decimal": 1.476,
+         "fraction": "10/21",
+         "american": "-210"
+        }
+       },
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-5.5",
+         "american": "-5.5"
+        },
+        "spread": {
+         "value": 1.909,
+         "displayValue": "10/11",
+         "alternateDisplayValue": "-110",
+         "decimal": 1.909,
+         "fraction": "10/11",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "value": 1.476,
+         "displayValue": "10/21",
+         "alternateDisplayValue": "-210",
+         "decimal": 1.476,
+         "fraction": "10/21",
+         "american": "-210"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2025/teams/18?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 175,
+       "spreadOdds": -110.0,
+       "open": {
+        "favorite": false,
+        "pointSpread": {
+         "value": 1.952,
+         "displayValue": "20/21",
+         "alternateDisplayValue": "+6.5",
+         "decimal": 1.952,
+         "fraction": "20/21",
+         "american": "+6.5"
+        },
+        "spread": {
+         "value": 1.952,
+         "displayValue": "20/21",
+         "alternateDisplayValue": "-105",
+         "decimal": 1.952,
+         "fraction": "20/21",
+         "american": "-105"
+        },
+        "moneyLine": {
+         "value": 3.2,
+         "displayValue": "11/5",
+         "alternateDisplayValue": "+220",
+         "decimal": 3.2,
+         "fraction": "11/5",
+         "american": "+220"
+        }
+       },
+       "close": {
+        "pointSpread": {
+         "alternateDisplayValue": "+5.5",
+         "american": "+5.5"
+        },
+        "spread": {
+         "value": 1.909,
+         "displayValue": "10/11",
+         "alternateDisplayValue": "-110",
+         "decimal": 1.909,
+         "fraction": "10/11",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "value": 2.75,
+         "displayValue": "7/4",
+         "alternateDisplayValue": "+175",
+         "decimal": 2.75,
+         "fraction": "7/4",
+         "american": "+175"
+        }
+       },
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+5.5",
+         "american": "+5.5"
+        },
+        "spread": {
+         "value": 1.909,
+         "displayValue": "10/11",
+         "alternateDisplayValue": "-110",
+         "decimal": 1.909,
+         "fraction": "10/11",
+         "american": "-110"
+        },
+        "moneyLine": {
+         "value": 2.75,
+         "displayValue": "7/4",
+         "alternateDisplayValue": "+175",
+         "decimal": 2.75,
+         "fraction": "7/4",
+         "american": "+175"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2025/teams/20?lang=en&region=us"
+       }
+      },
+      "links": [
+       {
+        "language": "en-US",
+        "rel": [
+         "home",
+         "desktop",
+         "bets",
+         "espn-bet"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=94093b76-e030-43d9-89bb-85b1e62fd8dd&odds_numerator[0]=11&odds_denominator[0]=4",
+        "text": "Home Bet",
+        "shortText": "Home Bet",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "away",
+         "desktop",
+         "bets",
+         "espn-bet"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=27c9f077-60e8-49a4-87cd-1bdc9fdcc641&odds_numerator[0]=31&odds_denominator[0]=21",
+        "text": "Away Bet",
+        "shortText": "Away Bet",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "homeSpread",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=9902343c-022d-4c11-858e-243466bdcc91&odds_numerator[0]=21&odds_denominator[0]=11",
+        "text": "Home Point Spread",
+        "shortText": "Home Point Spread",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "awaySpread",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=8dadd5de-d89d-4281-a228-60d413bbb65c&odds_numerator[0]=21&odds_denominator[0]=11",
+        "text": "Away Point Spread",
+        "shortText": "Away Point Spread",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "over",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=aae8f928-e3d6-49cc-a923-64120a857220&odds_numerator[0]=41&odds_denominator[0]=21",
+        "text": "Over Odds",
+        "shortText": "Over Odds",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "under",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=6a94d492-00d6-40ae-8e30-e570f73df2e2&odds_numerator[0]=43&odds_denominator[0]=23",
+        "text": "Under Odds",
+        "shortText": "Under Odds",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "game",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886",
+        "text": "Game",
+        "shortText": "Game",
+        "isExternal": true,
+        "isPremium": false
+       }
+      ],
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "open": {
+       "over": {
+        "value": 1.87,
+        "displayValue": "20/23",
+        "alternateDisplayValue": "-115",
+        "decimal": 1.87,
+        "fraction": "20/23",
+        "american": "-115"
+       },
+       "under": {
+        "value": 1.952,
+        "displayValue": "20/21",
+        "alternateDisplayValue": "-105",
+        "decimal": 1.952,
+        "fraction": "20/21",
+        "american": "-105"
+       },
+       "total": {
+        "value": 1.87,
+        "displayValue": "20/23",
+        "alternateDisplayValue": "219.5",
+        "decimal": 1.87,
+        "fraction": "20/23",
+        "american": "219.5"
+       }
+      },
+      "close": {
+       "over": {
+        "value": 1.952,
+        "displayValue": "20/21",
+        "alternateDisplayValue": "-105",
+        "decimal": 1.952,
+        "fraction": "20/21",
+        "american": "-105"
+       },
+       "under": {
+        "value": 1.87,
+        "displayValue": "20/23",
+        "alternateDisplayValue": "-115",
+        "decimal": 1.87,
+        "fraction": "20/23",
+        "american": "-115"
+       },
+       "total": {
+        "alternateDisplayValue": "219.5",
+        "american": "219.5"
+       }
+      },
+      "current": {
+       "over": {
+        "value": 1.952,
+        "displayValue": "20/21",
+        "alternateDisplayValue": "-105",
+        "decimal": 1.952,
+        "fraction": "20/21",
+        "american": "-105"
+       },
+       "under": {
+        "value": 1.87,
+        "displayValue": "20/23",
+        "alternateDisplayValue": "-115",
+        "decimal": 1.87,
+        "fraction": "20/23",
+        "american": "-115"
+       },
+       "total": {
+        "alternateDisplayValue": "219.5",
+        "american": "219.5"
+       }
+      },
+      "propBets": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/401705127/competitions/401705127/odds/58/propBets?lang=en&region=us"
+      }
+     },
+     {
+      "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/401705127/competitions/401705127/odds/59?lang=en&region=us",
+      "provider": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/providers/59?lang=en&region=us",
+       "id": "59",
+       "name": "ESPN Bet - Live Odds",
+       "priority": 0
+      },
+      "details": "NY -7.5",
+      "overUnder": 242.5,
+      "spread": 7.5,
+      "overOdds": -175.0,
+      "underOdds": 125.0,
+      "awayTeamOdds": {
+       "favorite": true,
+       "underdog": false,
+       "moneyLine": -3000,
+       "spreadOdds": -115.0,
+       "open": {
+        "favorite": true,
+        "pointSpread": {
+         "alternateDisplayValue": "-6.5",
+         "american": "-6.5"
+        },
+        "spread": {
+         "value": 1.87,
+         "displayValue": "20/23",
+         "alternateDisplayValue": "-115",
+         "decimal": 1.87,
+         "fraction": "20/23",
+         "american": "-115"
+        },
+        "moneyLine": {
+         "value": 1.37,
+         "displayValue": "10/27",
+         "alternateDisplayValue": "-270",
+         "decimal": 1.37,
+         "fraction": "10/27",
+         "american": "-270"
+        }
+       },
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "-7.5",
+         "american": "-7.5"
+        },
+        "spread": {
+         "value": 1.87,
+         "displayValue": "20/23",
+         "alternateDisplayValue": "-115",
+         "decimal": 1.87,
+         "fraction": "20/23",
+         "american": "-115"
+        },
+        "moneyLine": {
+         "value": 1.033,
+         "displayValue": "1/30",
+         "alternateDisplayValue": "-3000",
+         "decimal": 1.033,
+         "fraction": "1/30",
+         "american": "-3000"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2025/teams/18?lang=en&region=us"
+       }
+      },
+      "homeTeamOdds": {
+       "favorite": false,
+       "underdog": true,
+       "moneyLine": 1000,
+       "spreadOdds": -115.0,
+       "open": {
+        "favorite": false,
+        "pointSpread": {
+         "value": 1.952,
+         "displayValue": "20/21",
+         "alternateDisplayValue": "+6.5",
+         "decimal": 1.952,
+         "fraction": "20/21",
+         "american": "+6.5"
+        },
+        "spread": {
+         "value": 1.952,
+         "displayValue": "20/21",
+         "alternateDisplayValue": "-105",
+         "decimal": 1.952,
+         "fraction": "20/21",
+         "american": "-105"
+        },
+        "moneyLine": {
+         "value": 3.2,
+         "displayValue": "11/5",
+         "alternateDisplayValue": "+220",
+         "decimal": 3.2,
+         "fraction": "11/5",
+         "american": "+220"
+        }
+       },
+       "current": {
+        "pointSpread": {
+         "alternateDisplayValue": "+7.5",
+         "american": "+7.5"
+        },
+        "spread": {
+         "value": 1.87,
+         "displayValue": "20/23",
+         "alternateDisplayValue": "-115",
+         "decimal": 1.87,
+         "fraction": "20/23",
+         "american": "-115"
+        },
+        "moneyLine": {
+         "value": 11.0,
+         "displayValue": "10/1",
+         "alternateDisplayValue": "+1000",
+         "decimal": 11.0,
+         "fraction": "10/1",
+         "american": "+1000"
+        }
+       },
+       "team": {
+        "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2025/teams/20?lang=en&region=us"
+       }
+      },
+      "links": [
+       {
+        "language": "en-US",
+        "rel": [
+         "home",
+         "desktop",
+         "bets",
+         "espn-bet---live-odds"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=94093b76-e030-43d9-89bb-85b1e62fd8dd&odds_numerator[0]=11&odds_denominator[0]=1",
+        "text": "Home Bet",
+        "shortText": "Home Bet",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "away",
+         "desktop",
+         "bets",
+         "espn-bet---live-odds"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=27c9f077-60e8-49a4-87cd-1bdc9fdcc641&odds_numerator[0]=31&odds_denominator[0]=30",
+        "text": "Away Bet",
+        "shortText": "Away Bet",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "homeSpread",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=5716ae56-908a-4da2-bc76-c828196978ba&odds_numerator[0]=43&odds_denominator[0]=23",
+        "text": "Home Point Spread",
+        "shortText": "Home Point Spread",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "awaySpread",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=1ba5f7a9-548b-41b2-8ea0-b930073cf8cd&odds_numerator[0]=43&odds_denominator[0]=23",
+        "text": "Away Point Spread",
+        "shortText": "Away Point Spread",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "over",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=47686361-81c0-4923-a466-8cbf457bca64&odds_numerator[0]=11&odds_denominator[0]=7",
+        "text": "Over Odds",
+        "shortText": "Over Odds",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "under",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886&market_selection_id[0]=7585ee4c-f0fd-4088-94c4-3d1b6ead4973&odds_numerator[0]=9&odds_denominator[0]=4",
+        "text": "Under Odds",
+        "shortText": "Under Odds",
+        "isExternal": true,
+        "isPremium": false
+       },
+       {
+        "language": "en-US",
+        "rel": [
+         "game",
+         "desktop",
+         "bets"
+        ],
+        "href": "https://espnbet.app.link?%243p=a_espn&clr=espnbettingintegration&$canonical_url=/sport/basketball/organization/united-states/competition/nba/event/693878eb-966e-4da2-808c-eaa39aab0886",
+        "text": "Game",
+        "shortText": "Game",
+        "isExternal": true,
+        "isPremium": false
+       }
+      ],
+      "moneylineWinner": false,
+      "spreadWinner": false,
+      "open": {
+       "over": {
+        "value": 1.87,
+        "displayValue": "20/23",
+        "alternateDisplayValue": "-115",
+        "decimal": 1.87,
+        "fraction": "20/23",
+        "american": "-115"
+       },
+       "under": {
+        "value": 1.952,
+        "displayValue": "20/21",
+        "alternateDisplayValue": "-105",
+        "decimal": 1.952,
+        "fraction": "20/21",
+        "american": "-105"
+       },
+       "total": {
+        "value": 1.87,
+        "displayValue": "20/23",
+        "alternateDisplayValue": "219.5",
+        "decimal": 1.87,
+        "fraction": "20/23",
+        "american": "219.5"
+       }
+      },
+      "current": {
+       "over": {
+        "value": 1.571,
+        "displayValue": "4/7",
+        "alternateDisplayValue": "-175",
+        "decimal": 1.571,
+        "fraction": "4/7",
+        "american": "-175"
+       },
+       "under": {
+        "value": 2.25,
+        "displayValue": "5/4",
+        "alternateDisplayValue": "+125",
+        "decimal": 2.25,
+        "fraction": "5/4",
+        "american": "+125"
+       },
+       "total": {
+        "alternateDisplayValue": "242.5",
+        "american": "242.5"
+       }
+      },
+      "propBets": {
+       "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/401705127/competitions/401705127/odds/59/propBets?lang=en&region=us"
+      }
+     }
+    ]
+   },
+   "event_meta": {
+    "id": "401705127",
+    "name": "New York Knicks at Philadelphia 76ers",
+    "shortName": "NY @ PHI",
+    "date": "2025-01-16T00:00Z",
+    "season": {
+     "$ref": "http://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/seasons/2025?lang=en&region=us"
+    }
+   }
+  }
+ },
+ "movement_sample": {
+  "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489439/competitions/400489439/odds/1002/history/0/movement",
+  "http": 200,
+  "count": 17,
+  "first3": [
+   {
+    "overOdds": 0.0,
+    "underOdds": 0.0,
+    "drawOdds": 0.0,
+    "awayOdds": -185.0,
+    "homeOdds": 166.0,
+    "lineDate": "2014-01-15T15:22Z",
+    "moneylineWinner": false,
+    "spreadWinner": false,
+    "line": 0.0
+   },
+   {
+    "overOdds": 0.0,
+    "underOdds": 0.0,
+    "drawOdds": 0.0,
+    "awayOdds": -180.0,
+    "homeOdds": 162.0,
+    "lineDate": "2014-01-15T15:32Z",
+    "moneylineWinner": false,
+    "spreadWinner": false,
+    "line": 0.0
+   },
+   {
+    "overOdds": 0.0,
+    "underOdds": 0.0,
+    "drawOdds": 0.0,
+    "awayOdds": -172.0,
+    "homeOdds": 155.0,
+    "lineDate": "2014-01-15T15:42Z",
+    "moneylineWinner": false,
+    "spreadWinner": false,
+    "line": 0.0
+   }
+  ],
+  "last3": [
+   {
+    "overOdds": 0.0,
+    "underOdds": 0.0,
+    "drawOdds": 0.0,
+    "awayOdds": -230.0,
+    "homeOdds": 205.0,
+    "lineDate": "2014-01-15T23:22Z",
+    "moneylineWinner": false,
+    "spreadWinner": false,
+    "line": 0.0
+   },
+   {
+    "overOdds": 0.0,
+    "underOdds": 0.0,
+    "drawOdds": 0.0,
+    "awayOdds": -235.0,
+    "homeOdds": 210.0,
+    "lineDate": "2014-01-15T23:32Z",
+    "moneylineWinner": false,
+    "spreadWinner": false,
+    "line": 0.0
+   },
+   {
+    "overOdds": 0.0,
+    "underOdds": 0.0,
+    "drawOdds": 0.0,
+    "awayOdds": -234.0,
+    "homeOdds": 209.0,
+    "lineDate": "2014-01-15T23:52Z",
+    "moneylineWinner": false,
+    "spreadWinner": false,
+    "line": 0.0
+   }
+  ]
+ },
+ "movement_sample_2022_23_spread": {
+  "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/401468803/competitions/401468803/odds/1002/history/1/movement",
+  "http": 200,
+  "count": 17,
+  "first": {
+   "overOdds": 0.0,
+   "underOdds": 0.0,
+   "drawOdds": 0.0,
+   "awayOdds": -110.0,
+   "homeOdds": -110.0,
+   "lineDate": "2023-01-15T00:58Z",
+   "moneylineWinner": false,
+   "spreadWinner": false,
+   "line": -6.0
+  },
+  "last": {
+   "overOdds": 0.0,
+   "underOdds": 0.0,
+   "drawOdds": 0.0,
+   "awayOdds": -110.0,
+   "homeOdds": -110.0,
+   "lineDate": "2023-01-16T01:50Z",
+   "moneylineWinner": false,
+   "spreadWinner": false,
+   "line": -8.5
+  }
+ }
+}

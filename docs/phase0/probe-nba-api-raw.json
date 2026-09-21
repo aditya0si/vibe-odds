@@ -1,0 +1,5536 @@
+{
+ "probes": [
+  {
+   "phase": "1-season-log",
+   "probe": "LeagueGameFinder 2005-06",
+   "ok": true,
+   "detail": "2871 rows, 1435 unique GAME_IDs, season_id_counts={'42005': 178, '22005': 2460, '32005': 6, '12005': 227}, game_id_prefix_counts={'004': 178, '002': 2460, '003': 6, '001': 227}, first_date=2005-10-10, last_date=2006-06-20",
+   "seconds": 4.34,
+   "warnings": [],
+   "attempts": 1
+  },
+  {
+   "phase": "1-season-log",
+   "probe": "LeagueGameFinder 2008-09",
+   "ok": true,
+   "detail": "2866 rows, 1433 unique GAME_IDs, season_id_counts={'42008': 170, '22008': 2460, '32008': 6, '12008': 230}, game_id_prefix_counts={'004': 170, '002': 2460, '003': 6, '001': 230}, first_date=2008-10-05, last_date=2009-06-14",
+   "seconds": 2.32,
+   "warnings": [],
+   "attempts": 1
+  },
+  {
+   "phase": "1-season-log",
+   "probe": "LeagueGameFinder 2012-13",
+   "ok": true,
+   "detail": "2866 rows, 1433 unique GAME_IDs, season_id_counts={'42012': 170, '22012': 2458, '32012': 6, '12012': 232}, game_id_prefix_counts={'004': 170, '002': 2458, '003': 6, '001': 232}, first_date=2012-10-05, last_date=2013-06-20",
+   "seconds": 1.65,
+   "warnings": [],
+   "attempts": 1
+  },
+  {
+   "phase": "1-season-log",
+   "probe": "LeagueGameFinder 2016-17",
+   "ok": true,
+   "detail": "2829 rows, 1414 unique GAME_IDs, season_id_counts={'42016': 158, '22016': 2460, '32016': 7, '12016': 204}, game_id_prefix_counts={'004': 158, '002': 2460, '003': 7, '001': 204}, first_date=2016-10-01, last_date=2017-06-12",
+   "seconds": 1.61,
+   "warnings": [],
+   "attempts": 1
+  },
+  {
+   "phase": "1-season-log",
+   "probe": "LeagueGameFinder 2019-20",
+   "ok": true,
+   "detail": "2516 rows, 1258 unique GAME_IDs, season_id_counts={'42019': 166, '52019': 2, '22019': 2118, '12019': 224, '32019': 6}, game_id_prefix_counts={'004': 166, '005': 2, '002': 2118, '001': 224, '003': 6}, first_date=2019-09-30, last_date=2020-10-11",
+   "seconds": 1.56,
+   "warnings": [],
+   "attempts": 1
+  },
+  {
+   "phase": "1-season-log",
+   "probe": "LeagueGameFinder 2020-21",
+   "ok": true,
+   "detail": "2442 rows, 1221 unique GAME_IDs, season_id_counts={'42020': 170, '52020': 12, '22020': 2160, '32020': 2, '12020': 98}, game_id_prefix_counts={'004': 170, '005': 12, '002': 2160, '003': 2, '001': 98}, first_date=2020-12-11, last_date=2021-07-20",
+   "seconds": 3.46,
+   "warnings": [],
+   "attempts": 1
+  },
+  {
+   "phase": "1-season-log",
+   "probe": "LeagueGameFinder 2023-24",
+   "ok": true,
+   "detail": "2795 rows, 1397 unique GAME_IDs, season_id_counts={'42023': 164, '52023': 12, '22023': 2460, '32023': 10, '62023': 2, '12023': 147}, game_id_prefix_counts={'004': 164, '005': 12, '002': 2460, '003': 10, '006': 2, '001': 147}, first_date=2023-10-05, last_date=2024-06-17",
+   "seconds": 1.61,
+   "warnings": [],
+   "attempts": 1
+  },
+  {
+   "phase": "1-season-log",
+   "probe": "LeagueGameFinder 2025-26",
+   "ok": true,
+   "detail": "2805 rows, 1401 unique GAME_IDs, season_id_counts={'42025': 170, '52025': 12, '22025': 2460, '32025': 16, '62025': 2, '12025': 145}, game_id_prefix_counts={'004': 170, '005': 12, '002': 2460, '003': 16, '006': 2, '001': 145}, first_date=2025-10-02, last_date=2026-06-13",
+   "seconds": 0.49,
+   "warnings": [],
+   "attempts": 1
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv3 gid=0020501226",
+   "ok": false,
+   "detail": "sets=0 [] | inactive=0 officials=0",
+   "seconds": 0.6,
+   "game_id": "0020501226",
+   "warnings": [],
+   "result_sets": {}
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv2 gid=0020501226",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'OtherStats', 'Officials', 'InactivePlayers', 'GameInfo', 'LineScore', 'LastMeeting', 'SeasonSeries', 'AvailableVideo'] | inactive=6 officials=3",
+   "seconds": 0.75,
+   "game_id": "0020501226",
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ],
+   "result_sets": {
+    "GameSummary": 1,
+    "OtherStats": 2,
+    "Officials": 3,
+    "InactivePlayers": 6,
+    "GameInfo": 1,
+    "LineScore": 2,
+    "LastMeeting": 1,
+    "SeasonSeries": 1,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv3 gid=0021201218",
+   "ok": false,
+   "detail": "sets=0 [] | inactive=0 officials=0",
+   "seconds": 0.53,
+   "game_id": "0021201218",
+   "warnings": [],
+   "result_sets": {}
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv2 gid=0021201218",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'OtherStats', 'Officials', 'InactivePlayers', 'GameInfo', 'LineScore', 'LastMeeting', 'SeasonSeries', 'AvailableVideo'] | inactive=5 officials=3",
+   "seconds": 0.53,
+   "game_id": "0021201218",
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ],
+   "result_sets": {
+    "GameSummary": 1,
+    "OtherStats": 2,
+    "Officials": 3,
+    "InactivePlayers": 5,
+    "GameInfo": 1,
+    "LineScore": 2,
+    "LastMeeting": 1,
+    "SeasonSeries": 1,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv3 gid=0021801227",
+   "ok": false,
+   "detail": "sets=0 [] | inactive=0 officials=0",
+   "seconds": 0.53,
+   "game_id": "0021801227",
+   "warnings": [],
+   "result_sets": {}
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv2 gid=0021801227",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'OtherStats', 'Officials', 'InactivePlayers', 'GameInfo', 'LineScore', 'LastMeeting', 'SeasonSeries', 'AvailableVideo'] | inactive=8 officials=3",
+   "seconds": 0.58,
+   "game_id": "0021801227",
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ],
+   "result_sets": {
+    "GameSummary": 1,
+    "OtherStats": 2,
+    "Officials": 3,
+    "InactivePlayers": 8,
+    "GameInfo": 1,
+    "LineScore": 2,
+    "LastMeeting": 1,
+    "SeasonSeries": 1,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv3 gid=0020501226",
+   "ok": true,
+   "detail": "sets=9 ['game_summary', 'game_info', 'arena_info', 'officials', 'line_score', 'inactive_players', 'last_five_meetings', 'other_stats', 'available_video'] | inactive=6 officials=3",
+   "seconds": 0.92,
+   "game_id": "0020501226",
+   "warnings": [],
+   "result_sets": {
+    "game_summary": 1,
+    "game_info": 1,
+    "arena_info": 1,
+    "officials": 3,
+    "line_score": 2,
+    "inactive_players": 6,
+    "last_five_meetings": 5,
+    "other_stats": 2,
+    "available_video": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv2 gid=0020501226",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'OtherStats', 'Officials', 'InactivePlayers', 'GameInfo', 'LineScore', 'LastMeeting', 'SeasonSeries', 'AvailableVideo'] | inactive=6 officials=3",
+   "seconds": 0.36,
+   "game_id": "0020501226",
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ],
+   "result_sets": {
+    "GameSummary": 1,
+    "OtherStats": 2,
+    "Officials": 3,
+    "InactivePlayers": 6,
+    "GameInfo": 1,
+    "LineScore": 2,
+    "LastMeeting": 1,
+    "SeasonSeries": 1,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv3 gid=0021201218",
+   "ok": true,
+   "detail": "sets=9 ['game_summary', 'game_info', 'arena_info', 'officials', 'line_score', 'inactive_players', 'last_five_meetings', 'other_stats', 'available_video'] | inactive=5 officials=3",
+   "seconds": 0.32,
+   "game_id": "0021201218",
+   "warnings": [],
+   "result_sets": {
+    "game_summary": 1,
+    "game_info": 1,
+    "arena_info": 1,
+    "officials": 3,
+    "line_score": 2,
+    "inactive_players": 5,
+    "last_five_meetings": 5,
+    "other_stats": 2,
+    "available_video": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv2 gid=0021201218",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'OtherStats', 'Officials', 'InactivePlayers', 'GameInfo', 'LineScore', 'LastMeeting', 'SeasonSeries', 'AvailableVideo'] | inactive=5 officials=3",
+   "seconds": 0.29,
+   "game_id": "0021201218",
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ],
+   "result_sets": {
+    "GameSummary": 1,
+    "OtherStats": 2,
+    "Officials": 3,
+    "InactivePlayers": 5,
+    "GameInfo": 1,
+    "LineScore": 2,
+    "LastMeeting": 1,
+    "SeasonSeries": 1,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv3 gid=0021801227",
+   "ok": true,
+   "detail": "sets=9 ['game_summary', 'game_info', 'arena_info', 'officials', 'line_score', 'inactive_players', 'last_five_meetings', 'other_stats', 'available_video'] | inactive=8 officials=3",
+   "seconds": 0.29,
+   "game_id": "0021801227",
+   "warnings": [],
+   "result_sets": {
+    "game_summary": 1,
+    "game_info": 1,
+    "arena_info": 1,
+    "officials": 3,
+    "line_score": 2,
+    "inactive_players": 8,
+    "last_five_meetings": 5,
+    "other_stats": 2,
+    "available_video": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv2 gid=0021801227",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'OtherStats', 'Officials', 'InactivePlayers', 'GameInfo', 'LineScore', 'LastMeeting', 'SeasonSeries', 'AvailableVideo'] | inactive=8 officials=3",
+   "seconds": 0.37,
+   "game_id": "0021801227",
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ],
+   "result_sets": {
+    "GameSummary": 1,
+    "OtherStats": 2,
+    "Officials": 3,
+    "InactivePlayers": 8,
+    "GameInfo": 1,
+    "LineScore": 2,
+    "LastMeeting": 1,
+    "SeasonSeries": 1,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "3-modern-v3",
+   "probe": "boxscoresummaryv3 gid=0022501191",
+   "ok": true,
+   "detail": "sets=['game_summary', 'game_info', 'arena_info', 'officials', 'line_score', 'inactive_players', 'last_five_meetings', 'other_stats', 'available_video'] rows={'game_summary': 1, 'game_info': 1, 'arena_info': 1, 'officials': 3, 'line_score': 2, 'inactive_players': 8, 'last_five_meetings': 5, 'other_stats': 2, 'available_video': 1}",
+   "seconds": 0.48,
+   "game_id": "0022501191",
+   "warnings": []
+  },
+  {
+   "phase": "3-modern-v3",
+   "probe": "boxscoretraditionalv3 gid=0022501191",
+   "ok": true,
+   "detail": "sets=['player_stats', 'team_stats', 'team_starter_bench_stats'] rows={'player_stats': 26, 'team_stats': 2, 'team_starter_bench_stats': 4}",
+   "seconds": 0.44,
+   "game_id": "0022501191",
+   "warnings": []
+  },
+  {
+   "phase": "3-modern-v3",
+   "probe": "boxscoreadvancedv3 gid=0022501191",
+   "ok": true,
+   "detail": "sets=['player_stats', 'team_stats'] rows={'player_stats': 26, 'team_stats': 2}",
+   "seconds": 0.98,
+   "game_id": "0022501191",
+   "warnings": []
+  },
+  {
+   "phase": "3b-modern-v2",
+   "probe": "boxscoretraditionalv2 gid=0022501191",
+   "ok": true,
+   "detail": "sets=3 rows={'PlayerStats': 0, 'TeamStats': 0, 'TeamStarterBenchStats': 0}",
+   "seconds": 0.76,
+   "warnings": [
+    "BoxScoreTraditionalV2 is deprecated and will be removed in a future version. Please use BoxScoreTraditionalV3 instead. Data is no longer being published for BoxScoreTraditionalV2 as of the 2025-26 NBA season."
+   ]
+  },
+  {
+   "phase": "3b-modern-v2",
+   "probe": "boxscoreadvancedv2 gid=0022501191",
+   "ok": false,
+   "detail": "KeyError: 'resultSet'",
+   "seconds": 0.68,
+   "warnings": []
+  },
+  {
+   "phase": "3b-modern-v2",
+   "probe": "boxscoresummaryv2 gid=0022501191",
+   "ok": true,
+   "detail": "sets=9 rows={'GameSummary': 1, 'OtherStats': 0, 'Officials': 0, 'InactivePlayers': 0, 'GameInfo': 1, 'LineScore': 2, 'LastMeeting': 1, 'SeasonSeries': 0, 'AvailableVideo': 1}",
+   "seconds": 0.57,
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ]
+  },
+  {
+   "phase": "3b-modern-v2",
+   "probe": "playbyplayv2 gid=0022501191",
+   "ok": false,
+   "detail": "KeyError: 'resultSet'",
+   "seconds": 0.43,
+   "warnings": [
+    "PlayByPlayV2 is deprecated and will be removed in a future version. Please use PlayByPlayV3 instead. The NBA API no longer returns data for PlayByPlayV2 (returns empty JSON). See GitHub issue #591: https://github.com/swar/nba_api/issues/591"
+   ]
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "boxscoreadvancedv2 (2025-26)",
+   "ok": true,
+   "detail": "valid_json=True len=2 keys=[] head='{}'",
+   "seconds": 2.54
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "playbyplayv2 (2025-26)",
+   "ok": true,
+   "detail": "valid_json=True len=2 keys=[] head='{}'",
+   "seconds": 0.59
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "boxscoretraditionalv2 (2025-26)",
+   "ok": true,
+   "detail": "valid_json=True len=961 keys=['resource', 'parameters', 'resultSets'] head='{\"resource\":\"boxscore\",\"parameters\":{\"GameID\":\"0022501191\",\"StartPeriod\":0,\"EndPeriod\":0,\"StartRange\":0,\"EndRange\":0,\"RangeType\":0},\"resultSets\":[{\"name\":\"Playe'",
+   "seconds": 0.5
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "boxscoresummaryv2 (2025-26)",
+   "ok": true,
+   "detail": "valid_json=True len=2604 keys=['resource', 'parameters', 'resultSets'] head='{\"resource\":\"boxscoresummary\",\"parameters\":{\"GameID\":\"0022501191\"},\"resultSets\":[{\"name\":\"GameSummary\",\"headers\":[\"GAME_DATE_EST\",\"GAME_SEQUENCE\",\"GAME_ID\",\"GAM'",
+   "seconds": 0.11
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "boxscoreadvancedv2 (2012-13 control)",
+   "ok": true,
+   "detail": "valid_json=True len=2 keys=[] head='{}'",
+   "seconds": 0.59
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "scoreboardv2 (the known JSONDecodeError case)",
+   "ok": false,
+   "detail": "valid_json=False len=0 keys=None head=''",
+   "seconds": 0.42
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 01/15/2013",
+   "ok": false,
+   "detail": "len=0 valid_json=False sets=0 head=''",
+   "seconds": 0.82
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 01/15/2013",
+   "ok": true,
+   "detail": "len=16408 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/15/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:2'",
+   "seconds": 0.63
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 01/15/2013",
+   "ok": false,
+   "detail": "len=0 valid_json=False sets=0 head=''",
+   "seconds": 0.24
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 01/15/2013",
+   "ok": true,
+   "detail": "len=16408 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/15/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:2'",
+   "seconds": 0.23
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 12/15/2024",
+   "ok": true,
+   "detail": "len=11349 valid_json=True sets=9 head='{\"resource\":\"scoreboardV2\",\"parameters\":{\"GameDate\":\"2024-12-15\",\"LeagueID\":\"00\",\"DayOffset\":\"0\"},\"resultSets\":[{\"name\":'",
+   "seconds": 0.41
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 12/15/2024",
+   "ok": true,
+   "detail": "len=20170 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2024/12/15/scoreboard?Format=json\",\"time\":\"2025-07-02T17:30:5'",
+   "seconds": 0.48
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 12/15/2024",
+   "ok": true,
+   "detail": "len=11349 valid_json=True sets=9 head='{\"resource\":\"scoreboardV2\",\"parameters\":{\"GameDate\":\"2024-12-15\",\"LeagueID\":\"00\",\"DayOffset\":\"0\"},\"resultSets\":[{\"name\":'",
+   "seconds": 0.24
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 12/15/2024",
+   "ok": true,
+   "detail": "len=20170 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2024/12/15/scoreboard?Format=json\",\"time\":\"2025-07-02T17:30:5'",
+   "seconds": 0.28
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "boxscoreadvancedv2 2012-13 defaults gid=0021201218",
+   "ok": false,
+   "detail": "KeyError: 'resultSet' | raw='{}'",
+   "seconds": 0.37,
+   "warnings": []
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "boxscoreadvancedv2 2025-26 defaults gid=0022501191",
+   "ok": false,
+   "detail": "KeyError: 'resultSet' | raw='{}'",
+   "seconds": 0.39,
+   "warnings": []
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "boxscoretraditionalv2 2012-13 defaults gid=0021201218",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 25, 'TeamStats': 2, 'TeamStarterBenchStats': 4} sets=3",
+   "seconds": 0.5,
+   "warnings": [
+    "BoxScoreTraditionalV2 is deprecated and will be removed in a future version. Please use BoxScoreTraditionalV3 instead. Data is no longer being published for BoxScoreTraditionalV2 as of the 2025-26 NBA season."
+   ]
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "playbyplayv3 2005-06 gid=0020501226",
+   "ok": true,
+   "detail": "rows={'available_video': 1} sets=1",
+   "seconds": 0.66,
+   "warnings": []
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "playbyplayv3 2025-26 gid=0022501191",
+   "ok": true,
+   "detail": "rows={'available_video': 1} sets=1",
+   "seconds": 0.64,
+   "warnings": []
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv3 gid=0020501226",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'GameInfo', 'ArenaInfo', 'Officials', 'LineScore', 'InactivePlayers', 'LastFiveMeetings', 'OtherStats', 'AvailableVideo'] | inactive=6 officials=3",
+   "seconds": 2.9,
+   "game_id": "0020501226",
+   "warnings": [],
+   "result_sets": {
+    "GameSummary": 1,
+    "GameInfo": 1,
+    "ArenaInfo": 1,
+    "Officials": 3,
+    "LineScore": 2,
+    "InactivePlayers": 6,
+    "LastFiveMeetings": 5,
+    "OtherStats": 2,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv2 gid=0020501226",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'OtherStats', 'Officials', 'InactivePlayers', 'GameInfo', 'LineScore', 'LastMeeting', 'SeasonSeries', 'AvailableVideo'] | inactive=6 officials=3",
+   "seconds": 0.45,
+   "game_id": "0020501226",
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ],
+   "result_sets": {
+    "GameSummary": 1,
+    "OtherStats": 2,
+    "Officials": 3,
+    "InactivePlayers": 6,
+    "GameInfo": 1,
+    "LineScore": 2,
+    "LastMeeting": 1,
+    "SeasonSeries": 1,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv3 gid=0021201218",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'GameInfo', 'ArenaInfo', 'Officials', 'LineScore', 'InactivePlayers', 'LastFiveMeetings', 'OtherStats', 'AvailableVideo'] | inactive=5 officials=3",
+   "seconds": 0.48,
+   "game_id": "0021201218",
+   "warnings": [],
+   "result_sets": {
+    "GameSummary": 1,
+    "GameInfo": 1,
+    "ArenaInfo": 1,
+    "Officials": 3,
+    "LineScore": 2,
+    "InactivePlayers": 5,
+    "LastFiveMeetings": 5,
+    "OtherStats": 2,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv2 gid=0021201218",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'OtherStats', 'Officials', 'InactivePlayers', 'GameInfo', 'LineScore', 'LastMeeting', 'SeasonSeries', 'AvailableVideo'] | inactive=5 officials=3",
+   "seconds": 0.48,
+   "game_id": "0021201218",
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ],
+   "result_sets": {
+    "GameSummary": 1,
+    "OtherStats": 2,
+    "Officials": 3,
+    "InactivePlayers": 5,
+    "GameInfo": 1,
+    "LineScore": 2,
+    "LastMeeting": 1,
+    "SeasonSeries": 1,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv3 gid=0021801227",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'GameInfo', 'ArenaInfo', 'Officials', 'LineScore', 'InactivePlayers', 'LastFiveMeetings', 'OtherStats', 'AvailableVideo'] | inactive=8 officials=3",
+   "seconds": 0.5,
+   "game_id": "0021801227",
+   "warnings": [],
+   "result_sets": {
+    "GameSummary": 1,
+    "GameInfo": 1,
+    "ArenaInfo": 1,
+    "Officials": 3,
+    "LineScore": 2,
+    "InactivePlayers": 8,
+    "LastFiveMeetings": 5,
+    "OtherStats": 2,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "2-era-boxscores",
+   "probe": "boxscoresummaryv2 gid=0021801227",
+   "ok": true,
+   "detail": "sets=9 ['GameSummary', 'OtherStats', 'Officials', 'InactivePlayers', 'GameInfo', 'LineScore', 'LastMeeting', 'SeasonSeries', 'AvailableVideo'] | inactive=8 officials=3",
+   "seconds": 0.39,
+   "game_id": "0021801227",
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ],
+   "result_sets": {
+    "GameSummary": 1,
+    "OtherStats": 2,
+    "Officials": 3,
+    "InactivePlayers": 8,
+    "GameInfo": 1,
+    "LineScore": 2,
+    "LastMeeting": 1,
+    "SeasonSeries": 1,
+    "AvailableVideo": 1
+   }
+  },
+  {
+   "phase": "3-modern-v3",
+   "probe": "boxscoresummaryv3 gid=0022501191",
+   "ok": true,
+   "detail": "sets=['GameSummary', 'GameInfo', 'ArenaInfo', 'Officials', 'LineScore', 'InactivePlayers', 'LastFiveMeetings', 'OtherStats', 'AvailableVideo'] rows={'GameSummary': 1, 'GameInfo': 1, 'ArenaInfo': 1, 'Officials': 3, 'LineScore': 2, 'InactivePlayers': 8, 'LastFiveMeetings': 5, 'OtherStats': 2, 'AvailableVideo': 1}",
+   "seconds": 0.46,
+   "game_id": "0022501191",
+   "warnings": []
+  },
+  {
+   "phase": "3-modern-v3",
+   "probe": "boxscoretraditionalv3 gid=0022501191",
+   "ok": true,
+   "detail": "sets=['PlayerStats', 'TeamStarterBenchStats', 'TeamStats'] rows={'PlayerStats': 26, 'TeamStarterBenchStats': 4, 'TeamStats': 2}",
+   "seconds": 0.44,
+   "game_id": "0022501191",
+   "warnings": []
+  },
+  {
+   "phase": "3-modern-v3",
+   "probe": "boxscoreadvancedv3 gid=0022501191",
+   "ok": true,
+   "detail": "sets=['PlayerStats', 'TeamStats'] rows={'PlayerStats': 26, 'TeamStats': 2}",
+   "seconds": 0.45,
+   "game_id": "0022501191",
+   "warnings": []
+  },
+  {
+   "phase": "3b-modern-v2",
+   "probe": "boxscoretraditionalv2 gid=0022501191",
+   "ok": true,
+   "detail": "sets=3 rows={'PlayerStats': 0, 'TeamStats': 0, 'TeamStarterBenchStats': 0}",
+   "seconds": 0.47,
+   "warnings": [
+    "BoxScoreTraditionalV2 is deprecated and will be removed in a future version. Please use BoxScoreTraditionalV3 instead. Data is no longer being published for BoxScoreTraditionalV2 as of the 2025-26 NBA season."
+   ]
+  },
+  {
+   "phase": "3b-modern-v2",
+   "probe": "boxscoreadvancedv2 gid=0022501191",
+   "ok": false,
+   "detail": "KeyError: 'resultSet'",
+   "seconds": 0.62,
+   "warnings": []
+  },
+  {
+   "phase": "3b-modern-v2",
+   "probe": "boxscoresummaryv2 gid=0022501191",
+   "ok": true,
+   "detail": "sets=9 rows={'GameSummary': 1, 'OtherStats': 0, 'Officials': 0, 'InactivePlayers': 0, 'GameInfo': 1, 'LineScore': 2, 'LastMeeting': 1, 'SeasonSeries': 0, 'AvailableVideo': 1}",
+   "seconds": 0.48,
+   "warnings": [
+    "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+   ]
+  },
+  {
+   "phase": "3b-modern-v2",
+   "probe": "playbyplayv2 gid=0022501191",
+   "ok": false,
+   "detail": "KeyError: 'resultSet'",
+   "seconds": 0.63,
+   "warnings": [
+    "PlayByPlayV2 is deprecated and will be removed in a future version. Please use PlayByPlayV3 instead. The NBA API no longer returns data for PlayByPlayV2 (returns empty JSON). See GitHub issue #591: https://github.com/swar/nba_api/issues/591"
+   ]
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "boxscoreadvancedv2 2012-13 defaults gid=0021201218",
+   "ok": false,
+   "detail": "KeyError: 'resultSet' | raw='{}'",
+   "seconds": 0.36,
+   "warnings": []
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "boxscoreadvancedv2 2025-26 defaults gid=0022501191",
+   "ok": false,
+   "detail": "KeyError: 'resultSet' | raw='{}'",
+   "seconds": 0.48,
+   "warnings": []
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "boxscoretraditionalv2 2012-13 defaults gid=0021201218",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 25, 'TeamStats': 2, 'TeamStarterBenchStats': 4} sets=3",
+   "seconds": 0.35,
+   "warnings": [
+    "BoxScoreTraditionalV2 is deprecated and will be removed in a future version. Please use BoxScoreTraditionalV3 instead. Data is no longer being published for BoxScoreTraditionalV2 as of the 2025-26 NBA season."
+   ]
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "playbyplayv3 2005-06 gid=0020501226",
+   "ok": true,
+   "detail": "rows={'PlayByPlay': 438, 'AvailableVideo': 1} sets=2",
+   "seconds": 0.45,
+   "warnings": []
+  },
+  {
+   "phase": "3f-v3-extra",
+   "probe": "playbyplayv3 2025-26 gid=0022501191",
+   "ok": true,
+   "detail": "rows={'PlayByPlay': 486, 'AvailableVideo': 1} sets=2",
+   "seconds": 0.37,
+   "warnings": []
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "boxscoreadvancedv2 (2025-26)",
+   "ok": true,
+   "detail": "valid_json=True len=2 keys=[] head='{}'",
+   "seconds": 0.38
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "playbyplayv2 (2025-26)",
+   "ok": true,
+   "detail": "valid_json=True len=2 keys=[] head='{}'",
+   "seconds": 0.39
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "boxscoretraditionalv2 (2025-26)",
+   "ok": true,
+   "detail": "valid_json=True len=961 keys=['resource', 'parameters', 'resultSets'] head='{\"resource\":\"boxscore\",\"parameters\":{\"GameID\":\"0022501191\",\"StartPeriod\":0,\"EndPeriod\":0,\"StartRange\":0,\"EndRange\":0,\"RangeType\":0},\"resultSets\":[{\"name\":\"Playe'",
+   "seconds": 0.38
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "boxscoresummaryv2 (2025-26)",
+   "ok": true,
+   "detail": "valid_json=True len=2604 keys=['resource', 'parameters', 'resultSets'] head='{\"resource\":\"boxscoresummary\",\"parameters\":{\"GameID\":\"0022501191\"},\"resultSets\":[{\"name\":\"GameSummary\",\"headers\":[\"GAME_DATE_EST\",\"GAME_SEQUENCE\",\"GAME_ID\",\"GAM'",
+   "seconds": 0.15
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "boxscoreadvancedv2 (2012-13 control)",
+   "ok": true,
+   "detail": "valid_json=True len=2 keys=[] head='{}'",
+   "seconds": 0.37
+  },
+  {
+   "phase": "3c-raw-http",
+   "probe": "scoreboardv2 (the known JSONDecodeError case)",
+   "ok": true,
+   "detail": "valid_json=True len=10461 keys=['resource', 'parameters', 'resultSets'] head='{\"resource\":\"scoreboardV2\",\"parameters\":{\"LeagueID\":\"00\",\"GameDate\":\"01/15/2013\",\"DayOffset\":0},\"resultSets\":[{\"name\":\"GameHeader\",\"headers\":[\"GAME_DATE_EST\",\"G'",
+   "seconds": 0.56
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 01/15/2013",
+   "ok": true,
+   "detail": "len=10461 valid_json=True sets=10 head='{\"resource\":\"scoreboardV2\",\"parameters\":{\"LeagueID\":\"00\",\"GameDate\":\"01/15/2013\",\"DayOffset\":0},\"resultSets\":[{\"name\":\"G'",
+   "seconds": 3.16
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 01/15/2013",
+   "ok": true,
+   "detail": "len=16408 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/15/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:2'",
+   "seconds": 0.79
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 01/15/2013",
+   "ok": true,
+   "detail": "len=10461 valid_json=True sets=10 head='{\"resource\":\"scoreboardV2\",\"parameters\":{\"LeagueID\":\"00\",\"GameDate\":\"01/15/2013\",\"DayOffset\":0},\"resultSets\":[{\"name\":\"G'",
+   "seconds": 0.11
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 01/15/2013",
+   "ok": true,
+   "detail": "len=16408 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/15/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:2'",
+   "seconds": 0.74
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 12/15/2024",
+   "ok": true,
+   "detail": "len=11349 valid_json=True sets=9 head='{\"resource\":\"scoreboardV2\",\"parameters\":{\"GameDate\":\"2024-12-15\",\"LeagueID\":\"00\",\"DayOffset\":\"0\"},\"resultSets\":[{\"name\":'",
+   "seconds": 0.37
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 12/15/2024",
+   "ok": true,
+   "detail": "len=20170 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2024/12/15/scoreboard?Format=json\",\"time\":\"2025-07-02T17:30:5'",
+   "seconds": 0.51
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 12/15/2024",
+   "ok": true,
+   "detail": "len=11349 valid_json=True sets=9 head='{\"resource\":\"scoreboardV2\",\"parameters\":{\"GameDate\":\"2024-12-15\",\"LeagueID\":\"00\",\"DayOffset\":\"0\"},\"resultSets\":[{\"name\":'",
+   "seconds": 0.15
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 12/15/2024",
+   "ok": true,
+   "detail": "len=20170 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2024/12/15/scoreboard?Format=json\",\"time\":\"2025-07-02T17:30:5'",
+   "seconds": 0.15
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 01/14/2013",
+   "ok": false,
+   "detail": "len=0 valid_json=False sets=0 head=''",
+   "seconds": 31.15
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 01/14/2013",
+   "ok": true,
+   "detail": "len=21328 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/14/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:2'",
+   "seconds": 0.65
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 01/16/2013",
+   "ok": false,
+   "detail": "len=0 valid_json=False sets=0 head=''",
+   "seconds": 30.75
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 01/16/2013",
+   "ok": true,
+   "detail": "len=26714 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/16/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:2'",
+   "seconds": 0.72
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv2 11/02/2005",
+   "ok": false,
+   "detail": "len=0 valid_json=False sets=0 head=''",
+   "seconds": 30.68
+  },
+  {
+   "phase": "3e-scoreboard-raw",
+   "probe": "scoreboardv3 11/02/2005",
+   "ok": true,
+   "detail": "len=33911 valid_json=True sets=0 head='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2005/11/02/scoreboard?Format=json\",\"time\":\"2025-02-18T13:16:0'",
+   "seconds": 0.74
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2005-06 first gid=0020500001",
+   "ok": false,
+   "detail": "inactive=0 officials=3 sets=9",
+   "seconds": 0.58,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2005-06 middle gid=0020500616",
+   "ok": true,
+   "detail": "inactive=5 officials=3 sets=9",
+   "seconds": 0.63,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2005-06 last gid=0020501230",
+   "ok": true,
+   "detail": "inactive=4 officials=3 sets=9",
+   "seconds": 0.53,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2008-09 first gid=0020800001",
+   "ok": true,
+   "detail": "inactive=6 officials=3 sets=9",
+   "seconds": 0.55,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2008-09 middle gid=0020800616",
+   "ok": true,
+   "detail": "inactive=6 officials=3 sets=9",
+   "seconds": 0.56,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2008-09 last gid=0020801230",
+   "ok": true,
+   "detail": "inactive=5 officials=3 sets=9",
+   "seconds": 0.52,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2012-13 first gid=0021200001",
+   "ok": true,
+   "detail": "inactive=5 officials=3 sets=9",
+   "seconds": 0.71,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2012-13 middle gid=0021200615",
+   "ok": true,
+   "detail": "inactive=4 officials=3 sets=9",
+   "seconds": 0.6,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2012-13 last gid=0021201230",
+   "ok": true,
+   "detail": "inactive=5 officials=3 sets=9",
+   "seconds": 0.56,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2016-17 first gid=0021600001",
+   "ok": true,
+   "detail": "inactive=4 officials=3 sets=9",
+   "seconds": 0.62,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2016-17 middle gid=0021600616",
+   "ok": true,
+   "detail": "inactive=4 officials=3 sets=9",
+   "seconds": 0.57,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2016-17 last gid=0021601230",
+   "ok": true,
+   "detail": "inactive=5 officials=3 sets=9",
+   "seconds": 0.72,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2019-20 first gid=0021900001",
+   "ok": true,
+   "detail": "inactive=7 officials=3 sets=9",
+   "seconds": 0.53,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2019-20 middle gid=0021900530",
+   "ok": true,
+   "detail": "inactive=9 officials=3 sets=9",
+   "seconds": 0.56,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2019-20 last gid=0021901318",
+   "ok": true,
+   "detail": "inactive=10 officials=3 sets=9",
+   "seconds": 0.53,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2020-21 first gid=0022000001",
+   "ok": true,
+   "detail": "inactive=6 officials=3 sets=9",
+   "seconds": 0.53,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2020-21 middle gid=0022000541",
+   "ok": true,
+   "detail": "inactive=9 officials=3 sets=9",
+   "seconds": 0.53,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2020-21 last gid=0022001080",
+   "ok": true,
+   "detail": "inactive=4 officials=3 sets=9",
+   "seconds": 0.55,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2023-24 first gid=0022300001",
+   "ok": true,
+   "detail": "inactive=7 officials=3 sets=9",
+   "seconds": 0.44,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2023-24 middle gid=0022300616",
+   "ok": true,
+   "detail": "inactive=9 officials=3 sets=9",
+   "seconds": 0.46,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2023-24 last gid=0022301230",
+   "ok": true,
+   "detail": "inactive=8 officials=3 sets=9",
+   "seconds": 0.45,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2025-26 first gid=0022500001",
+   "ok": true,
+   "detail": "inactive=8 officials=3 sets=9",
+   "seconds": 0.43,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2025-26 middle gid=0022500616",
+   "ok": true,
+   "detail": "inactive=8 officials=3 sets=9",
+   "seconds": 0.44,
+   "warnings": []
+  },
+  {
+   "phase": "2b-era-sweep",
+   "probe": "v3 2025-26 last gid=0022501230",
+   "ok": true,
+   "detail": "inactive=8 officials=3 sets=9",
+   "seconds": 0.44,
+   "warnings": []
+  },
+  {
+   "phase": "3d-v2-boundary",
+   "probe": "2024-25 2024-10-22 gid=0022400062",
+   "ok": true,
+   "detail": "v2 inactive=8 officials=3 | v3 inactive=8 officials=3"
+  },
+  {
+   "phase": "3d-v2-boundary",
+   "probe": "2024-25 2024-10-22 gid=0022400061",
+   "ok": true,
+   "detail": "v2 inactive=7 officials=3 | v3 inactive=7 officials=3"
+  },
+  {
+   "phase": "3d-v2-boundary",
+   "probe": "2024-25 2025-04-10 gid=0022401168",
+   "ok": true,
+   "detail": "v2 inactive=0 officials=0 | v3 inactive=7 officials=3"
+  },
+  {
+   "phase": "3d-v2-boundary",
+   "probe": "2024-25 2025-04-10 gid=0022401161",
+   "ok": true,
+   "detail": "v2 inactive=0 officials=0 | v3 inactive=12 officials=3"
+  },
+  {
+   "phase": "3d-v2-boundary",
+   "probe": "2024-25 2025-04-10 gid=0022401170",
+   "ok": true,
+   "detail": "v2 inactive=0 officials=0 | v3 inactive=6 officials=3"
+  },
+  {
+   "phase": "3d-v2-boundary",
+   "probe": "2025-26 2025-10-21 gid=0022500002",
+   "ok": true,
+   "detail": "v2 inactive=9 officials=3 | v3 inactive=9 officials=3"
+  },
+  {
+   "phase": "3d-v2-boundary",
+   "probe": "2025-26 2026-01-16 gid=0022500591",
+   "ok": true,
+   "detail": "v2 inactive=0 officials=0 | v3 inactive=8 officials=3"
+  },
+  {
+   "phase": "3d-v2-boundary",
+   "probe": "2025-26 2026-04-12 gid=0022501199",
+   "ok": true,
+   "detail": "v2 inactive=0 officials=0 | v3 inactive=8 officials=3"
+  },
+  {
+   "phase": "5-integrity",
+   "probe": "LeagueGameFinder 2005-06",
+   "ok": true,
+   "detail": "2460 regular-season rows, 1230 distinct games, games_without_exactly_2_rows=0",
+   "seconds": 0.17,
+   "odd_games": {}
+  },
+  {
+   "phase": "5-integrity",
+   "probe": "LeagueGameLog 2005-06 (alt endpoint)",
+   "ok": true,
+   "detail": "2460 rows, 1230 distinct GAME_IDs, same_id_set_as_leaguegamefinder=True",
+   "seconds": 0.42,
+   "warnings": [],
+   "only_in_gamelog": [],
+   "only_in_gamefinder": []
+  },
+  {
+   "phase": "5-integrity",
+   "probe": "LeagueGameFinder 2012-13",
+   "ok": true,
+   "detail": "2458 regular-season rows, 1229 distinct games, games_without_exactly_2_rows=0",
+   "seconds": 0.19,
+   "odd_games": {}
+  },
+  {
+   "phase": "5-integrity",
+   "probe": "LeagueGameLog 2012-13 (alt endpoint)",
+   "ok": true,
+   "detail": "2460 rows, 1230 distinct GAME_IDs, same_id_set_as_leaguegamefinder=False",
+   "seconds": 0.4,
+   "warnings": [],
+   "only_in_gamelog": [
+    "0021201214"
+   ],
+   "only_in_gamefinder": []
+  },
+  {
+   "phase": "5-integrity",
+   "probe": "LeagueGameFinder 2019-20",
+   "ok": true,
+   "detail": "2118 regular-season rows, 1059 distinct games, games_without_exactly_2_rows=0",
+   "seconds": 0.4,
+   "odd_games": {}
+  },
+  {
+   "phase": "5-integrity",
+   "probe": "LeagueGameLog 2019-20 (alt endpoint)",
+   "ok": true,
+   "detail": "2118 rows, 1059 distinct GAME_IDs, same_id_set_as_leaguegamefinder=True",
+   "seconds": 0.54,
+   "warnings": [],
+   "only_in_gamelog": [],
+   "only_in_gamefinder": []
+  },
+  {
+   "phase": "5-integrity",
+   "probe": "LeagueGameFinder 2025-26",
+   "ok": true,
+   "detail": "2460 regular-season rows, 1230 distinct games, games_without_exactly_2_rows=0",
+   "seconds": 0.2,
+   "odd_games": {}
+  },
+  {
+   "phase": "5-integrity",
+   "probe": "LeagueGameLog 2025-26 (alt endpoint)",
+   "ok": true,
+   "detail": "2460 rows, 1230 distinct GAME_IDs, same_id_set_as_leaguegamefinder=True",
+   "seconds": 0.51,
+   "warnings": [],
+   "only_in_gamelog": [],
+   "only_in_gamefinder": []
+  },
+  {
+   "phase": "4-throttle",
+   "probe": "10 sequential boxscoresummaryv3 calls",
+   "ok": true,
+   "detail": "min=0.4s median=0.44s mean=0.49s max=0.97s total=4.86s failures=0 http429=0"
+  },
+  {
+   "phase": "7-gap",
+   "probe": "boxscoresummaryv3 0021201214",
+   "ok": false,
+   "detail": "AttributeError: 'NoneType' object has no attribute 'get'"
+  },
+  {
+   "phase": "7-gap",
+   "probe": "leaguegamelog 0021201214",
+   "ok": true,
+   "detail": "rows=2 [{'GAME_ID': '0021201214', 'GAME_DATE': '2013-04-16', 'MATCHUP': 'BOS vs. IND', 'WL': None, 'PTS': 0, 'MIN': 0, 'TEAM_ABBREVIATION': 'BOS'}, {'GAME_ID': '0021201214', 'GAME_DATE': '2013-04-16', 'MATCHUP': 'IND @ BOS', 'WL': None, 'PTS': 0, 'MIN': 0, 'TEAM_ABBREVIATION': 'IND'}]",
+   "seconds": 0.68
+  },
+  {
+   "phase": "7-gap",
+   "probe": "leaguegamefinder game_id=0021201214",
+   "ok": true,
+   "detail": "rows=30000 [{'GAME_ID': '0042500405', 'GAME_DATE': '2026-06-13', 'MATCHUP': 'NYK @ SAS', 'WL': 'W', 'PTS': 94, 'SEASON_ID': '42025'}, {'GAME_ID': '0042500405', 'GAME_DATE': '2026-06-13', 'MATCHUP': 'SAS vs. NYK', 'WL': 'L', 'PTS': 90, 'SEASON_ID': '42025'}, {'GAME_ID': '0042500404', 'GAME_DATE': '2026-06-10', 'MATCHUP': 'NYK vs. SAS', 'WL': 'W', 'PTS': 107, 'SEASON_ID': '42025'}, {'GAME_ID': '0042500404', 'GAME_DATE': '2026-06-10', 'MATCHUP': 'SAS @ NYK', 'WL': 'L', 'PTS': 106, 'SEASON_ID': '42025'}, {'GAME_ID': '0042500403', 'GAME_DATE': '2026-06-08', 'MATCHUP': 'SAS @ NYK', 'WL': 'W', 'PTS': 115, 'SEASON_ID': '42025'}, {'GAME_ID': '0042500403', 'GAME_DATE': '2026-06-08', 'MATCHUP': 'NYK vs. SAS', 'WL': 'L', 'PTS': 111, 'SEASON_ID': '42025'}, {'GAME_ID': '0042500402', 'GAME_DATE': '2026-0 ...[truncated in raw file]",
+   "seconds": 4.13
+  },
+  {
+   "phase": "4-throttle",
+   "probe": "A-mixed-summary: 10 sequential calls",
+   "ok": true,
+   "detail": "min=0.33s median=0.43s mean=0.43s max=0.48s total=4.25s failures=0 http429=0 result_sets_per_call=[9, 9, 9, 9, 9, 9, 9, 9, 9, 9]"
+  },
+  {
+   "phase": "4-throttle",
+   "probe": "B-boxscore-v3: 10 sequential calls",
+   "ok": true,
+   "detail": "min=0.41s median=0.75s mean=0.61s max=0.86s total=6.08s failures=0 http429=0 result_sets_per_call=[3, 2, 3, 2, 3, 2, 3, 2, 3, 2]"
+  },
+  {
+   "phase": "6-inactive-sample",
+   "probe": "v3 inactives 2005-06",
+   "ok": true,
+   "detail": "{'n_ok': 10, 'n_failed': 0, 'games_with_inactives': 9, 'games_with_3_officials': 10, 'inactive_min': 0, 'inactive_max': 6, 'inactive_empty_game_ids': ['0020500001']}",
+   "seconds": 5.63
+  },
+  {
+   "phase": "6-inactive-sample",
+   "probe": "v3 inactives 2008-09",
+   "ok": true,
+   "detail": "{'n_ok': 10, 'n_failed': 0, 'games_with_inactives': 10, 'games_with_3_officials': 10, 'inactive_min': 3, 'inactive_max': 6, 'inactive_empty_game_ids': []}",
+   "seconds": 5.44
+  },
+  {
+   "phase": "6-inactive-sample",
+   "probe": "v3 inactives 2012-13",
+   "ok": true,
+   "detail": "{'n_ok': 10, 'n_failed': 0, 'games_with_inactives': 10, 'games_with_3_officials': 10, 'inactive_min': 2, 'inactive_max': 6, 'inactive_empty_game_ids': []}",
+   "seconds": 6.16
+  },
+  {
+   "phase": "6-inactive-sample",
+   "probe": "v3 inactives 2016-17",
+   "ok": true,
+   "detail": "{'n_ok': 10, 'n_failed': 0, 'games_with_inactives': 10, 'games_with_3_officials': 10, 'inactive_min': 3, 'inactive_max': 5, 'inactive_empty_game_ids': []}",
+   "seconds": 5.67
+  },
+  {
+   "phase": "6-inactive-sample",
+   "probe": "v3 inactives 2019-20",
+   "ok": true,
+   "detail": "{'n_ok': 10, 'n_failed': 0, 'games_with_inactives': 10, 'games_with_3_officials': 10, 'inactive_min': 7, 'inactive_max': 11, 'inactive_empty_game_ids': []}",
+   "seconds": 5.59
+  },
+  {
+   "phase": "6-inactive-sample",
+   "probe": "v3 inactives 2020-21",
+   "ok": true,
+   "detail": "{'n_ok': 10, 'n_failed': 0, 'games_with_inactives': 10, 'games_with_3_officials': 10, 'inactive_min': 4, 'inactive_max': 9, 'inactive_empty_game_ids': []}",
+   "seconds": 5.13
+  },
+  {
+   "phase": "6-inactive-sample",
+   "probe": "v3 inactives 2023-24",
+   "ok": true,
+   "detail": "{'n_ok': 10, 'n_failed': 0, 'games_with_inactives': 10, 'games_with_3_officials': 10, 'inactive_min': 6, 'inactive_max': 10, 'inactive_empty_game_ids': []}",
+   "seconds": 4.41
+  },
+  {
+   "phase": "6-inactive-sample",
+   "probe": "v3 inactives 2025-26",
+   "ok": true,
+   "detail": "{'n_ok': 10, 'n_failed': 0, 'games_with_inactives': 10, 'games_with_3_officials': 10, 'inactive_min': 6, 'inactive_max': 11, 'inactive_empty_game_ids': []}",
+   "seconds": 4.61
+  },
+  {
+   "phase": "7-gap",
+   "probe": "boxscoresummaryv3 0021201214",
+   "ok": false,
+   "detail": "AttributeError: 'NoneType' object has no attribute 'get' | raw='{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/games/0021201214/boxscoresummary?Format=json\",\"time\":\"2026-08-23T10:20:01.201Z\"},\"boxScoreSummary\":{\"gameId\":null,\"gameCode\":null,\"gameStatus\":0,\"gameS'",
+   "seconds": 0.18
+  },
+  {
+   "phase": "7-gap",
+   "probe": "leaguegamelog 0021201214",
+   "ok": true,
+   "detail": "rows=2 [{'GAME_ID': '0021201214', 'GAME_DATE': '2013-04-16', 'MATCHUP': 'BOS vs. IND', 'WL': None, 'PTS': 0, 'MIN': 0, 'TEAM_ABBREVIATION': 'BOS'}, {'GAME_ID': '0021201214', 'GAME_DATE': '2013-04-16', 'MATCHUP': 'IND @ BOS', 'WL': None, 'PTS': 0, 'MIN': 0, 'TEAM_ABBREVIATION': 'IND'}]",
+   "seconds": 0.23
+  },
+  {
+   "phase": "7-gap",
+   "probe": "leaguegamefinder game_id=0021201214 (ignored filter?)",
+   "ok": true,
+   "detail": "rows=30000 (looks like the unimplemented GameID filter + a 30k rows cap), date_range=['2015-10-22', '2026-06-13'], first={'GAME_ID': '0042500405', 'GAME_DATE': '2026-06-13', 'MATCHUP': 'NYK @ SAS', 'WL': 'W', 'PTS': 94, 'SEASON_ID': '42025'}, last={'GAME_ID': '0011500101', 'GAME_DATE': '2015-10-22', 'MATCHUP': 'POR @ LAC', 'WL': 'L', 'PTS': 109, 'SEASON_ID': '12015'}",
+   "seconds": 0.64
+  },
+  {
+   "phase": "8-cap",
+   "probe": "multi-season LeagueGameFinder",
+   "ok": true,
+   "detail": "30000 rows (cap suspect), dates 2015-10-22 -> 2026-06-13, delivered {'GAME_ID': '0042500405', 'GAME_DATE': '2026-06-13'} -> {'GAME_ID': '0011500099', 'GAME_DATE': '2015-10-22'}",
+   "seconds": 5.12,
+   "warnings": []
+  },
+  {
+   "phase": "9-v3-old",
+   "probe": "boxscoretraditionalv3 2005-06 gid=0020501226",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 24, 'TeamStarterBenchStats': 4, 'TeamStats': 2}",
+   "seconds": 0.64,
+   "warnings": []
+  },
+  {
+   "phase": "9-v3-old",
+   "probe": "boxscoreadvancedv3 2005-06 gid=0020501226",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 24, 'TeamStats': 2}",
+   "seconds": 0.98,
+   "warnings": []
+  },
+  {
+   "phase": "9-v3-old",
+   "probe": "boxscoretraditionalv3 2012-13 gid=0021201218",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 25, 'TeamStarterBenchStats': 4, 'TeamStats': 2}",
+   "seconds": 0.62,
+   "warnings": []
+  },
+  {
+   "phase": "9-v3-old",
+   "probe": "boxscoreadvancedv3 2012-13 gid=0021201218",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 25, 'TeamStats': 2}",
+   "seconds": 0.4,
+   "warnings": []
+  },
+  {
+   "phase": "9-v3-old",
+   "probe": "boxscoretraditionalv3 2016-17 gid=0021600616",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 26, 'TeamStarterBenchStats': 4, 'TeamStats': 2}",
+   "seconds": 0.64,
+   "warnings": []
+  },
+  {
+   "phase": "9-v3-old",
+   "probe": "boxscoreadvancedv3 2016-17 gid=0021600616",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 26, 'TeamStats': 2}",
+   "seconds": 0.78,
+   "warnings": []
+  },
+  {
+   "phase": "9-v3-old",
+   "probe": "boxscoretraditionalv3 2019-20 gid=0021900530",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 25, 'TeamStarterBenchStats': 4, 'TeamStats': 2}",
+   "seconds": 0.58,
+   "warnings": []
+  },
+  {
+   "phase": "9-v3-old",
+   "probe": "boxscoreadvancedv3 2019-20 gid=0021900530",
+   "ok": true,
+   "detail": "rows={'PlayerStats': 25, 'TeamStats': 2}",
+   "seconds": 0.37,
+   "warnings": []
+  }
+ ],
+ "generated_by": "docs/phase0/probe_nba_api.py",
+ "run_at": "2026-09-21T23:26:59+0530",
+ "season_log": {
+  "2005-06": {
+   "endpoint": "leaguegamefinder",
+   "n_rows": 2871,
+   "n_unique_game_ids": 1435,
+   "headers": [
+    "SEASON_ID",
+    "TEAM_ID",
+    "TEAM_ABBREVIATION",
+    "TEAM_NAME",
+    "GAME_ID",
+    "GAME_DATE",
+    "MATCHUP",
+    "WL",
+    "MIN",
+    "PTS",
+    "FGM",
+    "FGA",
+    "FG_PCT",
+    "FG3M",
+    "FG3A",
+    "FG3_PCT",
+    "FTM",
+    "FTA",
+    "FT_PCT",
+    "OREB",
+    "DREB",
+    "REB",
+    "AST",
+    "STL",
+    "BLK",
+    "TOV",
+    "PF",
+    "PLUS_MINUS"
+   ],
+   "sample_row": [
+    [
+     "42005",
+     1610612748,
+     "MIA",
+     "Miami Heat",
+     "0040500406",
+     "2006-06-20",
+     "MIA @ DAL",
+     "W",
+     239,
+     95,
+     35,
+     78,
+     0.449,
+     2,
+     18,
+     0.111,
+     23,
+     37,
+     0.622,
+     14,
+     42,
+     56,
+     18,
+     9,
+     10,
+     19,
+     23,
+     3.0
+    ]
+   ],
+   "season_id_counts": {
+    "42005": 178,
+    "22005": 2460,
+    "32005": 6,
+    "12005": 227
+   },
+   "game_id_prefix_counts": {
+    "004": 178,
+    "002": 2460,
+    "003": 6,
+    "001": 227
+   },
+   "first_date": "2005-10-10",
+   "last_date": "2006-06-20",
+   "seconds": 4.34,
+   "warnings": []
+  },
+  "2008-09": {
+   "endpoint": "leaguegamefinder",
+   "n_rows": 2866,
+   "n_unique_game_ids": 1433,
+   "headers": [
+    "SEASON_ID",
+    "TEAM_ID",
+    "TEAM_ABBREVIATION",
+    "TEAM_NAME",
+    "GAME_ID",
+    "GAME_DATE",
+    "MATCHUP",
+    "WL",
+    "MIN",
+    "PTS",
+    "FGM",
+    "FGA",
+    "FG_PCT",
+    "FG3M",
+    "FG3A",
+    "FG3_PCT",
+    "FTM",
+    "FTA",
+    "FT_PCT",
+    "OREB",
+    "DREB",
+    "REB",
+    "AST",
+    "STL",
+    "BLK",
+    "TOV",
+    "PF",
+    "PLUS_MINUS"
+   ],
+   "sample_row": [
+    [
+     "42008",
+     1610612753,
+     "ORL",
+     "Orlando Magic",
+     "0040800405",
+     "2009-06-14",
+     "ORL vs. LAL",
+     "L",
+     240,
+     86,
+     34,
+     82,
+     0.415,
+     8,
+     27,
+     0.296,
+     10,
+     16,
+     0.625,
+     6,
+     30,
+     36,
+     20,
+     6,
+     3,
+     12,
+     23,
+     -13.0
+    ]
+   ],
+   "season_id_counts": {
+    "42008": 170,
+    "22008": 2460,
+    "32008": 6,
+    "12008": 230
+   },
+   "game_id_prefix_counts": {
+    "004": 170,
+    "002": 2460,
+    "003": 6,
+    "001": 230
+   },
+   "first_date": "2008-10-05",
+   "last_date": "2009-06-14",
+   "seconds": 2.32,
+   "warnings": []
+  },
+  "2012-13": {
+   "endpoint": "leaguegamefinder",
+   "n_rows": 2866,
+   "n_unique_game_ids": 1433,
+   "headers": [
+    "SEASON_ID",
+    "TEAM_ID",
+    "TEAM_ABBREVIATION",
+    "TEAM_NAME",
+    "GAME_ID",
+    "GAME_DATE",
+    "MATCHUP",
+    "WL",
+    "MIN",
+    "PTS",
+    "FGM",
+    "FGA",
+    "FG_PCT",
+    "FG3M",
+    "FG3A",
+    "FG3_PCT",
+    "FTM",
+    "FTA",
+    "FT_PCT",
+    "OREB",
+    "DREB",
+    "REB",
+    "AST",
+    "STL",
+    "BLK",
+    "TOV",
+    "PF",
+    "PLUS_MINUS"
+   ],
+   "sample_row": [
+    [
+     "42012",
+     1610612748,
+     "MIA",
+     "Miami Heat",
+     "0041200407",
+     "2013-06-20",
+     "MIA vs. SAS",
+     "W",
+     241,
+     95,
+     36,
+     82,
+     0.439,
+     12,
+     32,
+     0.375,
+     11,
+     16,
+     0.688,
+     11,
+     32,
+     43,
+     14,
+     8,
+     4,
+     16,
+     19,
+     7.0
+    ]
+   ],
+   "season_id_counts": {
+    "42012": 170,
+    "22012": 2458,
+    "32012": 6,
+    "12012": 232
+   },
+   "game_id_prefix_counts": {
+    "004": 170,
+    "002": 2458,
+    "003": 6,
+    "001": 232
+   },
+   "first_date": "2012-10-05",
+   "last_date": "2013-06-20",
+   "seconds": 1.65,
+   "warnings": []
+  },
+  "2016-17": {
+   "endpoint": "leaguegamefinder",
+   "n_rows": 2829,
+   "n_unique_game_ids": 1414,
+   "headers": [
+    "SEASON_ID",
+    "TEAM_ID",
+    "TEAM_ABBREVIATION",
+    "TEAM_NAME",
+    "GAME_ID",
+    "GAME_DATE",
+    "MATCHUP",
+    "WL",
+    "MIN",
+    "PTS",
+    "FGM",
+    "FGA",
+    "FG_PCT",
+    "FG3M",
+    "FG3A",
+    "FG3_PCT",
+    "FTM",
+    "FTA",
+    "FT_PCT",
+    "OREB",
+    "DREB",
+    "REB",
+    "AST",
+    "STL",
+    "BLK",
+    "TOV",
+    "PF",
+    "PLUS_MINUS"
+   ],
+   "sample_row": [
+    [
+     "42016",
+     1610612739,
+     "CLE",
+     "Cleveland Cavaliers",
+     "0041600405",
+     "2017-06-12",
+     "CLE @ GSW",
+     "L",
+     240,
+     120,
+     47,
+     88,
+     0.534,
+     11,
+     24,
+     0.458,
+     15,
+     23,
+     0.652,
+     12,
+     28,
+     40,
+     22,
+     6,
+     5,
+     14,
+     22,
+     -9.0
+    ]
+   ],
+   "season_id_counts": {
+    "42016": 158,
+    "22016": 2460,
+    "32016": 7,
+    "12016": 204
+   },
+   "game_id_prefix_counts": {
+    "004": 158,
+    "002": 2460,
+    "003": 7,
+    "001": 204
+   },
+   "first_date": "2016-10-01",
+   "last_date": "2017-06-12",
+   "seconds": 1.61,
+   "warnings": []
+  },
+  "2019-20": {
+   "endpoint": "leaguegamefinder",
+   "n_rows": 2516,
+   "n_unique_game_ids": 1258,
+   "headers": [
+    "SEASON_ID",
+    "TEAM_ID",
+    "TEAM_ABBREVIATION",
+    "TEAM_NAME",
+    "GAME_ID",
+    "GAME_DATE",
+    "MATCHUP",
+    "WL",
+    "MIN",
+    "PTS",
+    "FGM",
+    "FGA",
+    "FG_PCT",
+    "FG3M",
+    "FG3A",
+    "FG3_PCT",
+    "FTM",
+    "FTA",
+    "FT_PCT",
+    "OREB",
+    "DREB",
+    "REB",
+    "AST",
+    "STL",
+    "BLK",
+    "TOV",
+    "PF",
+    "PLUS_MINUS"
+   ],
+   "sample_row": [
+    [
+     "42019",
+     1610612748,
+     "MIA",
+     "Miami Heat",
+     "0041900406",
+     "2020-10-11",
+     "MIA vs. LAL",
+     "L",
+     240,
+     93,
+     35,
+     79,
+     0.443,
+     10,
+     28,
+     0.357,
+     13,
+     22,
+     0.591,
+     9,
+     32,
+     41,
+     25,
+     4,
+     4,
+     13,
+     18,
+     -13.0
+    ]
+   ],
+   "season_id_counts": {
+    "42019": 166,
+    "52019": 2,
+    "22019": 2118,
+    "12019": 224,
+    "32019": 6
+   },
+   "game_id_prefix_counts": {
+    "004": 166,
+    "005": 2,
+    "002": 2118,
+    "001": 224,
+    "003": 6
+   },
+   "first_date": "2019-09-30",
+   "last_date": "2020-10-11",
+   "seconds": 1.56,
+   "warnings": []
+  },
+  "2020-21": {
+   "endpoint": "leaguegamefinder",
+   "n_rows": 2442,
+   "n_unique_game_ids": 1221,
+   "headers": [
+    "SEASON_ID",
+    "TEAM_ID",
+    "TEAM_ABBREVIATION",
+    "TEAM_NAME",
+    "GAME_ID",
+    "GAME_DATE",
+    "MATCHUP",
+    "WL",
+    "MIN",
+    "PTS",
+    "FGM",
+    "FGA",
+    "FG_PCT",
+    "FG3M",
+    "FG3A",
+    "FG3_PCT",
+    "FTM",
+    "FTA",
+    "FT_PCT",
+    "OREB",
+    "DREB",
+    "REB",
+    "AST",
+    "STL",
+    "BLK",
+    "TOV",
+    "PF",
+    "PLUS_MINUS"
+   ],
+   "sample_row": [
+    [
+     "42020",
+     1610612749,
+     "MIL",
+     "Milwaukee Bucks",
+     "0042000406",
+     "2021-07-20",
+     "MIL vs. PHX",
+     "W",
+     240,
+     105,
+     37,
+     82,
+     0.451,
+     6,
+     27,
+     0.222,
+     25,
+     29,
+     0.862,
+     11,
+     42,
+     53,
+     20,
+     10,
+     6,
+     18,
+     17,
+     7.0
+    ]
+   ],
+   "season_id_counts": {
+    "42020": 170,
+    "52020": 12,
+    "22020": 2160,
+    "32020": 2,
+    "12020": 98
+   },
+   "game_id_prefix_counts": {
+    "004": 170,
+    "005": 12,
+    "002": 2160,
+    "003": 2,
+    "001": 98
+   },
+   "first_date": "2020-12-11",
+   "last_date": "2021-07-20",
+   "seconds": 3.46,
+   "warnings": []
+  },
+  "2023-24": {
+   "endpoint": "leaguegamefinder",
+   "n_rows": 2795,
+   "n_unique_game_ids": 1397,
+   "headers": [
+    "SEASON_ID",
+    "TEAM_ID",
+    "TEAM_ABBREVIATION",
+    "TEAM_NAME",
+    "GAME_ID",
+    "GAME_DATE",
+    "MATCHUP",
+    "WL",
+    "MIN",
+    "PTS",
+    "FGM",
+    "FGA",
+    "FG_PCT",
+    "FG3M",
+    "FG3A",
+    "FG3_PCT",
+    "FTM",
+    "FTA",
+    "FT_PCT",
+    "OREB",
+    "DREB",
+    "REB",
+    "AST",
+    "STL",
+    "BLK",
+    "TOV",
+    "PF",
+    "PLUS_MINUS"
+   ],
+   "sample_row": [
+    [
+     "42023",
+     1610612738,
+     "BOS",
+     "Boston Celtics",
+     "0042300405",
+     "2024-06-17",
+     "BOS vs. DAL",
+     "W",
+     240,
+     106,
+     38,
+     89,
+     0.427,
+     13,
+     39,
+     0.333,
+     17,
+     20,
+     0.85,
+     15,
+     36,
+     51,
+     25,
+     9,
+     2,
+     7,
+     15,
+     18.0
+    ]
+   ],
+   "season_id_counts": {
+    "42023": 164,
+    "52023": 12,
+    "22023": 2460,
+    "32023": 10,
+    "62023": 2,
+    "12023": 147
+   },
+   "game_id_prefix_counts": {
+    "004": 164,
+    "005": 12,
+    "002": 2460,
+    "003": 10,
+    "006": 2,
+    "001": 147
+   },
+   "first_date": "2023-10-05",
+   "last_date": "2024-06-17",
+   "seconds": 1.61,
+   "warnings": []
+  },
+  "2025-26": {
+   "endpoint": "leaguegamefinder",
+   "n_rows": 2805,
+   "n_unique_game_ids": 1401,
+   "headers": [
+    "SEASON_ID",
+    "TEAM_ID",
+    "TEAM_ABBREVIATION",
+    "TEAM_NAME",
+    "GAME_ID",
+    "GAME_DATE",
+    "MATCHUP",
+    "WL",
+    "MIN",
+    "PTS",
+    "FGM",
+    "FGA",
+    "FG_PCT",
+    "FG3M",
+    "FG3A",
+    "FG3_PCT",
+    "FTM",
+    "FTA",
+    "FT_PCT",
+    "OREB",
+    "DREB",
+    "REB",
+    "AST",
+    "STL",
+    "BLK",
+    "TOV",
+    "PF",
+    "PLUS_MINUS"
+   ],
+   "sample_row": [
+    [
+     "42025",
+     1610612752,
+     "NYK",
+     "New York Knicks",
+     "0042500405",
+     "2026-06-13",
+     "NYK @ SAS",
+     "W",
+     240,
+     94,
+     31,
+     87,
+     0.356,
+     12,
+     37,
+     0.324,
+     20,
+     28,
+     0.714,
+     13,
+     35,
+     48,
+     14,
+     8,
+     4,
+     10,
+     21,
+     4.0
+    ]
+   ],
+   "season_id_counts": {
+    "42025": 170,
+    "52025": 12,
+    "22025": 2460,
+    "32025": 16,
+    "62025": 2,
+    "12025": 145
+   },
+   "game_id_prefix_counts": {
+    "004": 170,
+    "005": 12,
+    "002": 2460,
+    "003": 16,
+    "006": 2,
+    "001": 145
+   },
+   "first_date": "2025-10-02",
+   "last_date": "2026-06-13",
+   "seconds": 0.49,
+   "warnings": []
+  }
+ },
+ "game_ids": {
+  "2005-06": {
+   "first_regular": "0020501226",
+   "last_regular": "0020500002",
+   "regular_count_rows": 2460
+  },
+  "2008-09": {
+   "first_regular": "0020801225",
+   "last_regular": "0020800002",
+   "regular_count_rows": 2460
+  },
+  "2012-13": {
+   "first_regular": "0021201218",
+   "last_regular": "0021200003",
+   "regular_count_rows": 2458
+  },
+  "2016-17": {
+   "first_regular": "0021601223",
+   "last_regular": "0021600003",
+   "regular_count_rows": 2460
+  },
+  "2019-20": {
+   "first_regular": "0021901316",
+   "last_regular": "0021900001",
+   "regular_count_rows": 2118
+  },
+  "2020-21": {
+   "first_regular": "0022001076",
+   "last_regular": "0022000001",
+   "regular_count_rows": 2160
+  },
+  "2023-24": {
+   "first_regular": "0022301191",
+   "last_regular": "0022300062",
+   "regular_count_rows": 2460
+  },
+  "2025-26": {
+   "first_regular": "0022501191",
+   "last_regular": "0022500001",
+   "regular_count_rows": 2460
+  }
+ },
+ "era_boxscores": {
+  "2005-06": {
+   "game_id": "0020501226",
+   "probes": [
+    {
+     "endpoint": "boxscoresummaryv3",
+     "game_id": "0020501226",
+     "ok": true,
+     "n_result_sets": 9,
+     "result_sets": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 6,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "inactive_rows": 6,
+     "officials_rows": 3,
+     "seconds": 2.9,
+     "warnings": [],
+     "inactive_headers": [
+      "gameId",
+      "teamId",
+      "personId",
+      "firstName",
+      "familyName",
+      "jerseyNum"
+     ],
+     "inactive_sample": [
+      [
+       "0020501226",
+       1610612742,
+       1496,
+       "Keith",
+       "Van Horn",
+       "2"
+      ]
+     ],
+     "officials_headers": [
+      "gameId",
+      "personId",
+      "name",
+      "nameI",
+      "firstName",
+      "familyName",
+      "jerseyNum"
+     ],
+     "officials_sample": [
+      [
+       "0020501226",
+       1163,
+       "Bernie Fryer",
+       "B. Fryer",
+       "Bernie",
+       "Fryer",
+       "7"
+      ]
+     ]
+    },
+    {
+     "endpoint": "boxscoresummaryv2",
+     "game_id": "0020501226",
+     "ok": true,
+     "n_result_sets": 9,
+     "result_sets": {
+      "GameSummary": 1,
+      "OtherStats": 2,
+      "Officials": 3,
+      "InactivePlayers": 6,
+      "GameInfo": 1,
+      "LineScore": 2,
+      "LastMeeting": 1,
+      "SeasonSeries": 1,
+      "AvailableVideo": 1
+     },
+     "inactive_rows": 6,
+     "officials_rows": 3,
+     "seconds": 0.45,
+     "warnings": [
+      "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+     ],
+     "inactive_headers": [
+      "PLAYER_ID",
+      "FIRST_NAME",
+      "LAST_NAME",
+      "JERSEY_NUM",
+      "TEAM_ID",
+      "TEAM_CITY",
+      "TEAM_NAME",
+      "TEAM_ABBREVIATION"
+     ],
+     "inactive_sample": [
+      [
+       208,
+       "Sam",
+       "Cassell",
+       "19  ",
+       1610612746,
+       "Los Angeles",
+       "Clippers",
+       "LAC"
+      ]
+     ],
+     "officials_headers": [
+      "OFFICIAL_ID",
+      "FIRST_NAME",
+      "LAST_NAME",
+      "JERSEY_NUM"
+     ],
+     "officials_sample": [
+      [
+       1163,
+       "Bernie",
+       "Fryer",
+       "7   "
+      ]
+     ]
+    }
+   ]
+  },
+  "2012-13": {
+   "game_id": "0021201218",
+   "probes": [
+    {
+     "endpoint": "boxscoresummaryv3",
+     "game_id": "0021201218",
+     "ok": true,
+     "n_result_sets": 9,
+     "result_sets": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 5,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "inactive_rows": 5,
+     "officials_rows": 3,
+     "seconds": 0.48,
+     "warnings": [],
+     "inactive_headers": [
+      "gameId",
+      "teamId",
+      "personId",
+      "firstName",
+      "familyName",
+      "jerseyNum"
+     ],
+     "inactive_sample": [
+      [
+       "0021201218",
+       1610612752,
+       2405,
+       "Amar'e",
+       "Stoudemire",
+       " 1"
+      ]
+     ],
+     "officials_headers": [
+      "gameId",
+      "personId",
+      "name",
+      "nameI",
+      "firstName",
+      "familyName",
+      "jerseyNum"
+     ],
+     "officials_sample": [
+      [
+       "0021201218",
+       2005,
+       "Matt Boland",
+       "M. Boland",
+       "Matt",
+       "Boland",
+       "18"
+      ]
+     ]
+    },
+    {
+     "endpoint": "boxscoresummaryv2",
+     "game_id": "0021201218",
+     "ok": true,
+     "n_result_sets": 9,
+     "result_sets": {
+      "GameSummary": 1,
+      "OtherStats": 2,
+      "Officials": 3,
+      "InactivePlayers": 5,
+      "GameInfo": 1,
+      "LineScore": 2,
+      "LastMeeting": 1,
+      "SeasonSeries": 1,
+      "AvailableVideo": 1
+     },
+     "inactive_rows": 5,
+     "officials_rows": 3,
+     "seconds": 0.48,
+     "warnings": [
+      "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+     ],
+     "inactive_headers": [
+      "PLAYER_ID",
+      "FIRST_NAME",
+      "LAST_NAME",
+      "JERSEY_NUM",
+      "TEAM_ID",
+      "TEAM_CITY",
+      "TEAM_NAME",
+      "TEAM_ABBREVIATION"
+     ],
+     "inactive_sample": [
+      [
+       2585,
+       "Zaza",
+       "Pachulia",
+       "27  ",
+       1610612737,
+       "Atlanta",
+       "Hawks",
+       "ATL"
+      ]
+     ],
+     "officials_headers": [
+      "OFFICIAL_ID",
+      "FIRST_NAME",
+      "LAST_NAME",
+      "JERSEY_NUM"
+     ],
+     "officials_sample": [
+      [
+       1152,
+       "Dan",
+       "Crawford",
+       "43  "
+      ]
+     ]
+    }
+   ]
+  },
+  "2018-19": {
+   "game_id": "0021801227",
+   "probes": [
+    {
+     "endpoint": "boxscoresummaryv3",
+     "game_id": "0021801227",
+     "ok": true,
+     "n_result_sets": 9,
+     "result_sets": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 8,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "inactive_rows": 8,
+     "officials_rows": 3,
+     "seconds": 0.5,
+     "warnings": [],
+     "inactive_headers": [
+      "gameId",
+      "teamId",
+      "personId",
+      "firstName",
+      "familyName",
+      "jerseyNum"
+     ],
+     "inactive_sample": [
+      [
+       "0021801227",
+       1610612759,
+       1629002,
+       "Chimezie",
+       "Metu",
+       "7"
+      ]
+     ],
+     "officials_headers": [
+      "gameId",
+      "personId",
+      "name",
+      "nameI",
+      "firstName",
+      "familyName",
+      "jerseyNum"
+     ],
+     "officials_sample": [
+      [
+       "0021801227",
+       1627964,
+       "Jonathan Sterling",
+       "J. Sterling",
+       "Jonathan",
+       "Sterling",
+       "17"
+      ]
+     ]
+    },
+    {
+     "endpoint": "boxscoresummaryv2",
+     "game_id": "0021801227",
+     "ok": true,
+     "n_result_sets": 9,
+     "result_sets": {
+      "GameSummary": 1,
+      "OtherStats": 2,
+      "Officials": 3,
+      "InactivePlayers": 8,
+      "GameInfo": 1,
+      "LineScore": 2,
+      "LastMeeting": 1,
+      "SeasonSeries": 1,
+      "AvailableVideo": 1
+     },
+     "inactive_rows": 8,
+     "officials_rows": 3,
+     "seconds": 0.39,
+     "warnings": [
+      "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+     ],
+     "inactive_headers": [
+      "PLAYER_ID",
+      "FIRST_NAME",
+      "LAST_NAME",
+      "JERSEY_NUM",
+      "TEAM_ID",
+      "TEAM_CITY",
+      "TEAM_NAME",
+      "TEAM_ABBREVIATION"
+     ],
+     "inactive_sample": [
+      [
+       200826,
+       "J.J.",
+       "Barea",
+       "5   ",
+       1610612742,
+       "Dallas",
+       "Mavericks",
+       "DAL"
+      ]
+     ],
+     "officials_headers": [
+      "OFFICIAL_ID",
+      "FIRST_NAME",
+      "LAST_NAME",
+      "JERSEY_NUM"
+     ],
+     "officials_sample": [
+      [
+       1148,
+       "James",
+       "Capers",
+       "19  "
+      ]
+     ]
+    }
+   ]
+  }
+ },
+ "modern_v3": {
+  "game_id": "0022501191",
+  "probes": [
+   {
+    "endpoint": "boxscoresummaryv3",
+    "ok": true,
+    "result_sets": {
+     "GameSummary": 1,
+     "GameInfo": 1,
+     "ArenaInfo": 1,
+     "Officials": 3,
+     "LineScore": 2,
+     "InactivePlayers": 8,
+     "LastFiveMeetings": 5,
+     "OtherStats": 2,
+     "AvailableVideo": 1
+    },
+    "headers": {
+     "GameSummary": [
+      "gameId",
+      "gameCode",
+      "gameStatus",
+      "gameStatusText",
+      "period",
+      "gameClock",
+      "gameTimeUTC",
+      "gameEt",
+      "awayTeamId",
+      "homeTeamId",
+      "duration",
+      "attendance",
+      "sellout"
+     ],
+     "GameInfo": [
+      "gameId",
+      "gameDate",
+      "attendance",
+      "gameDuration"
+     ],
+     "ArenaInfo": [
+      "gameId",
+      "arenaId",
+      "arenaName",
+      "arenaCity",
+      "arenaState",
+      "arenaCountry",
+      "arenaTimezone"
+     ],
+     "Officials": [
+      "gameId",
+      "personId",
+      "name",
+      "nameI",
+      "firstName",
+      "familyName",
+      "jerseyNum"
+     ],
+     "LineScore": [
+      "gameId",
+      "teamId",
+      "teamCity",
+      "teamName",
+      "teamTricode",
+      "teamSlug",
+      "teamWins",
+      "teamLosses",
+      "period1Score",
+      "period2Score",
+      "period3Score",
+      "period4Score",
+      "score"
+     ],
+     "InactivePlayers": [
+      "gameId",
+      "teamId",
+      "personId",
+      "firstName",
+      "familyName",
+      "jerseyNum"
+     ],
+     "LastFiveMeetings": [
+      "recencyOrder",
+      "gameId",
+      "gameTimeUTC",
+      "gameEt",
+      "gameStatus",
+      "gameStatusText",
+      "awayTeamId",
+      "awayTeamCity",
+      "awayTeamName",
+      "awayTeamTricode",
+      "awayTeamScore",
+      "awayTeamWins",
+      "awayTeamLosses",
+      "homeTeamId",
+      "homeTeamCity",
+      "homeTeamName",
+      "homeTeamTricode",
+      "homeTeamScore",
+      "homeTeamWins",
+      "homeTeamLosses"
+     ],
+     "OtherStats": [
+      "gameId",
+      "teamId",
+      "teamCity",
+      "teamName",
+      "teamTricode",
+      "points",
+      "reboundsTotal",
+      "assists",
+      "steals",
+      "blocks",
+      "turnovers",
+      "fieldGoalsPercentage",
+      "threePointersPercentage",
+      "freeThrowsPercentage",
+      "pointsInThePaint",
+      "pointsSecondChance",
+      "pointsFastBreak",
+      "biggestLead",
+      "leadChanges",
+      "timesTied",
+      "biggestScoringRun",
+      "turnoversTeam",
+      "turnoversTotal",
+      "reboundsTeam",
+      "pointsFromTurnovers",
+      "benchPoints"
+     ],
+     "AvailableVideo": [
+      "gameId",
+      "videoAvailableFlag",
+      "ptAvailable",
+      "ptXYZAvailable",
+      "whStatus",
+      "hustleStatus",
+      "historicalStatus"
+     ]
+    },
+    "top_level_response_keys": [
+     "meta",
+     "boxScoreSummary"
+    ],
+    "sample_rows": {
+     "GameSummary": [
+      [
+       "0022501191",
+       "20260412/MILPHI",
+       3,
+       "Final",
+       4,
+       "PT00M00.00S",
+       "2026-04-12T22:00:00Z",
+       "2026-04-12T18:00:00Z",
+       1610612749,
+       1610612755,
+       "2:06",
+       19746,
+       1
+      ]
+     ],
+     "GameInfo": [
+      [
+       "0022501191",
+       "2026-04-12T18:00:00Z",
+       19746,
+       "2:06"
+      ]
+     ],
+     "ArenaInfo": [
+      [
+       "0022501191",
+       1000152,
+       "Xfinity Mobile Arena",
+       "Philadelphia",
+       "PA",
+       "US",
+       "Eastern"
+      ]
+     ],
+     "Officials": [
+      [
+       "0022501191",
+       1151,
+       "Sean Corbin",
+       "S. Corbin",
+       "Sean",
+       "Corbin",
+       "33  "
+      ]
+     ],
+     "LineScore": [
+      [
+       "0022501191",
+       1610612755,
+       "Philadelphia",
+       "76ers",
+       "PHI",
+       "sixers",
+       45,
+       37,
+       29,
+       29,
+       38,
+       30,
+       126
+      ]
+     ],
+     "InactivePlayers": [
+      [
+       "0022501191",
+       1610612755,
+       203954,
+       "Joel",
+       "Embiid",
+       "21  "
+      ]
+     ],
+     "LastFiveMeetings": [
+      [
+       1,
+       "0022500666",
+       "2026-01-28T01:00:00Z",
+       "2026-01-27T20:00:00Z",
+       3,
+       "Final",
+       1610612749,
+       "Milwaukee",
+       "Bucks",
+       "MIL",
+       122,
+       18,
+       27,
+       1610612755,
+       "Philadelphia",
+       "76ers",
+       "PHI",
+       139,
+       25,
+       21
+      ]
+     ],
+     "OtherStats": [
+      [
+       "0022501191",
+       1610612755,
+       "Philadelphia",
+       "76ers",
+       "PHI",
+       126.0,
+       45.0,
+       28.0,
+       13.0,
+       2.0,
+       12.0,
+       0.516,
+       0.39,
+       0.762,
+       54.0,
+       9.0,
+       21.0,
+       28.0,
+       7.0,
+       8.0,
+       11.0,
+       2.0,
+       14.0,
+       11.0,
+       32.0,
+       70.0
+      ]
+     ],
+     "AvailableVideo": [
+      [
+       "0022501191",
+       1,
+       1,
+       0,
+       1,
+       1,
+       0
+      ]
+     ]
+    },
+    "seconds": 0.46,
+    "warnings": []
+   },
+   {
+    "endpoint": "boxscoretraditionalv3",
+    "ok": true,
+    "result_sets": {
+     "PlayerStats": 26,
+     "TeamStarterBenchStats": 4,
+     "TeamStats": 2
+    },
+    "headers": {
+     "PlayerStats": [
+      "gameId",
+      "teamId",
+      "teamCity",
+      "teamName",
+      "teamTricode",
+      "teamSlug",
+      "personId",
+      "firstName",
+      "familyName",
+      "nameI",
+      "playerSlug",
+      "position",
+      "comment",
+      "jerseyNum",
+      "minutes",
+      "fieldGoalsMade",
+      "fieldGoalsAttempted",
+      "fieldGoalsPercentage",
+      "threePointersMade",
+      "threePointersAttempted",
+      "threePointersPercentage",
+      "freeThrowsMade",
+      "freeThrowsAttempted",
+      "freeThrowsPercentage",
+      "reboundsOffensive",
+      "reboundsDefensive",
+      "reboundsTotal",
+      "assists",
+      "steals",
+      "blocks",
+      "turnovers",
+      "foulsPersonal",
+      "points",
+      "plusMinusPoints"
+     ],
+     "TeamStarterBenchStats": [
+      "gameId",
+      "teamId",
+      "teamCity",
+      "teamName",
+      "teamTricode",
+      "teamSlug",
+      "minutes",
+      "fieldGoalsMade",
+      "fieldGoalsAttempted",
+      "fieldGoalsPercentage",
+      "threePointersMade",
+      "threePointersAttempted",
+      "threePointersPercentage",
+      "freeThrowsMade",
+      "freeThrowsAttempted",
+      "freeThrowsPercentage",
+      "reboundsOffensive",
+      "reboundsDefensive",
+      "reboundsTotal",
+      "assists",
+      "steals",
+      "blocks",
+      "turnovers",
+      "foulsPersonal",
+      "points",
+      "startersBench"
+     ],
+     "TeamStats": [
+      "gameId",
+      "teamId",
+      "teamCity",
+      "teamName",
+      "teamTricode",
+      "teamSlug",
+      "minutes",
+      "fieldGoalsMade",
+      "fieldGoalsAttempted",
+      "fieldGoalsPercentage",
+      "threePointersMade",
+      "threePointersAttempted",
+      "threePointersPercentage",
+      "freeThrowsMade",
+      "freeThrowsAttempted",
+      "freeThrowsPercentage",
+      "reboundsOffensive",
+      "reboundsDefensive",
+      "reboundsTotal",
+      "assists",
+      "steals",
+      "blocks",
+      "turnovers",
+      "foulsPersonal",
+      "points",
+      "plusMinusPoints"
+     ]
+    },
+    "top_level_response_keys": [
+     "meta",
+     "boxScoreTraditional"
+    ],
+    "sample_rows": {
+     "PlayerStats": [
+      [
+       "0022501191",
+       1610612755,
+       "Philadelphia",
+       "76ers",
+       "PHI",
+       "sixers",
+       1626162,
+       "Kelly",
+       "Oubre Jr.",
+       "K. Oubre Jr.",
+       "kelly-oubre-jr",
+       "F",
+       "",
+       "",
+       "23:15",
+       4,
+       8,
+       0.5,
+       0,
+       3,
+       0.0,
+       3,
+       3,
+       1.0,
+       0,
+       5,
+       5,
+       1,
+       3,
+       0,
+       2,
+       3,
+       11,
+       8.0
+      ]
+     ],
+     "TeamStarterBenchStats": [
+      [
+       "0022501191",
+       1610612755,
+       "Philadelphia",
+       "76ers",
+       "PHI",
+       "sixers",
+       "119:51",
+       22,
+       42,
+       0.524,
+       4,
+       17,
+       0.235,
+       8,
+       8,
+       1.0,
+       2,
+       19,
+       21,
+       15,
+       5,
+       0,
+       7,
+       5,
+       56,
+       "Starters"
+      ]
+     ],
+     "TeamStats": [
+      [
+       "0022501191",
+       1610612755,
+       "Philadelphia",
+       "76ers",
+       "PHI",
+       "sixers",
+       "240:00",
+       47,
+       91,
+       0.516,
+       16,
+       41,
+       0.39,
+       16,
+       21,
+       0.762,
+       11,
+       34,
+       45,
+       28,
+       13,
+       2,
+       12,
+       19,
+       126,
+       20.0
+      ]
+     ]
+    },
+    "seconds": 0.44,
+    "warnings": []
+   },
+   {
+    "endpoint": "boxscoreadvancedv3",
+    "ok": true,
+    "result_sets": {
+     "PlayerStats": 26,
+     "TeamStats": 2
+    },
+    "headers": {
+     "PlayerStats": [
+      "gameId",
+      "teamId",
+      "teamCity",
+      "teamName",
+      "teamTricode",
+      "teamSlug",
+      "personId",
+      "firstName",
+      "familyName",
+      "nameI",
+      "playerSlug",
+      "position",
+      "comment",
+      "jerseyNum",
+      "minutes",
+      "estimatedOffensiveRating",
+      "offensiveRating",
+      "estimatedDefensiveRating",
+      "defensiveRating",
+      "estimatedNetRating",
+      "netRating",
+      "assistPercentage",
+      "assistToTurnover",
+      "assistRatio",
+      "offensiveReboundPercentage",
+      "defensiveReboundPercentage",
+      "reboundPercentage",
+      "turnoverRatio",
+      "effectiveFieldGoalPercentage",
+      "trueShootingPercentage",
+      "usagePercentage",
+      "estimatedUsagePercentage",
+      "estimatedPace",
+      "pace",
+      "pacePer40",
+      "possessions",
+      "PIE"
+     ],
+     "TeamStats": [
+      "gameId",
+      "teamId",
+      "teamCity",
+      "teamName",
+      "teamTricode",
+      "teamSlug",
+      "minutes",
+      "estimatedOffensiveRating",
+      "offensiveRating",
+      "estimatedDefensiveRating",
+      "defensiveRating",
+      "estimatedNetRating",
+      "netRating",
+      "assistPercentage",
+      "assistToTurnover",
+      "assistRatio",
+      "offensiveReboundPercentage",
+      "defensiveReboundPercentage",
+      "reboundPercentage",
+      "estimatedTeamTurnoverPercentage",
+      "turnoverRatio",
+      "effectiveFieldGoalPercentage",
+      "trueShootingPercentage",
+      "usagePercentage",
+      "estimatedUsagePercentage",
+      "estimatedPace",
+      "pace",
+      "pacePer40",
+      "possessions",
+      "PIE"
+     ]
+    },
+    "top_level_response_keys": [
+     "meta",
+     "boxScoreAdvanced"
+    ],
+    "sample_rows": {
+     "PlayerStats": [
+      [
+       "0022501191",
+       1610612749,
+       "Milwaukee",
+       "Bucks",
+       "MIL",
+       "bucks",
+       1627752,
+       "Taurean",
+       "Prince",
+       "T. Prince",
+       "taurean-prince",
+       "F",
+       "",
+       "",
+       "32:00",
+       88.2,
+       88.2,
+       130.4,
+       130.4,
+       -42.2,
+       -42.2,
+       0.118,
+       1.0,
+       11.1,
+       0.0,
+       0.192,
+       0.079,
+       11.1,
+       0.464,
+       0.485,
+       0.205,
+       0.205,
+       102.75,
+       102.75,
+       85.63,
+       68.0,
+       0.07
+      ]
+     ],
+     "TeamStats": [
+      [
+       "0022501191",
+       1610612755,
+       "Philadelphia",
+       "76ers",
+       "PHI",
+       "sixers",
+       "240:00",
+       605.8,
+       121.2,
+       509.6,
+       101.9,
+       96.2,
+       19.2,
+       0.596,
+       2.0,
+       19.4,
+       0.271,
+       0.719,
+       0.514,
+       13.462,
+       13.5,
+       0.604,
+       0.628,
+       1.0,
+       0.966,
+       20.8,
+       104.0,
+       86.67,
+       104.0,
+       0.588
+      ]
+     ]
+    },
+    "seconds": 0.45,
+    "warnings": []
+   }
+  ]
+ },
+ "modern_v2": {
+  "game_id": "0022501191",
+  "probes": [
+   {
+    "endpoint": "boxscoretraditionalv2",
+    "ok": true,
+    "rows": {
+     "PlayerStats": 0,
+     "TeamStats": 0,
+     "TeamStarterBenchStats": 0
+    },
+    "n_result_sets": 3,
+    "seconds": 0.47,
+    "warnings": [
+     "BoxScoreTraditionalV2 is deprecated and will be removed in a future version. Please use BoxScoreTraditionalV3 instead. Data is no longer being published for BoxScoreTraditionalV2 as of the 2025-26 NBA season."
+    ]
+   },
+   {
+    "endpoint": "boxscoreadvancedv2",
+    "ok": false,
+    "error": "KeyError: 'resultSet'",
+    "seconds": 0.62,
+    "warnings": []
+   },
+   {
+    "endpoint": "boxscoresummaryv2",
+    "ok": true,
+    "rows": {
+     "GameSummary": 1,
+     "OtherStats": 0,
+     "Officials": 0,
+     "InactivePlayers": 0,
+     "GameInfo": 1,
+     "LineScore": 2,
+     "LastMeeting": 1,
+     "SeasonSeries": 0,
+     "AvailableVideo": 1
+    },
+    "n_result_sets": 9,
+    "seconds": 0.48,
+    "warnings": [
+     "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+    ]
+   },
+   {
+    "endpoint": "playbyplayv2",
+    "ok": false,
+    "error": "KeyError: 'resultSet'",
+    "seconds": 0.63,
+    "warnings": [
+     "PlayByPlayV2 is deprecated and will be removed in a future version. Please use PlayByPlayV3 instead. The NBA API no longer returns data for PlayByPlayV2 (returns empty JSON). See GitHub issue #591: https://github.com/swar/nba_api/issues/591"
+    ]
+   }
+  ]
+ },
+ "raw_http": [
+  {
+   "endpoint": "boxscoreadvancedv2",
+   "note": "2025-26",
+   "http_ok": true,
+   "valid_json": true,
+   "body_len": 2,
+   "top_keys": [],
+   "body_head": "{}",
+   "seconds": 0.38
+  },
+  {
+   "endpoint": "playbyplayv2",
+   "note": "2025-26",
+   "http_ok": true,
+   "valid_json": true,
+   "body_len": 2,
+   "top_keys": [],
+   "body_head": "{}",
+   "seconds": 0.39
+  },
+  {
+   "endpoint": "boxscoretraditionalv2",
+   "note": "2025-26",
+   "http_ok": true,
+   "valid_json": true,
+   "body_len": 961,
+   "top_keys": [
+    "resource",
+    "parameters",
+    "resultSets"
+   ],
+   "body_head": "{\"resource\":\"boxscore\",\"parameters\":{\"GameID\":\"0022501191\",\"StartPeriod\":0,\"EndPeriod\":0,\"StartRange\":0,\"EndRange\":0,\"RangeType\":0},\"resultSets\":[{\"name\":\"PlayerStats\",\"headers\":[\"GAME_ID\",\"TEAM_ID\",\"TEAM_ABBREVIATION\",\"TEAM_CITY\",\"PLAYER_ID\",\"PLAYER_NAME\",\"NICKNAME\",\"START_POSITION\",\"COMMENT\",\"MIN\"",
+   "seconds": 0.38
+  },
+  {
+   "endpoint": "boxscoresummaryv2",
+   "note": "2025-26",
+   "http_ok": true,
+   "valid_json": true,
+   "body_len": 2604,
+   "top_keys": [
+    "resource",
+    "parameters",
+    "resultSets"
+   ],
+   "body_head": "{\"resource\":\"boxscoresummary\",\"parameters\":{\"GameID\":\"0022501191\"},\"resultSets\":[{\"name\":\"GameSummary\",\"headers\":[\"GAME_DATE_EST\",\"GAME_SEQUENCE\",\"GAME_ID\",\"GAME_STATUS_ID\",\"GAME_STATUS_TEXT\",\"GAMECODE\",\"HOME_TEAM_ID\",\"VISITOR_TEAM_ID\",\"SEASON\",\"LIVE_PERIOD\",\"LIVE_PC_TIME\",\"NATL_TV_BROADCASTER_ABBRE",
+   "seconds": 0.15
+  },
+  {
+   "endpoint": "boxscoreadvancedv2",
+   "note": "2012-13 control",
+   "http_ok": true,
+   "valid_json": true,
+   "body_len": 2,
+   "top_keys": [],
+   "body_head": "{}",
+   "seconds": 0.37
+  },
+  {
+   "endpoint": "scoreboardv2",
+   "note": "the known JSONDecodeError case",
+   "http_ok": true,
+   "valid_json": true,
+   "body_len": 10461,
+   "top_keys": [
+    "resource",
+    "parameters",
+    "resultSets"
+   ],
+   "body_head": "{\"resource\":\"scoreboardV2\",\"parameters\":{\"LeagueID\":\"00\",\"GameDate\":\"01/15/2013\",\"DayOffset\":0},\"resultSets\":[{\"name\":\"GameHeader\",\"headers\":[\"GAME_DATE_EST\",\"GAME_SEQUENCE\",\"GAME_ID\",\"GAME_STATUS_ID\",\"GAME_STATUS_TEXT\",\"GAMECODE\",\"HOME_TEAM_ID\",\"VISITOR_TEAM_ID\",\"SEASON\",\"LIVE_PERIOD\",\"LIVE_PC_TIME",
+   "seconds": 0.56
+  }
+ ],
+ "scoreboard_raw": [
+  {
+   "endpoint": "scoreboardv2",
+   "date": "01/15/2013",
+   "valid_json": true,
+   "body_len": 10461,
+   "n_result_sets": 10,
+   "body_head": "{\"resource\":\"scoreboardV2\",\"parameters\":{\"LeagueID\":\"00\",\"GameDate\":\"01/15/2013\",\"DayOffset\":0},\"resultSets\":[{\"name\":\"GameHeader\",\"headers\":[\"GAME_DATE_EST\",\"GAME_SEQUENCE\",\"GAME_ID\",\"GAME_STATUS_ID\"",
+   "seconds": 3.16
+  },
+  {
+   "endpoint": "scoreboardv3",
+   "date": "01/15/2013",
+   "valid_json": true,
+   "body_len": 16408,
+   "n_result_sets": 0,
+   "body_head": "{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/15/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:22.3022Z\"},\"scoreboard\":{\"gameDate\":\"2013-01-15\",\"leagueId\":\"00\",\"leagueName\":\"Na",
+   "seconds": 0.79
+  },
+  {
+   "endpoint": "scoreboardv2",
+   "date": "01/15/2013",
+   "valid_json": true,
+   "body_len": 10461,
+   "n_result_sets": 10,
+   "body_head": "{\"resource\":\"scoreboardV2\",\"parameters\":{\"LeagueID\":\"00\",\"GameDate\":\"01/15/2013\",\"DayOffset\":0},\"resultSets\":[{\"name\":\"GameHeader\",\"headers\":[\"GAME_DATE_EST\",\"GAME_SEQUENCE\",\"GAME_ID\",\"GAME_STATUS_ID\"",
+   "seconds": 0.11
+  },
+  {
+   "endpoint": "scoreboardv3",
+   "date": "01/15/2013",
+   "valid_json": true,
+   "body_len": 16408,
+   "n_result_sets": 0,
+   "body_head": "{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/15/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:22.3022Z\"},\"scoreboard\":{\"gameDate\":\"2013-01-15\",\"leagueId\":\"00\",\"leagueName\":\"Na",
+   "seconds": 0.74
+  },
+  {
+   "endpoint": "scoreboardv2",
+   "date": "12/15/2024",
+   "valid_json": true,
+   "body_len": 11349,
+   "n_result_sets": 9,
+   "body_head": "{\"resource\":\"scoreboardV2\",\"parameters\":{\"GameDate\":\"2024-12-15\",\"LeagueID\":\"00\",\"DayOffset\":\"0\"},\"resultSets\":[{\"name\":\"GameHeader\",\"headers\":[\"GAME_DATE_EST\",\"GAME_SEQUENCE\",\"GAME_ID\",\"GAME_STATUS_I",
+   "seconds": 0.37
+  },
+  {
+   "endpoint": "scoreboardv3",
+   "date": "12/15/2024",
+   "valid_json": true,
+   "body_len": 20170,
+   "n_result_sets": 0,
+   "body_head": "{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2024/12/15/scoreboard?Format=json\",\"time\":\"2025-07-02T17:30:51.3051Z\"},\"scoreboard\":{\"gameDate\":\"2024-12-15\",\"leagueId\":\"00\",\"leagueName\":\"Na",
+   "seconds": 0.51
+  },
+  {
+   "endpoint": "scoreboardv2",
+   "date": "12/15/2024",
+   "valid_json": true,
+   "body_len": 11349,
+   "n_result_sets": 9,
+   "body_head": "{\"resource\":\"scoreboardV2\",\"parameters\":{\"GameDate\":\"2024-12-15\",\"LeagueID\":\"00\",\"DayOffset\":\"0\"},\"resultSets\":[{\"name\":\"GameHeader\",\"headers\":[\"GAME_DATE_EST\",\"GAME_SEQUENCE\",\"GAME_ID\",\"GAME_STATUS_I",
+   "seconds": 0.15
+  },
+  {
+   "endpoint": "scoreboardv3",
+   "date": "12/15/2024",
+   "valid_json": true,
+   "body_len": 20170,
+   "n_result_sets": 0,
+   "body_head": "{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2024/12/15/scoreboard?Format=json\",\"time\":\"2025-07-02T17:30:51.3051Z\"},\"scoreboard\":{\"gameDate\":\"2024-12-15\",\"leagueId\":\"00\",\"leagueName\":\"Na",
+   "seconds": 0.15
+  },
+  {
+   "endpoint": "scoreboardv2",
+   "date": "01/14/2013",
+   "valid_json": false,
+   "body_len": 0,
+   "n_result_sets": 0,
+   "body_head": "",
+   "seconds": 31.15
+  },
+  {
+   "endpoint": "scoreboardv3",
+   "date": "01/14/2013",
+   "valid_json": true,
+   "body_len": 21328,
+   "n_result_sets": 0,
+   "body_head": "{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/14/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:21.3021Z\"},\"scoreboard\":{\"gameDate\":\"2013-01-14\",\"leagueId\":\"00\",\"leagueName\":\"Na",
+   "seconds": 0.65
+  },
+  {
+   "endpoint": "scoreboardv2",
+   "date": "01/16/2013",
+   "valid_json": false,
+   "body_len": 0,
+   "n_result_sets": 0,
+   "body_head": "",
+   "seconds": 30.75
+  },
+  {
+   "endpoint": "scoreboardv3",
+   "date": "01/16/2013",
+   "valid_json": true,
+   "body_len": 26714,
+   "n_result_sets": 0,
+   "body_head": "{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2013/01/16/scoreboard?Format=json\",\"time\":\"2025-02-18T13:30:22.3022Z\"},\"scoreboard\":{\"gameDate\":\"2013-01-16\",\"leagueId\":\"00\",\"leagueName\":\"Na",
+   "seconds": 0.72
+  },
+  {
+   "endpoint": "scoreboardv2",
+   "date": "11/02/2005",
+   "valid_json": false,
+   "body_len": 0,
+   "n_result_sets": 0,
+   "body_head": "",
+   "seconds": 30.68
+  },
+  {
+   "endpoint": "scoreboardv3",
+   "date": "11/02/2005",
+   "valid_json": true,
+   "body_len": 33911,
+   "n_result_sets": 0,
+   "body_head": "{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/league/00/2005/11/02/scoreboard?Format=json\",\"time\":\"2025-02-18T13:16:07.167Z\"},\"scoreboard\":{\"gameDate\":\"2005-11-02\",\"leagueId\":\"00\",\"leagueName\":\"Nat",
+   "seconds": 0.74
+  }
+ ],
+ "v3_extra": [
+  {
+   "endpoint": "boxscoreadvancedv2",
+   "note": "2012-13 defaults",
+   "game_id": "0021201218",
+   "ok": false,
+   "error": "KeyError: 'resultSet'",
+   "raw_body_head": "{}",
+   "seconds": 0.36,
+   "warnings": []
+  },
+  {
+   "endpoint": "boxscoreadvancedv2",
+   "note": "2025-26 defaults",
+   "game_id": "0022501191",
+   "ok": false,
+   "error": "KeyError: 'resultSet'",
+   "raw_body_head": "{}",
+   "seconds": 0.48,
+   "warnings": []
+  },
+  {
+   "endpoint": "boxscoretraditionalv2",
+   "note": "2012-13 defaults",
+   "game_id": "0021201218",
+   "ok": true,
+   "rows": {
+    "PlayerStats": 25,
+    "TeamStats": 2,
+    "TeamStarterBenchStats": 4
+   },
+   "seconds": 0.35,
+   "warnings": [
+    "BoxScoreTraditionalV2 is deprecated and will be removed in a future version. Please use BoxScoreTraditionalV3 instead. Data is no longer being published for BoxScoreTraditionalV2 as of the 2025-26 NBA season."
+   ]
+  },
+  {
+   "endpoint": "playbyplayv3",
+   "note": "2005-06",
+   "game_id": "0020501226",
+   "ok": true,
+   "rows": {
+    "PlayByPlay": 438,
+    "AvailableVideo": 1
+   },
+   "seconds": 0.45,
+   "warnings": []
+  },
+  {
+   "endpoint": "playbyplayv3",
+   "note": "2025-26",
+   "game_id": "0022501191",
+   "ok": true,
+   "rows": {
+    "PlayByPlay": 486,
+    "AvailableVideo": 1
+   },
+   "seconds": 0.37,
+   "warnings": []
+  }
+ ],
+ "era_sweep": {
+  "2005-06": {
+   "n_regular_games": 1230,
+   "picks": {
+    "first": {
+     "game_id": "0020500001",
+     "ok": false,
+     "inactive_rows": 0,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 0,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.58,
+     "warnings": []
+    },
+    "middle": {
+     "game_id": "0020500616",
+     "ok": true,
+     "inactive_rows": 5,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 5,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.63,
+     "warnings": []
+    },
+    "last": {
+     "game_id": "0020501230",
+     "ok": true,
+     "inactive_rows": 4,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 4,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.53,
+     "warnings": []
+    }
+   }
+  },
+  "2008-09": {
+   "n_regular_games": 1230,
+   "picks": {
+    "first": {
+     "game_id": "0020800001",
+     "ok": true,
+     "inactive_rows": 6,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 6,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.55,
+     "warnings": []
+    },
+    "middle": {
+     "game_id": "0020800616",
+     "ok": true,
+     "inactive_rows": 6,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 6,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.56,
+     "warnings": []
+    },
+    "last": {
+     "game_id": "0020801230",
+     "ok": true,
+     "inactive_rows": 5,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 5,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.52,
+     "warnings": []
+    }
+   }
+  },
+  "2012-13": {
+   "n_regular_games": 1229,
+   "picks": {
+    "first": {
+     "game_id": "0021200001",
+     "ok": true,
+     "inactive_rows": 5,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 5,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.71,
+     "warnings": []
+    },
+    "middle": {
+     "game_id": "0021200615",
+     "ok": true,
+     "inactive_rows": 4,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 4,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.6,
+     "warnings": []
+    },
+    "last": {
+     "game_id": "0021201230",
+     "ok": true,
+     "inactive_rows": 5,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 5,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.56,
+     "warnings": []
+    }
+   }
+  },
+  "2016-17": {
+   "n_regular_games": 1230,
+   "picks": {
+    "first": {
+     "game_id": "0021600001",
+     "ok": true,
+     "inactive_rows": 4,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 4,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.62,
+     "warnings": []
+    },
+    "middle": {
+     "game_id": "0021600616",
+     "ok": true,
+     "inactive_rows": 4,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 4,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.57,
+     "warnings": []
+    },
+    "last": {
+     "game_id": "0021601230",
+     "ok": true,
+     "inactive_rows": 5,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 5,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.72,
+     "warnings": []
+    }
+   }
+  },
+  "2019-20": {
+   "n_regular_games": 1059,
+   "picks": {
+    "first": {
+     "game_id": "0021900001",
+     "ok": true,
+     "inactive_rows": 7,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 7,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.53,
+     "warnings": []
+    },
+    "middle": {
+     "game_id": "0021900530",
+     "ok": true,
+     "inactive_rows": 9,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 9,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.56,
+     "warnings": []
+    },
+    "last": {
+     "game_id": "0021901318",
+     "ok": true,
+     "inactive_rows": 10,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 10,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.53,
+     "warnings": []
+    }
+   }
+  },
+  "2020-21": {
+   "n_regular_games": 1080,
+   "picks": {
+    "first": {
+     "game_id": "0022000001",
+     "ok": true,
+     "inactive_rows": 6,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 6,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.53,
+     "warnings": []
+    },
+    "middle": {
+     "game_id": "0022000541",
+     "ok": true,
+     "inactive_rows": 9,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 9,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.53,
+     "warnings": []
+    },
+    "last": {
+     "game_id": "0022001080",
+     "ok": true,
+     "inactive_rows": 4,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 4,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.55,
+     "warnings": []
+    }
+   }
+  },
+  "2023-24": {
+   "n_regular_games": 1230,
+   "picks": {
+    "first": {
+     "game_id": "0022300001",
+     "ok": true,
+     "inactive_rows": 7,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 7,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.44,
+     "warnings": []
+    },
+    "middle": {
+     "game_id": "0022300616",
+     "ok": true,
+     "inactive_rows": 9,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 9,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.46,
+     "warnings": []
+    },
+    "last": {
+     "game_id": "0022301230",
+     "ok": true,
+     "inactive_rows": 8,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 8,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.45,
+     "warnings": []
+    }
+   }
+  },
+  "2025-26": {
+   "n_regular_games": 1230,
+   "picks": {
+    "first": {
+     "game_id": "0022500001",
+     "ok": true,
+     "inactive_rows": 8,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 8,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.43,
+     "warnings": []
+    },
+    "middle": {
+     "game_id": "0022500616",
+     "ok": true,
+     "inactive_rows": 8,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 8,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.44,
+     "warnings": []
+    },
+    "last": {
+     "game_id": "0022501230",
+     "ok": true,
+     "inactive_rows": 8,
+     "officials_rows": 3,
+     "rows": {
+      "GameSummary": 1,
+      "GameInfo": 1,
+      "ArenaInfo": 1,
+      "Officials": 3,
+      "LineScore": 2,
+      "InactivePlayers": 8,
+      "LastFiveMeetings": 5,
+      "OtherStats": 2,
+      "AvailableVideo": 1
+     },
+     "seconds": 0.44,
+     "warnings": []
+    }
+   }
+  }
+ },
+ "v2_v3_boundary": [
+  {
+   "season": "2024-25",
+   "game_id": "0022400062",
+   "date": "2024-10-22",
+   "v2": {
+    "ok": true,
+    "inactive_rows": 8,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "OtherStats": 2,
+     "Officials": 3,
+     "InactivePlayers": 8,
+     "GameInfo": 1,
+     "LineScore": 2,
+     "LastMeeting": 1,
+     "SeasonSeries": 1,
+     "AvailableVideo": 1
+    },
+    "warning": [
+     "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+    ]
+   },
+   "v3": {
+    "ok": true,
+    "inactive_rows": 8,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "GameInfo": 1,
+     "ArenaInfo": 1,
+     "Officials": 3,
+     "LineScore": 2,
+     "InactivePlayers": 8,
+     "LastFiveMeetings": 5,
+     "OtherStats": 2,
+     "AvailableVideo": 1
+    },
+    "warning": []
+   }
+  },
+  {
+   "season": "2024-25",
+   "game_id": "0022400061",
+   "date": "2024-10-22",
+   "v2": {
+    "ok": true,
+    "inactive_rows": 7,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "OtherStats": 2,
+     "Officials": 3,
+     "InactivePlayers": 7,
+     "GameInfo": 1,
+     "LineScore": 2,
+     "LastMeeting": 1,
+     "SeasonSeries": 1,
+     "AvailableVideo": 1
+    },
+    "warning": [
+     "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+    ]
+   },
+   "v3": {
+    "ok": true,
+    "inactive_rows": 7,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "GameInfo": 1,
+     "ArenaInfo": 1,
+     "Officials": 3,
+     "LineScore": 2,
+     "InactivePlayers": 7,
+     "LastFiveMeetings": 5,
+     "OtherStats": 2,
+     "AvailableVideo": 1
+    },
+    "warning": []
+   }
+  },
+  {
+   "season": "2024-25",
+   "game_id": "0022401168",
+   "date": "2025-04-10",
+   "v2": {
+    "ok": true,
+    "inactive_rows": 0,
+    "officials_rows": 0,
+    "sets": {
+     "GameSummary": 1,
+     "OtherStats": 0,
+     "Officials": 0,
+     "InactivePlayers": 0,
+     "GameInfo": 1,
+     "LineScore": 2,
+     "LastMeeting": 1,
+     "SeasonSeries": 1,
+     "AvailableVideo": 1
+    },
+    "warning": [
+     "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+    ]
+   },
+   "v3": {
+    "ok": true,
+    "inactive_rows": 7,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "GameInfo": 1,
+     "ArenaInfo": 1,
+     "Officials": 3,
+     "LineScore": 2,
+     "InactivePlayers": 7,
+     "LastFiveMeetings": 5,
+     "OtherStats": 2,
+     "AvailableVideo": 1
+    },
+    "warning": []
+   }
+  },
+  {
+   "season": "2024-25",
+   "game_id": "0022401161",
+   "date": "2025-04-10",
+   "v2": {
+    "ok": true,
+    "inactive_rows": 0,
+    "officials_rows": 0,
+    "sets": {
+     "GameSummary": 1,
+     "OtherStats": 0,
+     "Officials": 0,
+     "InactivePlayers": 0,
+     "GameInfo": 1,
+     "LineScore": 2,
+     "LastMeeting": 1,
+     "SeasonSeries": 1,
+     "AvailableVideo": 1
+    },
+    "warning": [
+     "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+    ]
+   },
+   "v3": {
+    "ok": true,
+    "inactive_rows": 12,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "GameInfo": 1,
+     "ArenaInfo": 1,
+     "Officials": 3,
+     "LineScore": 2,
+     "InactivePlayers": 12,
+     "LastFiveMeetings": 5,
+     "OtherStats": 2,
+     "AvailableVideo": 1
+    },
+    "warning": []
+   }
+  },
+  {
+   "season": "2024-25",
+   "game_id": "0022401170",
+   "date": "2025-04-10",
+   "v2": {
+    "ok": true,
+    "inactive_rows": 0,
+    "officials_rows": 0,
+    "sets": {
+     "GameSummary": 1,
+     "OtherStats": 0,
+     "Officials": 0,
+     "InactivePlayers": 0,
+     "GameInfo": 1,
+     "LineScore": 2,
+     "LastMeeting": 1,
+     "SeasonSeries": 1,
+     "AvailableVideo": 1
+    },
+    "warning": [
+     "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+    ]
+   },
+   "v3": {
+    "ok": true,
+    "inactive_rows": 6,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "GameInfo": 1,
+     "ArenaInfo": 1,
+     "Officials": 3,
+     "LineScore": 2,
+     "InactivePlayers": 6,
+     "LastFiveMeetings": 5,
+     "OtherStats": 2,
+     "AvailableVideo": 1
+    },
+    "warning": []
+   }
+  },
+  {
+   "season": "2025-26",
+   "game_id": "0022500002",
+   "date": "2025-10-21",
+   "v2": {
+    "ok": true,
+    "inactive_rows": 9,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 2,
+     "OtherStats": 2,
+     "Officials": 3,
+     "InactivePlayers": 9,
+     "GameInfo": 1,
+     "LineScore": 2,
+     "LastMeeting": 1,
+     "SeasonSeries": 1,
+     "AvailableVideo": 1
+    },
+    "warning": [
+     "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+    ]
+   },
+   "v3": {
+    "ok": true,
+    "inactive_rows": 9,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "GameInfo": 1,
+     "ArenaInfo": 1,
+     "Officials": 3,
+     "LineScore": 2,
+     "InactivePlayers": 9,
+     "LastFiveMeetings": 5,
+     "OtherStats": 2,
+     "AvailableVideo": 1
+    },
+    "warning": []
+   }
+  },
+  {
+   "season": "2025-26",
+   "game_id": "0022500591",
+   "date": "2026-01-16",
+   "v2": {
+    "ok": true,
+    "inactive_rows": 0,
+    "officials_rows": 0,
+    "sets": {
+     "GameSummary": 1,
+     "OtherStats": 0,
+     "Officials": 0,
+     "InactivePlayers": 0,
+     "GameInfo": 1,
+     "LineScore": 2,
+     "LastMeeting": 1,
+     "SeasonSeries": 0,
+     "AvailableVideo": 1
+    },
+    "warning": [
+     "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+    ]
+   },
+   "v3": {
+    "ok": true,
+    "inactive_rows": 8,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "GameInfo": 1,
+     "ArenaInfo": 1,
+     "Officials": 3,
+     "LineScore": 2,
+     "InactivePlayers": 8,
+     "LastFiveMeetings": 5,
+     "OtherStats": 2,
+     "AvailableVideo": 1
+    },
+    "warning": []
+   }
+  },
+  {
+   "season": "2025-26",
+   "game_id": "0022501199",
+   "date": "2026-04-12",
+   "v2": {
+    "ok": true,
+    "inactive_rows": 0,
+    "officials_rows": 0,
+    "sets": {
+     "GameSummary": 1,
+     "OtherStats": 0,
+     "Officials": 0,
+     "InactivePlayers": 0,
+     "GameInfo": 1,
+     "LineScore": 2,
+     "LastMeeting": 1,
+     "SeasonSeries": 0,
+     "AvailableVideo": 1
+    },
+    "warning": [
+     "BoxScoreSummaryV2 has known data availability issues. Data may be missing for games on or after 4/10/2025. Users should moving to BoxScoreSummaryV3 or verify data completeness for their specific use cases and implement appropriate error handling."
+    ]
+   },
+   "v3": {
+    "ok": true,
+    "inactive_rows": 8,
+    "officials_rows": 3,
+    "sets": {
+     "GameSummary": 1,
+     "GameInfo": 1,
+     "ArenaInfo": 1,
+     "Officials": 3,
+     "LineScore": 2,
+     "InactivePlayers": 8,
+     "LastFiveMeetings": 5,
+     "OtherStats": 2,
+     "AvailableVideo": 1
+    },
+    "warning": []
+   }
+  }
+ ],
+ "throttle": {
+  "A-mixed-summary": {
+   "endpoint_mix": "BoxScoreSummaryV3 x10",
+   "n_calls": 10,
+   "n_failures": 0,
+   "http_429": 0,
+   "timings": [
+    {
+     "i": 1,
+     "game_id": "0022500001",
+     "seconds": 0.33,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    },
+    {
+     "i": 2,
+     "game_id": "0022500002",
+     "seconds": 0.45,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    },
+    {
+     "i": 3,
+     "game_id": "0022500003",
+     "seconds": 0.43,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    },
+    {
+     "i": 4,
+     "game_id": "0022500004",
+     "seconds": 0.48,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    },
+    {
+     "i": 5,
+     "game_id": "0022500005",
+     "seconds": 0.41,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    },
+    {
+     "i": 6,
+     "game_id": "0022500006",
+     "seconds": 0.43,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    },
+    {
+     "i": 7,
+     "game_id": "0022500007",
+     "seconds": 0.43,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    },
+    {
+     "i": 8,
+     "game_id": "0022500008",
+     "seconds": 0.41,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    },
+    {
+     "i": 9,
+     "game_id": "0022500009",
+     "seconds": 0.44,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    },
+    {
+     "i": 10,
+     "game_id": "0022500010",
+     "seconds": 0.44,
+     "status": "ok",
+     "n_result_sets": 9,
+     "error": null
+    }
+   ],
+   "min_s": 0.33,
+   "median_s": 0.43,
+   "mean_s": 0.43,
+   "max_s": 0.48,
+   "total_s": 4.25,
+   "sets_seen": [
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9,
+    9
+   ]
+  },
+  "B-boxscore-v3": {
+   "endpoint_mix": "BoxScoreTraditionalV3 / BoxScoreAdvancedV3 alternating x10",
+   "n_calls": 10,
+   "n_failures": 0,
+   "http_429": 0,
+   "timings": [
+    {
+     "i": 1,
+     "game_id": "0022500011",
+     "seconds": 0.44,
+     "status": "ok",
+     "n_result_sets": 3,
+     "error": null
+    },
+    {
+     "i": 2,
+     "game_id": "0022500012",
+     "seconds": 0.77,
+     "status": "ok",
+     "n_result_sets": 2,
+     "error": null
+    },
+    {
+     "i": 3,
+     "game_id": "0022500013",
+     "seconds": 0.41,
+     "status": "ok",
+     "n_result_sets": 3,
+     "error": null
+    },
+    {
+     "i": 4,
+     "game_id": "0022500014",
+     "seconds": 0.75,
+     "status": "ok",
+     "n_result_sets": 2,
+     "error": null
+    },
+    {
+     "i": 5,
+     "game_id": "0022500015",
+     "seconds": 0.42,
+     "status": "ok",
+     "n_result_sets": 3,
+     "error": null
+    },
+    {
+     "i": 6,
+     "game_id": "0022500016",
+     "seconds": 0.76,
+     "status": "ok",
+     "n_result_sets": 2,
+     "error": null
+    },
+    {
+     "i": 7,
+     "game_id": "0022500017",
+     "seconds": 0.46,
+     "status": "ok",
+     "n_result_sets": 3,
+     "error": null
+    },
+    {
+     "i": 8,
+     "game_id": "0022500018",
+     "seconds": 0.78,
+     "status": "ok",
+     "n_result_sets": 2,
+     "error": null
+    },
+    {
+     "i": 9,
+     "game_id": "0022500019",
+     "seconds": 0.43,
+     "status": "ok",
+     "n_result_sets": 3,
+     "error": null
+    },
+    {
+     "i": 10,
+     "game_id": "0022500020",
+     "seconds": 0.86,
+     "status": "ok",
+     "n_result_sets": 2,
+     "error": null
+    }
+   ],
+   "min_s": 0.41,
+   "median_s": 0.75,
+   "mean_s": 0.61,
+   "max_s": 0.86,
+   "total_s": 6.08,
+   "sets_seen": [
+    3,
+    2,
+    3,
+    2,
+    3,
+    2,
+    3,
+    2,
+    3,
+    2
+   ]
+  }
+ },
+ "gap_2012_13": {
+  "game_id": "0021201214",
+  "summary_v3": {
+   "ok": false,
+   "error": "AttributeError: 'NoneType' object has no attribute 'get'",
+   "raw_body": "{\"meta\":{\"version\":1,\"request\":\"http://nba.cloud/games/0021201214/boxscoresummary?Format=json\",\"time\":\"2026-08-23T10:20:01.201Z\"},\"boxScoreSummary\":{\"gameId\":null,\"gameCode\":null,\"gameStatus\":0,\"gameStatusText\":null,\"period\":0,\"gameClock\":null,\"gameTimeUTC\":null,\"gameEt\":null,\"awayTeamId\":0,\"homeTeamId\":0,\"duration\":null,\"attendance\":0,\"sellout\":0,\"seriesGameNumber\":null,\"gameLabel\":null,\"gameSubL",
+   "valid_json": true
+  },
+  "gamelog": {
+   "ok": true,
+   "n_rows": 2,
+   "rows": [
+    {
+     "GAME_ID": "0021201214",
+     "GAME_DATE": "2013-04-16",
+     "MATCHUP": "BOS vs. IND",
+     "WL": null,
+     "PTS": 0,
+     "MIN": 0,
+     "TEAM_ABBREVIATION": "BOS"
+    },
+    {
+     "GAME_ID": "0021201214",
+     "GAME_DATE": "2013-04-16",
+     "MATCHUP": "IND @ BOS",
+     "WL": null,
+     "PTS": 0,
+     "MIN": 0,
+     "TEAM_ABBREVIATION": "IND"
+    }
+   ],
+   "seconds": 0.23
+  },
+  "gamefinder_by_id": {
+   "ok": true,
+   "n_rows": 30000,
+   "first_row": {
+    "GAME_ID": "0042500405",
+    "GAME_DATE": "2026-06-13",
+    "MATCHUP": "NYK @ SAS",
+    "WL": "W",
+    "PTS": 94,
+    "SEASON_ID": "42025"
+   },
+   "last_row": {
+    "GAME_ID": "0011500101",
+    "GAME_DATE": "2015-10-22",
+    "MATCHUP": "POR @ LAC",
+    "WL": "L",
+    "PTS": 109,
+    "SEASON_ID": "12015"
+   },
+   "date_range": [
+    "2015-10-22",
+    "2026-06-13"
+   ],
+   "season_id_counts": {
+    "12015": 22,
+    "12016": 204,
+    "12017": 157,
+    "12018": 158,
+    "12019": 224,
+    "12020": 98,
+    "12021": 132,
+    "12022": 140,
+    "12023": 147,
+    "12024": 146,
+    "12025": 145,
+    "22015": 2460,
+    "22016": 2460,
+    "22017": 2460,
+    "22018": 2460,
+    "22019": 2118,
+    "22020": 2160,
+    "22021": 2460,
+    "22022": 2460,
+    "22023": 2460,
+    "22024": 2460,
+    "22025": 2460,
+    "32015": 6,
+    "32016": 7,
+    "32017": 4,
+    "32018": 6,
+    "32019": 6,
+    "32020": 2,
+    "32021": 10,
+    "32022": 10,
+    "32023": 10,
+    "32024": 14,
+    "32025": 16,
+    "42015": 172,
+    "42016": 158,
+    "42017": 164,
+    "42018": 164,
+    "42019": 166,
+    "42020": 170,
+    "42021": 174,
+    "42022": 168,
+    "42023": 164,
+    "42024": 168,
+    "42025": 170,
+    "52019": 2,
+    "52020": 12,
+    "52021": 12,
+    "52022": 12,
+    "52023": 12,
+    "52024": 12,
+    "52025": 12,
+    "62023": 2,
+    "62024": 2,
+    "62025": 2
+   },
+   "seconds": 0.64
+  }
+ },
+ "inactive_sample": {
+  "2005-06": {
+   "n_games_sampled": 10,
+   "games": [
+    {
+     "game_id": "0020500001",
+     "inactive_rows": 0,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020500124",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020500247",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020500370",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020500493",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020500616",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020500739",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020500862",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020500985",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020501108",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    }
+   ],
+   "inactive_rows": [
+    0,
+    4,
+    6,
+    4,
+    6,
+    5,
+    6,
+    6,
+    6,
+    5
+   ],
+   "officials_rows": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "failures": [],
+   "seconds": [
+    0.77,
+    0.56,
+    0.57,
+    0.52,
+    0.53,
+    0.43,
+    0.55,
+    0.57,
+    0.61,
+    0.52
+   ],
+   "summary": {
+    "n_ok": 10,
+    "n_failed": 0,
+    "games_with_inactives": 9,
+    "games_with_3_officials": 10,
+    "inactive_min": 0,
+    "inactive_max": 6,
+    "inactive_empty_game_ids": [
+     "0020500001"
+    ]
+   }
+  },
+  "2008-09": {
+   "n_games_sampled": 10,
+   "games": [
+    {
+     "game_id": "0020800001",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020800124",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020800247",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020800370",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020800493",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020800616",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020800739",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020800862",
+     "inactive_rows": 3,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020800985",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0020801108",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    }
+   ],
+   "inactive_rows": [
+    6,
+    6,
+    4,
+    5,
+    5,
+    6,
+    6,
+    3,
+    6,
+    6
+   ],
+   "officials_rows": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "failures": [],
+   "seconds": [
+    0.45,
+    0.53,
+    0.55,
+    0.59,
+    0.62,
+    0.44,
+    0.53,
+    0.52,
+    0.57,
+    0.64
+   ],
+   "summary": {
+    "n_ok": 10,
+    "n_failed": 0,
+    "games_with_inactives": 10,
+    "games_with_3_officials": 10,
+    "inactive_min": 3,
+    "inactive_max": 6,
+    "inactive_empty_game_ids": []
+   }
+  },
+  "2012-13": {
+   "n_games_sampled": 10,
+   "games": [
+    {
+     "game_id": "0021200001",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021200123",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021200245",
+     "inactive_rows": 3,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021200367",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021200489",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021200611",
+     "inactive_rows": 2,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021200733",
+     "inactive_rows": 3,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021200855",
+     "inactive_rows": 2,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021200977",
+     "inactive_rows": 2,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021201099",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    }
+   ],
+   "inactive_rows": [
+    5,
+    4,
+    3,
+    4,
+    4,
+    2,
+    3,
+    2,
+    2,
+    6
+   ],
+   "officials_rows": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "failures": [],
+   "seconds": [
+    0.59,
+    0.54,
+    0.63,
+    0.62,
+    0.56,
+    0.63,
+    0.54,
+    0.53,
+    0.96,
+    0.56
+   ],
+   "summary": {
+    "n_ok": 10,
+    "n_failed": 0,
+    "games_with_inactives": 10,
+    "games_with_3_officials": 10,
+    "inactive_min": 2,
+    "inactive_max": 6,
+    "inactive_empty_game_ids": []
+   }
+  },
+  "2016-17": {
+   "n_games_sampled": 10,
+   "games": [
+    {
+     "game_id": "0021600001",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021600124",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021600247",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021600370",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021600493",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021600616",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021600739",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021600862",
+     "inactive_rows": 3,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021600985",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021601108",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    }
+   ],
+   "inactive_rows": [
+    4,
+    4,
+    5,
+    4,
+    4,
+    4,
+    5,
+    3,
+    4,
+    5
+   ],
+   "officials_rows": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "failures": [],
+   "seconds": [
+    0.43,
+    0.52,
+    0.68,
+    0.59,
+    0.71,
+    0.46,
+    0.6,
+    0.61,
+    0.51,
+    0.56
+   ],
+   "summary": {
+    "n_ok": 10,
+    "n_failed": 0,
+    "games_with_inactives": 10,
+    "games_with_3_officials": 10,
+    "inactive_min": 3,
+    "inactive_max": 5,
+    "inactive_empty_game_ids": []
+   }
+  },
+  "2019-20": {
+   "n_games_sampled": 10,
+   "games": [
+    {
+     "game_id": "0021900001",
+     "inactive_rows": 7,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021900106",
+     "inactive_rows": 8,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021900211",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021900316",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021900421",
+     "inactive_rows": 11,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021900526",
+     "inactive_rows": 7,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021900631",
+     "inactive_rows": 11,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021900737",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021900842",
+     "inactive_rows": 8,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0021900947",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    }
+   ],
+   "inactive_rows": [
+    7,
+    8,
+    9,
+    9,
+    11,
+    7,
+    11,
+    9,
+    8,
+    9
+   ],
+   "officials_rows": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "failures": [],
+   "seconds": [
+    0.44,
+    0.55,
+    0.7,
+    0.54,
+    0.51,
+    0.57,
+    0.58,
+    0.53,
+    0.53,
+    0.64
+   ],
+   "summary": {
+    "n_ok": 10,
+    "n_failed": 0,
+    "games_with_inactives": 10,
+    "games_with_3_officials": 10,
+    "inactive_min": 7,
+    "inactive_max": 11,
+    "inactive_empty_game_ids": []
+   }
+  },
+  "2020-21": {
+   "n_games_sampled": 10,
+   "games": [
+    {
+     "game_id": "0022000001",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022000109",
+     "inactive_rows": 4,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022000217",
+     "inactive_rows": 7,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022000325",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022000433",
+     "inactive_rows": 7,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022000541",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022000649",
+     "inactive_rows": 7,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022000757",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022000865",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022000973",
+     "inactive_rows": 5,
+     "officials_rows": 3
+    }
+   ],
+   "inactive_rows": [
+    6,
+    4,
+    7,
+    6,
+    7,
+    9,
+    7,
+    5,
+    9,
+    5
+   ],
+   "officials_rows": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "failures": [],
+   "seconds": [
+    0.41,
+    0.57,
+    0.53,
+    0.51,
+    0.52,
+    0.45,
+    0.53,
+    0.55,
+    0.53,
+    0.53
+   ],
+   "summary": {
+    "n_ok": 10,
+    "n_failed": 0,
+    "games_with_inactives": 10,
+    "games_with_3_officials": 10,
+    "inactive_min": 4,
+    "inactive_max": 9,
+    "inactive_empty_game_ids": []
+   }
+  },
+  "2023-24": {
+   "n_games_sampled": 10,
+   "games": [
+    {
+     "game_id": "0022300001",
+     "inactive_rows": 7,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022300124",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022300247",
+     "inactive_rows": 7,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022300370",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022300493",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022300616",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022300739",
+     "inactive_rows": 10,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022300862",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022300985",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022301108",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    }
+   ],
+   "inactive_rows": [
+    7,
+    9,
+    7,
+    9,
+    6,
+    9,
+    10,
+    9,
+    9,
+    9
+   ],
+   "officials_rows": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "failures": [],
+   "seconds": [
+    0.42,
+    0.41,
+    0.44,
+    0.43,
+    0.45,
+    0.44,
+    0.54,
+    0.42,
+    0.42,
+    0.44
+   ],
+   "summary": {
+    "n_ok": 10,
+    "n_failed": 0,
+    "games_with_inactives": 10,
+    "games_with_3_officials": 10,
+    "inactive_min": 6,
+    "inactive_max": 10,
+    "inactive_empty_game_ids": []
+   }
+  },
+  "2025-26": {
+   "n_games_sampled": 10,
+   "games": [
+    {
+     "game_id": "0022500001",
+     "inactive_rows": 8,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022500124",
+     "inactive_rows": 10,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022500247",
+     "inactive_rows": 11,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022500370",
+     "inactive_rows": 6,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022500493",
+     "inactive_rows": 8,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022500616",
+     "inactive_rows": 8,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022500739",
+     "inactive_rows": 10,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022500862",
+     "inactive_rows": 9,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022500985",
+     "inactive_rows": 8,
+     "officials_rows": 3
+    },
+    {
+     "game_id": "0022501108",
+     "inactive_rows": 11,
+     "officials_rows": 3
+    }
+   ],
+   "inactive_rows": [
+    8,
+    10,
+    11,
+    6,
+    8,
+    8,
+    10,
+    9,
+    8,
+    11
+   ],
+   "officials_rows": [
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3,
+    3
+   ],
+   "failures": [],
+   "seconds": [
+    0.42,
+    0.47,
+    0.41,
+    0.41,
+    0.43,
+    0.42,
+    0.43,
+    0.56,
+    0.54,
+    0.52
+   ],
+   "summary": {
+    "n_ok": 10,
+    "n_failed": 0,
+    "games_with_inactives": 10,
+    "games_with_3_officials": 10,
+    "inactive_min": 6,
+    "inactive_max": 11,
+    "inactive_empty_game_ids": []
+   }
+  }
+ },
+ "cap_check": {
+  "n_rows": 30000,
+  "first_date": "2015-10-22",
+  "last_date": "2026-06-13",
+  "distinct_games": 14998,
+  "seconds": 5.12,
+  "note": "rowSet ordering in the payload (first/last row as delivered)",
+  "delivered_first": {
+   "GAME_ID": "0042500405",
+   "GAME_DATE": "2026-06-13"
+  },
+  "delivered_last": {
+   "GAME_ID": "0011500099",
+   "GAME_DATE": "2015-10-22"
+  }
+ },
+ "v3_old": [
+  {
+   "endpoint": "boxscoretraditionalv3",
+   "season": "2005-06",
+   "game_id": "0020501226",
+   "ok": true,
+   "rows": {
+    "PlayerStats": 24,
+    "TeamStarterBenchStats": 4,
+    "TeamStats": 2
+   },
+   "seconds": 0.64,
+   "warnings": []
+  },
+  {
+   "endpoint": "boxscoreadvancedv3",
+   "season": "2005-06",
+   "game_id": "0020501226",
+   "ok": true,
+   "rows": {
+    "PlayerStats": 24,
+    "TeamStats": 2
+   },
+   "seconds": 0.98,
+   "warnings": []
+  },
+  {
+   "endpoint": "boxscoretraditionalv3",
+   "season": "2012-13",
+   "game_id": "0021201218",
+   "ok": true,
+   "rows": {
+    "PlayerStats": 25,
+    "TeamStarterBenchStats": 4,
+    "TeamStats": 2
+   },
+   "seconds": 0.62,
+   "warnings": []
+  },
+  {
+   "endpoint": "boxscoreadvancedv3",
+   "season": "2012-13",
+   "game_id": "0021201218",
+   "ok": true,
+   "rows": {
+    "PlayerStats": 25,
+    "TeamStats": 2
+   },
+   "seconds": 0.4,
+   "warnings": []
+  },
+  {
+   "endpoint": "boxscoretraditionalv3",
+   "season": "2016-17",
+   "game_id": "0021600616",
+   "ok": true,
+   "rows": {
+    "PlayerStats": 26,
+    "TeamStarterBenchStats": 4,
+    "TeamStats": 2
+   },
+   "seconds": 0.64,
+   "warnings": []
+  },
+  {
+   "endpoint": "boxscoreadvancedv3",
+   "season": "2016-17",
+   "game_id": "0021600616",
+   "ok": true,
+   "rows": {
+    "PlayerStats": 26,
+    "TeamStats": 2
+   },
+   "seconds": 0.78,
+   "warnings": []
+  },
+  {
+   "endpoint": "boxscoretraditionalv3",
+   "season": "2019-20",
+   "game_id": "0021900530",
+   "ok": true,
+   "rows": {
+    "PlayerStats": 25,
+    "TeamStarterBenchStats": 4,
+    "TeamStats": 2
+   },
+   "seconds": 0.58,
+   "warnings": []
+  },
+  {
+   "endpoint": "boxscoreadvancedv3",
+   "season": "2019-20",
+   "game_id": "0021900530",
+   "ok": true,
+   "rows": {
+    "PlayerStats": 25,
+    "TeamStats": 2
+   },
+   "seconds": 0.37,
+   "warnings": []
+  }
+ ]
+}

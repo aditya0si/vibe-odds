@@ -1,0 +1,263 @@
+{
+ "probe": "Kaggle dataset page / API from this machine",
+ "probed_on": "2026-09-21",
+ "direct_requests": [
+  {
+   "label": "dataset page (slug in task, -to-june-2026)",
+   "url": "https://www.kaggle.com/datasets/cviaxmiwnptr/nba-betting-data-october-2007-to-june-2026",
+   "http": 200,
+   "content_type": "text/html; charset=utf-8",
+   "bytes": 20507,
+   "html_title": "Checking your browser - reCAPTCHA"
+  },
+  {
+   "label": "dataset page (real slug, -to-june-2024)",
+   "url": "https://www.kaggle.com/datasets/cviaxmiwnptr/nba-betting-data-october-2007-to-june-2024",
+   "http": 200,
+   "content_type": "text/html; charset=utf-8",
+   "bytes": 20505,
+   "html_title": "Checking your browser - reCAPTCHA"
+  },
+  {
+   "label": "api/v1/datasets/view (slug in task)",
+   "url": "https://www.kaggle.com/api/v1/datasets/view/cviaxmiwnptr/nba-betting-data-october-2007-to-june-2026",
+   "http": 200,
+   "content_type": "text/html; charset=utf-8",
+   "bytes": 20538,
+   "html_title": "Checking your browser - reCAPTCHA"
+  },
+  {
+   "label": "api/v1/datasets/view (real slug)",
+   "url": "https://www.kaggle.com/api/v1/datasets/view/cviaxmiwnptr/nba-betting-data-october-2007-to-june-2024",
+   "http": 200,
+   "content_type": "text/html; charset=utf-8",
+   "bytes": 20537,
+   "html_title": "Checking your browser - reCAPTCHA"
+  },
+  {
+   "label": "api/v1/datasets/download (slug in task)",
+   "url": "https://www.kaggle.com/api/v1/datasets/download/cviaxmiwnptr/nba-betting-data-october-2007-to-june-2026",
+   "http": 200,
+   "content_type": "text/html; charset=utf-8",
+   "bytes": 20546,
+   "html_title": "Checking your browser - reCAPTCHA"
+  },
+  {
+   "label": "api/v1/datasets/download (real slug)",
+   "url": "https://www.kaggle.com/api/v1/datasets/download/cviaxmiwnptr/nba-betting-data-october-2007-to-june-2024",
+   "http": 200,
+   "content_type": "text/html; charset=utf-8",
+   "bytes": 20549,
+   "html_title": "Checking your browser - reCAPTCHA"
+  }
+ ],
+ "via_reader": {
+  "dead_slug_status_snippet": "Title: Your Home for Data Science\n\nURL Source: https://www.kaggle.com/datasets/cviaxmiwnptr/nba-betting-data-october-2007-to-june-2026\n\nWarning: Target URL returned error 404: Not Found\n\nMarkdown Content:\nKaggle uses cookies from Google to deliver and enhance the quality of its services and to analyze traffic.\n\n[Learn more](https://www.kaggle.com/cookies)\nOK, Got it.\n"
+ },
+ "metadata": {
+  "title": "NBA Betting Data | October 2007 to June 2026",
+  "subtitle": "Scores, point spreads, totals, and other odds from all NBA games.",
+  "licenseName": "CC0: Public Domain",
+  "totalBytes": 2493308,
+  "usabilityRating": 0.7647059,
+  "lastUpdated": "2026-06-15T05:27:31.363Z",
+  "downloadCount": 4276,
+  "voteCount": 27,
+  "viewCount": 10938,
+  "ownerName": "cviaxmiwnptr",
+  "url": "",
+  "files": [],
+  "description": "**Column Labels**\n\n - **season** \u2013 Year the season ended. For example, the 2018-19 season is encoded as 2019.\n - **date** \u2013 Date of the game\n - **regular** \u2013 Regular season game (True or False)\n - **playoffs** \u2013 Playoff game (True or False)\n - **away** \u2013 Away team\n - **home** \u2013 Home team\n - **score_away** \u2013 Away team's score\n - **score_home** \u2013 Home team's score\n - **q1_away** \u2013 Away team's 1st quarter score\n - **q2_away** \u2013 Away team's 2nd quarter score\n - **q3_away** \u2013 Away team's 3rd quarter score\n - **q4_away** \u2013 Away team's 4th quarter score\n - **ot_away** \u2013 Away team's overtime score\n - **q1_home** \u2013 Home team's 1st quarter score\n - **q2_home** \u2013 Home team's 2nd quarter score\n - **q3_home** \u2013 Home team's 3rd quarter score\n - **q4_home** \u2013 Home team's 4th quarter score\n - **ot_home** \u2013 Home team's overtime score\n - **whos_favored** \u2013 Betting favorite (home or away)\n - **spread** \u2013 Point spread (always a positive number)\n - **total** \u2013 Over/Under\n - **moneyline_away** \u2013 American moneyline odds for away team\n - **moneyline_home** \u2013 American moneyline odds for home team\n - **h2_spread** \u2013 Second half point spread\n - **h2_total** \u2013 Second half over/under\n - **id_spread** \u2013 1 if favorite covered, 0 if underdog covered. 2 if push\n - **id_total** \u2013 1 if total went over, 0 if under, 2 if push\n\n---\n\n**Data Sources**\n\n - October 30, 2007 to January 16, 2023: [Sportsbook Reviews Online](https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba/nbaoddsarchives.htm)\n - January 17, 2023 to June 22, 2025: [ESPN](https://www.espn.com/nba/game/_/gameId/401656363/mavericks-celtics) \n - Since October 21, 2025: The median odds listed on [Sportsbook Review](https://www.sportsbookreview.com/betting-odds/nba-basketball/)\n\nI scraped SportsbookReviewsOnline.com and fixed a few errors. They seem to have stopped updating the page so I now use other sources.\n\n---\n\n**Notes**\n\n - Seattle moved to Oklahoma City beginning in the 2008-09 season. I encode them as okc for consistency.\n - New Jersey moved to Brooklyn beginning in the 2012-13 season. I encode them as bkn for consistency.\n - 2H and Moneyline odds are absent from the ESPN data (since Jan 2023). Note that ESPN uses non-integer values exclusively so there are no pushes."
+ },
+ "coverage_histogram": {
+  "buckets": [
+   [
+    "2008.00",
+    "2008.90",
+    "1,316"
+   ],
+   [
+    "2008.90",
+    "2009.80",
+    "1,315"
+   ],
+   [
+    "2009.80",
+    "2010.70",
+    "1,312"
+   ],
+   [
+    "2010.70",
+    "2011.60",
+    "1,311"
+   ],
+   [
+    "2011.60",
+    "2012.50",
+    "1,074"
+   ],
+   [
+    "2012.50",
+    "2013.40",
+    "1,314"
+   ],
+   [
+    "2013.40",
+    "2014.30",
+    "1,319"
+   ],
+   [
+    "2014.30",
+    "2015.20",
+    "1,311"
+   ],
+   [
+    "2015.20",
+    "2016.10",
+    "1,316"
+   ],
+   [
+    "2017.00",
+    "2017.90",
+    "1,309"
+   ],
+   [
+    "2017.90",
+    "2018.80",
+    "1,312"
+   ],
+   [
+    "2018.80",
+    "2019.70",
+    "1,312"
+   ],
+   [
+    "2019.70",
+    "2020.60",
+    "1,143"
+   ],
+   [
+    "2020.60",
+    "2021.50",
+    "1,171"
+   ],
+   [
+    "2021.50",
+    "2022.40",
+    "1,323"
+   ],
+   [
+    "2022.40",
+    "2023.30",
+    "1,320"
+   ],
+   [
+    "2023.30",
+    "2024.20",
+    "1,319"
+   ],
+   [
+    "2024.20",
+    "2025.10",
+    "1,321"
+   ],
+   [
+    "2025.10",
+    "2026.00",
+    "1,322"
+   ],
+   [
+    "10/30/2007",
+    "10/04/2008",
+    "1,316"
+   ],
+   [
+    "10/04/2008",
+    "09/09/2009",
+    "1,315"
+   ],
+   [
+    "09/09/2009",
+    "08/15/2010",
+    "1,312"
+   ],
+   [
+    "08/15/2010",
+    "07/21/2011",
+    "1,311"
+   ],
+   [
+    "07/21/2011",
+    "06/25/2012",
+    "1,074"
+   ],
+   [
+    "06/25/2012",
+    "05/31/2013",
+    "1,305"
+   ],
+   [
+    "05/31/2013",
+    "05/06/2014",
+    "1,293"
+   ],
+   [
+    "05/06/2014",
+    "04/11/2015",
+    "1,227"
+   ],
+   [
+    "04/11/2015",
+    "03/16/2016",
+    "1,130"
+   ],
+   [
+    "03/16/2016",
+    "02/19/2017",
+    "1,154"
+   ],
+   [
+    "02/19/2017",
+    "01/25/2018",
+    "1,173"
+   ]
+  ]
+ },
+ "download_without_key": {
+  "test": "GET https://www.kaggle.com/api/v1/datasets/download/<owner>/<slug> with no auth from this machine",
+  "result": "HTTP 200 text/html (reCAPTCHA challenge page), not a zip; no Content-Length, no Content-Disposition",
+  "local_credentials": {
+   "~/.kaggle/kaggle.json": "missing",
+   "KAGGLE_USERNAME": "unset",
+   "KAGGLE_KEY": "unset",
+   "KAGGLE_API_TOKEN": "unset"
+  },
+  "conclusion": "NOT downloadable from this machine without an API key / a non-bot-walled egress"
+ },
+ "page_flags_snippet": [
+  [
+   "true",
+   "22,808"
+  ],
+  [
+   "false",
+   "1,632"
+  ],
+  [
+   "true",
+   "1,592"
+  ],
+  [
+   "false",
+   "22,848"
+  ]
+ ],
+ "verdict_on_claim": {
+  "claim_title": "NBA Betting Data | October 2007 to June 2026",
+  "actual_title": "NBA Betting Data | October 2007 to June 2026",
+  "claim_url_slug_exists": false,
+  "real_slug": "cviaxmiwnptr/nba-betting-data-october-2007-to-june-2024",
+  "license_from_api": "CC0: Public Domain",
+  "moneyline_after_jan_2023": "author note: '2H and Moneyline odds are absent from the ESPN data (since Jan 2023)' -> no ML after 2023-01-16"
+ }
+}

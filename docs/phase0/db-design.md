@@ -64,18 +64,53 @@ Notes:
 * One row per (game, arm, model_version) in `predictions` means re-running an arm cannot silently overwrite an
   earlier logged prediction — the live 2026-27 log depends on that.
 
-## 4. Ingest endpoint strategy (from the probes)
+## 4. Ingest endpoint strategy (from the probes, updated after verification)
 
-| Data | Endpoint | Era notes |
+**Single code path: the v3 endpoint family, for every season 2005-06 → 2025-26.**
+
+| Data | Endpoint | Verified coverage |
 |---|---|---|
-| Game logs | `leaguegamefinder.LeagueGameFinder(season_nullable=...)` | Primary bulk path; per-season, resumable |
-| Box score + inactives + officials | `boxscoresummaryv2.BoxScoreSummaryV2` | Works 2005-06 → ~2025-04-10 |
-| Modern seasons | `boxscoresummaryv3.BoxScoreSummaryV3` | Required after the V2 cut-off; returns `inactive_players`/`officials` |
-| Player box score | `boxscoretraditionalv2` / `…v3` | V2 no longer published for 2025-26 — use V3 there |
+| Game logs | `leaguegamefinder.LeagueGameFinder(season_nullable='YYYY-YY', league_id_nullable='00')` | PASS 8/8 sampled seasons; rows/2 = games (1230 typical, 1229 in 2012-13 — one game was cancelled, 1059 in 2019-20, 1080 in 2020-21) |
+| Box score + inactives + officials | `boxscoresummaryv3.BoxScoreSummaryV3` | 9 datasets incl. `inactive_players` + `officials` for 2005-06, 2012-13, 2018-19 and 2025-26 |
+| Player box score / advanced | `boxscoretraditionalv3`, `boxscoreadvancedv3` | PASS, including 2025-26 |
+| Play-by-play (not ingested in Phase 2) | `playbyplayv3` | PASS; 438 events for a 2005-06 game |
 
-Retry policy: nba_api calls have shown **cold-start flakiness** (first V3 call and the first 2013 scoreboard call
-returned empty/non-JSON, then succeeded on retry). Every call gets 3 attempts with 2s/5s/15s backoff, and a
-`<endpoint>.failures.jsonl` log so a partial ingest is visible rather than silently incomplete.
+v2 is dead: `boxscoretraditionalv2` returns 0 rows for 2025-26, `boxscoreadvancedv2`/`playbyplayv2` return literal `{}`,
+and `boxscoresummaryv2` silently returns empty Officials/InactivePlayers after 2025-04-09 (sporadic before).
+**Do not build a v2 path.** Filter game logs to regular season with `SEASON_ID == '2' + YYYY`.
+
+Hard limits found:
+
+* **LeagueGameFinder caps at 30,000 rows and returns newest-first** — an all-seasons call silently drops the oldest
+  seasons. Always query season-by-season (21 calls; a single-season call is ~5 s for ~15k rows).
+* v3 responses have **no `resultSets` key**; read them via `nba_response.get_data_sets(endpoint)`.
+* Flakiness is content-level, not rate-level: 0-byte bodies occur occasionally (e.g. scoreboardv2 3/7 in one run) and
+  succeed on retry. No HTTP 429 and no timeout in 150+ probe calls. Every call gets 3 attempts (2s/5s/15s backoff).
+
+Odds sources (free; full detail in `probe-odds.md`):
+
+| Seasons | Closing line | Opening price | Route |
+|---|---|---|---|
+| 2005-06, 2006-07 | none | none | burn-in (training only) |
+| 2007-08 → 2012-13 | SBR `Close` (ML + spread) | open spread only (**no opening ML**) | SBR HTML via the r.jina.ai reader |
+| 2013-14 → 2016-17 | ESPN book quotes | ESPN `'Opening'` pseudo-provider (ML, spread, total) | `sports.core.api.espn.com` |
+| 2017-18 → 2022-23 | ESPN book quotes | teamrankings movement series (timestamped ML open→close) | core API `/odds/1002/history/0/movement` |
+| 2023-24 → 2025-26 | ESPN book quotes (thin: 2024-25 = ESPN BET only, 2025-26 = DraftKings only) | per-book `.open` | core API |
+
+So the closing-line benchmark is testable 2007-08 → 2025-26, and the **opening-line benchmark (Tier 2) is testable
+2013-14 → 2025-26** — wider than the pre-registration assumed (see its deviations log).
+
+Transport rules, both measured the hard way:
+
+1. **Use `nba_api`** (or its exact `STATS_HEADERS`: 12 headers including `Sec-Ch-Ua`, `Sec-Ch-Ua-Mobile`,
+   `Sec-Fetch-Dest`, `Connection`, `Host`, `Accept-Encoding`). A partial header set produces a **~20 s silent stall
+   that looks exactly like an outage** — this cost two probe rounds to root-cause.
+2. **Reuse a `requests.Session`.** `raw.githubusercontent.com` costs ~21 s per fresh TCP connection and 0.05 s when
+   the connection is reused — a downloader that skips session reuse turns a 3-minute job into hours.
+
+SBR parser rule (from its HTML): the favourite's row carries the spread and the underdog's row carries the total —
+**decide by the sign of ML**, not by the V/H column.
+
 
 ## 5. Idempotency and resume
 
@@ -103,12 +138,25 @@ returned empty/non-JSON, then succeeded on retry). Every call gets 3 attempts wi
 5. Leakage property test: for N sampled games per era, rebuild features from a truncated DB and assert equality.
 6. `game_inactives` coverage report per season (rows per game, min/median/max) — must be ≥ 1 for ~all games post-2005.
 
-## 8. Measured numbers (filled from the environment probe)
+## 8. Measured numbers (environment probe, 2026-09-21/22)
 
-| Quantity | Value | Source |
+| Quantity | Value | Note |
 |---|---|---|
-| bytes per game (summary payload) | _pending_ | env probe |
-| projected DB size, 21 seasons, no PBP | _pending_ | env probe |
-| seconds per nba_api call (10-call sample) | _pending_ | env probe |
-| projected full ingest wall-clock | _pending_ | env probe |
-| free disk at design time | 62 GB on a single drive | measured 2026-09-21 |
+| free disk | **73 GB** on a single drive (93% full) | measured, not assumed |
+| box-score summary payload | mean **20,377 B/game** | v3 |
+| inactives | mean 619 B/game; **79/80 sampled games have ≥ 1 row** | one 2005-06 game has the set but 0 rows |
+| parquet compression | ratio 0.32 (box scores), 0.12 (PBP) | measured |
+| DB size, logs + box + inactives, 21 seasons | ~545 MB raw / **~190 MB parquet** | target size |
+| + play-by-play | ~7.2 GB raw / ~1.0 GB parquet | not ingested in Phase 2 |
+| + raw JSONL caches at peak | ~8.5 GB = 11.7% of free disk | worst case, before pruning |
+| nba_api latency | mean 0.70 s incl. cold start; **0.50 s steady state** | 10-call sample |
+| ingest, box scores only (27.5k games) | 3.8 h no sleep / 8.4 h at 0.6 s sleeps | single-threaded |
+| ingest, summary + traditional + advanced | **~12.2 h single-threaded; ~2–2.5 h at 6 workers** | the number that matters |
+| HTTP 429 / timeouts in 150+ probe calls | **0** | the risk is content flakiness, not throttling |
+
+Pruning policy: prune each season's raw cache once its parquet is validated (peak raw 7.4 GB → ~360 MB).
+
+Interpreter: the repo had **no venv** — dependencies were resolving to Hermes's own interpreter, so the ingest would
+not have been reproducible and could be broken by another process upgrading a shared env. `.venv/` is now created
+from the pinned `requirements.txt`; use `.venv/Scripts/python.exe -m pytest` (see `verification-notes.md`).
+

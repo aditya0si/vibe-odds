@@ -101,7 +101,8 @@ Any change to a frozen item is recorded here with date and reason.
 
 | Date | Item | Change | Reason |
 |---|---|---|---|
-| — | — | *(empty — the protocol has not been deviated from yet)* | — |
+| 2026-09-22 | §7 Tier 2 window | "2017-18+" → **"2013-14 → 2025-26"** | Phase 0 probes verified that opening prices are obtainable for 2013-14→2016-17 (ESPN `'Opening'` provider) and 2017-18→2022-23 (teamrankings timestamped movement series) as well as 2023-24+ (per-book `.open`), and that pre-game inactive lists exist for every season back to 2005-06. The old window was set by an assumption about injury-report availability that turned out to be unnecessary. No model has been fitted; no results have been seen. |
+| 2026-09-22 | §4 market arm data | closing-line coverage fixed as **2007-08 → 2025-26** (SBR via reader 2007-08→2012-13; ESPN core 2013-14→2025-26); 2005-06/2006-07 remain burn-in with no market benchmark | Phase 0 probe results (`docs/phase0/probe-odds.md`, `verification-notes.md`). |
 
 ## 10. Licensing and data ethics (frozen)
 
