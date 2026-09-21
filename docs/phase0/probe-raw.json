@@ -1,0 +1,92 @@
+{
+ "generated_by": "tools/probes/source_probe.py",
+ "results": [
+  {
+   "probe": "stats.nba.com (raw scoreboardv2)",
+   "ok": false,
+   "detail": "ReadTimeout: HTTPSConnectionPool(host='stats.nba.com', port=443): Read timed out. (read timeout=30)",
+   "ms": 33443,
+   "url": "https://stats.nba.com/stats/scoreboardv2?GameDate=01/15/2013&LeagueID=00&DayOffset=0"
+  },
+  {
+   "probe": "site.api.espn.com scoreboard",
+   "ok": false,
+   "detail": "HTTP 403, 461 bytes",
+   "ms": 318,
+   "url": "https://site.api.espn.com/apis/site/v2/sports/basketball/leagues/nba/scoreboard?dates=20130115"
+  },
+  {
+   "probe": "sports.core.api.espn.com odds",
+   "ok": true,
+   "detail": "HTTP 200, 14878 bytes",
+   "ms": 1436,
+   "url": "https://sports.core.api.espn.com/v2/sports/basketball/leagues/nba/events/400489399/competitions/400489399/odds"
+  },
+  {
+   "probe": "kaggle.com dataset page",
+   "ok": true,
+   "detail": "HTTP 200, 20506 bytes",
+   "ms": 502,
+   "url": "https://www.kaggle.com/datasets/cviaxmiwnptr/nba-betting-data-october-2007-to-june-2026"
+  },
+  {
+   "probe": "raw.githubusercontent.com",
+   "ok": false,
+   "detail": "HTTP 404, 14 bytes",
+   "ms": 20519,
+   "url": "https://raw.githubusercontent.com/README.md"
+  },
+  {
+   "probe": "sportsbookreviewsonline archive index",
+   "ok": false,
+   "detail": "SSLError: HTTPSConnectionPool(host='www.sportsbookreviewsonline.com', port=443): Max retries exceeded with url: /scoresoddsarchives/nba/nbaoddsarchives.htm (Caused by SSLError(SSLCertVerificationError(1, '[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1016)')))",
+   "ms": 366,
+   "url": "https://www.sportsbookreviewsonline.com/scoresoddsarchives/nba/nbaoddsarchives.htm"
+  },
+  {
+   "probe": "nba_api import",
+   "ok": true,
+   "detail": "scoreboardv2 importable"
+  },
+  {
+   "probe": "nba_api scoreboardv2 01/15/2013",
+   "ok": false,
+   "detail": "JSONDecodeError: Expecting value: line 1 column 1 (char 0)",
+   "ms": 33124
+  },
+  {
+   "probe": "nba_api scoreboardv2 12/15/2024",
+   "ok": true,
+   "detail": "7 games, ids[:3]=['0022401216', '0022401217', '0022401227']",
+   "ms": 656
+  },
+  {
+   "probe": "inactive+officials payload gid=0022401216",
+   "ok": true,
+   "detail": "sets=9, InactivePlayers rows=8, Officials rows=3, has_InactivePlayers=True",
+   "ms": 577,
+   "game_id": "0022401216",
+   "result_sets": [
+    "GameSummary",
+    "OtherStats",
+    "Officials",
+    "InactivePlayers",
+    "GameInfo",
+    "LineScore",
+    "LastMeeting",
+    "SeasonSeries",
+    "AvailableVideo"
+   ]
+  },
+  {
+   "probe": "ESPN scoreboard 20130115",
+   "ok": false,
+   "detail": "HTTP 403: <HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</HEAD><BODY>\n<H1>Access Denied</H1>\n \nYou don't have permission to access \"ht"
+  },
+  {
+   "probe": "ESPN scoreboard 20241215",
+   "ok": false,
+   "detail": "HTTP 403: <HTML><HEAD>\n<TITLE>Access Denied</TITLE>\n</HEAD><BODY>\n<H1>Access Denied</H1>\n \nYou don't have permission to access \"ht"
+  }
+ ]
+}
