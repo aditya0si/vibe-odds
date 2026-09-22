@@ -1,0 +1,55 @@
+{
+ "note": "Frozen NBA evidence. sports/nba/data/ is gitignored, so the artifact bytes are rebuilt deterministically by the NBA pipeline and their sha256 is pinned here. Any drift fails tests/evidence/test_nba_frozen_evidence.py. Rebaseline ONLY in a commit that says which published number moved and why (same rule as tests/evidence/frozen_manifest.json).",
+ "captured_at": "2026-09-22",
+ "captured_on_commit": "4485589",
+ "hash": "sha256 (full 64-hex) of file bytes",
+ "paths": "relative to the repo root; sports/nba/data/ stays gitignored",
+ "excludes": "cache/ and *.failures.jsonl operational logs (never evidence)",
+ "files": {
+  "sports/nba/data/features_v1_evidence.json": {
+   "sha256": "b21f476d3dfea9900e93119f776c3da5042030577c4dec6addebeecf518bce68",
+   "bytes": 2502,
+   "claims": "v1 as-of feature build: 25,258 games, per-season game counts, home-court Elo edge (70.4 -> 56.5) and home-win rate (0.603 -> 0.544), final Elo top-10."
+  },
+  "sports/nba/data/features_v2_evidence.json": {
+   "sha256": "bb3f7e950f23e65f8ff18ae9ac114c1d43c98e07d65e8bd87f3c46538255bae5",
+   "bytes": 2502,
+   "claims": "v2 as-of feature build (v1 keys + availability): same per-season coverage and final Elo top-10; the A6 feature payload."
+  },
+  "sports/nba/data/formula_v1.json": {
+   "sha256": "cfe5d4804cea7b41adbd5122143312ca97d25277c6095c51015fd81fcf9af1c6",
+   "bytes": 1040,
+   "claims": "Fitted A5 formula (market-free logistic): 7 named coefficients, intercept, standardiser means/sds, and the frozen train/tune windows."
+  },
+  "sports/nba/data/formula_v1_report.json": {
+   "sha256": "5b14bf4125af14407560d18302fb53ca68a4d19405112b1a36f03f94d5fd0ec2",
+   "bytes": 24558,
+   "claims": "A5 development report: per-season and pooled metrics, plus the 2021-22 sigma_d lock (0.08497, n=1,227) the significance test depends on."
+  },
+  "sports/nba/data/nba_ablation_v1.json": {
+   "sha256": "ddc4efc788fabfac10eea7616bd6f2890696d7d214be258468792f199b780190",
+   "bytes": 5705,
+   "claims": "Drop-one-signal ablation for A5 and A6: pooled and per-season delta-Brier for every named feature (exploratory)."
+  },
+  "sports/nba/data/nba_availability_v1.json": {
+   "sha256": "2defcbbbf3121c0350e9d9137ffdb18fba09833d8dceb6125ba4a16c14d9cd64",
+   "bytes": 7101,
+   "claims": "Exploratory A6 arm (A5 + availability): coefficients, per-season and pooled A5-vs-A6 metrics, paired tests, and the 0.00723 -> 0.00460 gap-to-open verdict."
+  },
+  "sports/nba/data/nba_market_structure_v1.json": {
+   "sha256": "bbf6103ec923b6acf07385deeeec9c9c86a6b08c611a7a11ef81b3ec59c2dee1",
+   "bytes": 1093,
+   "claims": "Market structure on the 4,888-game open+close block: Brier levels for formula/open/close and the market's own open-to-close improvement."
+  },
+  "sports/nba/data/nba_walkforward_v1.json": {
+   "sha256": "3940dc22bb209f4e55653a39451be004a4644eb877d0b927087f637d70a181de",
+   "bytes": 6461,
+   "claims": "The pre-registered A5 claim ledger on the 2022-23..2025-26 test block: T1 PASS, T2 FAIL, T3 FAIL, with paired mean Brier differences and blocked 95% CIs."
+  },
+  "sports/nba/data/nba_walkforward_v1_contaminated.json": {
+   "sha256": "713330e0e032f6f7d4a489ca0d40b6cb281463945c4a478f5fb4ae0d024542a8",
+   "bytes": 6458,
+   "claims": "Historical pre-fix ledger (in-play feed rows leaked into the closing arm). Preserved only as evidence of the documented contamination bug fix; never claim from it."
+  }
+ }
+}
