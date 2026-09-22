@@ -16,6 +16,11 @@
    "bytes": 3356,
    "claims": "v2 as-of feature build (v1 keys + availability): same per-season coverage and final Elo top-10, plus the availability_coverage block (publication rule, REPLACEMENT_LEVEL prior, 25,228 authoritative / 30 unknown games). The A6 feature payload."
   },
+  "sports/nba/data/features_v3_evidence.json": {
+   "sha256": "39f185d97cfc3a83b6835b7b0c2044679af4c63a7391b3923f7131feef741979",
+   "bytes": 3356,
+   "claims": "v3 as-of feature build (v2 keys + signed player-impact absence values). Phase-2 A7 arm input (docs/preregistration.md 13). Same coverage block as v2 - impact shares the authoritative-list rule, so the eligible-row set is identical."
+  },
   "sports/nba/data/formula_v1.json": {
    "sha256": "cfe5d4804cea7b41adbd5122143312ca97d25277c6095c51015fd81fcf9af1c6",
    "bytes": 1040,
@@ -45,6 +50,11 @@
    "sha256": "bbf6103ec923b6acf07385deeeec9c9c86a6b08c611a7a11ef81b3ec59c2dee1",
    "bytes": 1093,
    "claims": "Market structure on the 4,888-game open+close block: Brier levels for formula/open/close and the market's own open-to-close improvement."
+  },
+  "sports/nba/data/nba_phase2_gate.json": {
+   "sha256": "08418d1c9cb669c39cd4a5ff25bd720c7e9d84c4654b8e0943400db720c61663",
+   "bytes": 610,
+   "claims": "Phase-2 tune gate (fit <= 2020-21, scored on 2021-22): A7 (impact absences) 0.21573 vs A6 0.21591, verdict 'enter' under the pre-registered strict-improvement rule (docs/preregistration.md 13). Development evidence only: claim_eligible=false."
   },
   "sports/nba/data/nba_walkforward_v1.json": {
    "sha256": "3940dc22bb209f4e55653a39451be004a4644eb877d0b927087f637d70a181de",

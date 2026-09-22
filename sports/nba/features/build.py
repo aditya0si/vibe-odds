@@ -2,32 +2,24 @@
 
     python -m sports.nba.features.build --version v1
     python -m sports.nba.features.build --version v2   # v1 + pre-game availability
+    python -m sports.nba.features.build --version v3   # v2 + player-IMPACT absence values
     python -m sports.nba.features.build --check-leakage     # proves the pass is as-of
 
 The pass walks games in chronological order and, for each game, emits a feature row from
-state that was updated only by EARLIER games; the game's own result is applied afterwards.
-That ordering is the whole as-of guarantee, so the leakage check re-runs the same pass over a
-truncated game list and asserts every overlapping row is byte-identical.
-
-Features (all market-free):
-  elo_home, elo_away, elo_diff      - Elo before the game, season-regressed at season boundaries
-  hca                               - home-court advantage in Elo points, estimated from the
-                                      EXPANDING home-win rate of PRIOR seasons (time-varying, and
-                                      never from the season it is used in)
-  form_margin_{home,away}           - mean point margin over the last 10 games
-  pace_{home,away}                  - mean possessions per team-game over the last 10
-  ortg_{home,away}, drtg_{home,away}- points per 100 possessions (last 10)
-  rest_{home,away}, b2b_{home,away} - days since last game; back-to-back flag
-  games_last7_{home,away}           - schedule density
-  is_neutral, season_game_no, era flags (covid, empty_arena, rule_break_14s, season_length)
+state built strictly from EARLIER games (ratings/form updated after the row is written).
+Rows land in the `features` table keyed by (game_id, feature_version) as JSON payloads.
 
 Versions:
-  v1 - the keys above (frozen: the published A5 arm depends on v1 rows being
-       byte-identical, so the v1 path must never change).
-  v2 - every v1 key plus the pre-game availability keys from features/availability.py
-       (avail_missing_home/away, avail_diff, avail_top_out_home/away,
-       avail_n_inactive_home/away). v2 rows are stored under feature_version "v2",
-       so v1 rows are untouched.
+   v1 - the keys above (frozen: the published A5 arm depends on v1 rows being
+        byte-identical, so the v1 path must never change).
+   v2 - every v1 key plus the pre-game availability keys from features/availability.py
+        (avail_missing_home/away, avail_diff, avail_top_out_home/away,
+        avail_n_inactive_home/away). v2 rows are stored under feature_version "v2",
+        so v1 rows are untouched.
+   v3 - every v2 key plus the player-IMPACT absence values from features/impact.py
+        (impact_out_home/away/diff: shrunk rolling plus_minus of the inactive
+        players - signed, so missing a bad player reads as positive news). Phase-2
+        A7 arm input; v1/v2 rows and their evidence artifacts are untouched.
 """
 
 from __future__ import annotations
@@ -41,10 +33,12 @@ from datetime import date as _date, timedelta
 
 from sports.nba.db import build, paths
 from sports.nba.features import availability as AV
+from sports.nba.features import impact as IM
 from sports.nba.features import ratings as R
 
 FEATURE_VERSION = "v1"
 AVAIL_VERSION = "v2"
+IMPACT_VERSION = "v3"
 EMPTY_ARENA_SEASON = "2020-21"
 COVID_SEASONS = {"2019-20", "2020-21"}
 RULE_BREAK_FROM = "2018-19"      # 14-second offensive-rebound reset
@@ -53,7 +47,7 @@ SEASON_LENGTH = {}
 
 def load_games(con: sqlite3.Connection, upto: str | None = None) -> list[sqlite3.Row]:
     sql = """SELECT g.game_id, g.season, g.game_date, g.home_team_id, g.away_team_id,
-                    g.home_score, g.away_score, g.is_neutral
+                   g.home_score, g.away_score, g.is_neutral
              FROM games g
              WHERE g.season_type='regular' AND g.home_score IS NOT NULL AND g.away_score IS NOT NULL"""
     params: tuple = ()
@@ -72,14 +66,16 @@ def load_team_lines(con: sqlite3.Connection) -> dict[tuple[str, int], sqlite3.Ro
 
 def build_rows(con: sqlite3.Connection, upto: str | None = None,
                verbose: bool = True, version: str = FEATURE_VERSION) -> tuple[dict[str, dict], dict]:
-    if version not in (FEATURE_VERSION, AVAIL_VERSION):
-        raise ValueError(f"unknown feature version {version!r} (want 'v1' or 'v2')")
+    if version not in (FEATURE_VERSION, AVAIL_VERSION, IMPACT_VERSION):
+        raise ValueError(f"unknown feature version {version!r} (want 'v1', 'v2' or 'v3')")
     games = load_games(con, upto)
     lines = load_team_lines(con)
-    # v2 merges the pre-game availability pass. It takes the same `upto` cut, and it is
+    # v2/v3 merge the pre-game availability pass. It takes the same `upto` cut, and it is
     # as-of by the same construction (state updated only after each game's row is
     # emitted), so the merged rows inherit the leakage guarantee - see test_asof_v2.
-    avail = AV.build_availability(con, upto=upto, verbose=False) if version == AVAIL_VERSION else {}
+    avail = AV.build_availability(con, upto=upto, verbose=False) \
+        if version in (AVAIL_VERSION, IMPACT_VERSION) else {}
+    impact = IM.build_impact(con, upto=upto) if version == IMPACT_VERSION else {}
     elo = R.EloState()
     hist: dict[int, R.TeamHistory] = defaultdict(R.TeamHistory)
 
@@ -114,7 +110,6 @@ def build_rows(con: sqlite3.Connection, upto: str | None = None,
 
         rest_h, b2b_h, g7_h = rest_of(home_id)
         rest_a, b2b_a, g7_a = rest_of(away_id)
-
         rows[g["game_id"]] = {
             "feature_version": version,
             "game_id": g["game_id"], "season": season, "game_date": g["game_date"],
@@ -136,11 +131,14 @@ def build_rows(con: sqlite3.Connection, upto: str | None = None,
             "era_empty_arena": 1 if season == EMPTY_ARENA_SEASON else 0,
             "era_rule_break_14s": 1 if season >= RULE_BREAK_FROM else 0,
         }
-        if version == AVAIL_VERSION:
+        if version in (AVAIL_VERSION, IMPACT_VERSION):
             # v1 keys above are untouched (byte-identical to the v1 pass); the
             # availability keys are appended after them.
             for k in AV.AVAIL_KEYS:
                 rows[g["game_id"]][k] = avail.get(g["game_id"], {}).get(k)
+        if version == IMPACT_VERSION:
+            for k in IM.IMPACT_KEYS:
+                rows[g["game_id"]][k] = impact.get(g["game_id"], {}).get(k)
 
         # ---- state updates (only now may the current game's result be used) ----
         margin = float(g["home_score"] - g["away_score"])
@@ -165,7 +163,7 @@ def build_rows(con: sqlite3.Connection, upto: str | None = None,
         "home_win_rate_by_season": {s: (sum(w) / len(w) if w else None) for s, w in sorted(season_home_wins.items())},
         "elo_final_top10": sorted(((t, round(r, 1)) for t, r in elo.ratings.items()), key=lambda x: -x[1])[:10],
     }
-    if version == AVAIL_VERSION:
+    if version in (AVAIL_VERSION, IMPACT_VERSION):
         # The coverage artifact's documented publication rule (availability.py):
         # authoritative vs unknown inactive lists, so a future reader can tell why a
         # row is numeric or None without reading the builder.
@@ -205,8 +203,9 @@ def leakage_check(con: sqlite3.Connection, version: str = FEATURE_VERSION) -> in
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Build as-of NBA feature rows")
-    ap.add_argument("--version", default=FEATURE_VERSION, choices=(FEATURE_VERSION, AVAIL_VERSION),
-                    help="v1 (frozen) or v2 (v1 + pre-game availability)")
+    ap.add_argument("--version", default=FEATURE_VERSION,
+                    choices=(FEATURE_VERSION, AVAIL_VERSION, IMPACT_VERSION),
+                    help="v1 (frozen), v2 (v1 + pre-game availability), v3 (v2 + impact absences)")
     ap.add_argument("--check-leakage", action="store_true")
     ap.add_argument("--no-write", action="store_true", help="build and report without touching the DB")
     args = ap.parse_args(argv)
