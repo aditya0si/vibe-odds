@@ -4,15 +4,18 @@ Copies the GBM model + feature meta (both trained on <=2023 data only),
 current Hedge weights, and calibration into data/sim_frozen/ with a manifest.
 The sim rebuilds ratings state by replay (deterministic), so no pickle needed.
 
+Manifest/log mechanics live in ``core.ledger`` (map step 3).
+
 python -m backend.sim.freeze
 """
 
 from __future__ import annotations
 
-import hashlib
 import json
 import shutil
 from pathlib import Path
+
+from core.ledger import freeze_manifest, sha12
 
 DATA = Path(__file__).resolve().parents[2] / "data"
 # FROZEN is a module constant so tests can redirect it (tests/conftest.py):
@@ -20,11 +23,7 @@ DATA = Path(__file__).resolve().parents[2] / "data"
 FROZEN = DATA / "sim_frozen"
 CUTOFF = 20240101
 
-
-def _sha(p: Path) -> str | None:
-    if not p.exists():
-        return None
-    return hashlib.sha256(p.read_bytes()).hexdigest()[:12]
+_sha = sha12  # historical name
 
 
 def freeze(cutoff: int = CUTOFF, verbose: bool = True) -> dict:
@@ -34,12 +33,12 @@ def freeze(cutoff: int = CUTOFF, verbose: bool = True) -> dict:
         src = DATA / name
         if src.exists():
             shutil.copy2(src, FROZEN / name)
-            copied[name] = _sha(src)
+            copied[name] = sha12(src)
         else:
             copied[name] = None
     manifest = {"cutoff": cutoff, "files": copied,
                 "note": "GBM trained on <=2023; weights/calibration as live at freeze time."}
-    (FROZEN / "manifest.json").write_text(json.dumps(manifest, indent=1))
+    freeze_manifest(manifest, FROZEN / "manifest.json")
     if verbose:
         print(json.dumps(manifest, indent=1))
     return manifest

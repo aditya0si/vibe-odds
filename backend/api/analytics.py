@@ -23,11 +23,8 @@ CONF_SLICES = [
 
 
 def _read_json(name: str):
-    p = DATA / name
-    try:
-        return json.loads(p.read_text())
-    except (FileNotFoundError, json.JSONDecodeError):
-        return None
+    from core.ledger import read_json
+    return read_json(DATA / name)
 
 
 def calibration_badge(conf: float) -> dict:

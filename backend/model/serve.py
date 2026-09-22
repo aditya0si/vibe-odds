@@ -19,6 +19,7 @@ from pathlib import Path
 
 from backend.markov.points import PointRatings
 from core import calibration as CAL
+from core.ledger import append_jsonl
 from backend.model.ensemble import Ensemble, WEIGHTS_PATH
 from backend.model.signals import SIGNALS, Ctx
 from backend.ratings.elo import SurfaceElo
@@ -106,9 +107,7 @@ def _log_verdict(card: dict) -> None:
     try:
         # VERDICTS_LOG is a module constant so tests can redirect it
         # (tests/conftest.py): the suite must never mutate evidence under data/.
-        VERDICTS_LOG.parent.mkdir(parents=True, exist_ok=True)
-        with open(VERDICTS_LOG, "a", encoding="utf-8") as f:
-            f.write(json.dumps({"ts": time.time(), **card}) + "\n")
+        append_jsonl(VERDICTS_LOG, {"ts": time.time(), **card})
     except Exception:
         pass  # logging must never break serving
 
