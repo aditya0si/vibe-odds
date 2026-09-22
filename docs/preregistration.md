@@ -138,3 +138,36 @@ the hash **and** says in the message which number moved and why.
 The evidence guard (`tests/evidence/`, `tools/check_claims.py`, conftest write-redirection) was committed *before*
 this file. That is deliberate and disclosed: the guard is infrastructure protecting the tennis project's published
 numbers, not a model fit. **No NBA model has been fitted, tuned or evaluated at the time of this commit.**
+
+## 13. Phase 2: closing the market gap (registered 2026-09-23, before any Phase-2 fit)
+
+**Goal.** Pass T2 (beat the opening line) and T3 (beat the closing line) on paired Brier, prospectively.
+
+**Burned-window rule (non-negotiable).** We have seen 2022-23 → 2025-26 results. No Phase-2 claim is ever tested on
+that window: Phase-2 re-scores there are published as **retrospective estimates** with
+`"burned_test_set": true, "claim_eligible": false`, never as claim tests. Fit windows stay ≤2020-21, tune 2021-22.
+
+**Tiers.**
+* **T2′ (primary):** formula@T-60 vs the market **open** price (continuity with T2).
+* **T2″ (fair same-info):** formula@T-60 vs the market price **at T-60** (mid snapshot). A T2′ pass that fails
+  T2″ is labelled **news capture, not skill**.
+* **T3 (unchanged):** formula@T-60 vs the **close**.
+* **T2g / T3g:** the nonlinear arm (monotone GBM + Hedge stack) registered as a **separate** tier — it never
+  carries the transparent-formula claim. "Formula" = the locked transparent weighted logistic.
+
+**Arm admission gate.** An arm enters the Phase-2 freeze only if it beats A6 on the 2021-22 tune season
+(pre-registered accept rule; recorded in a Phase-2 ledger).
+
+**Read schedule and power.** One primary read at the 2026-27 regular-season end (n ≈ 1,230; σ_d lock 0.08497;
+detectable Δ ≈ 0.0068 at 80% power). Pre-registered extension: if p < 0.10 but the CI crosses 0, extend to
+2027-28 (n ≈ 2,460, detectable Δ ≈ 0.0048) and read once on the pooled window. σ_d re-locked once on 2021-22
+before the read. Paired blocked bootstrap as in §7 (10-game blocks, Random(7)). The claim read runs **once**.
+
+**Data decision (frozen 2026-09-23).** Phase 2 is **free-data only**. The X/Twitter firehose was evaluated and
+is not free: since 2026-02-06 the X API has no free tier for new developers (pay-per-use ≈ $0.005/read) and
+full-archive search / the firehose are Enterprise-only (from ≈ $42,000/month). The pre-registered sentiment arm
+therefore remains **expected-null and unbuilt**. Nothing is purchased without explicit approval.
+
+**Kill criteria.** (a) an arm failing the tune gate does not enter the freeze; (b) after the full read window, if
+the T2′ / T3 paired CIs still sit below zero → **publish the null and stop** ("cannot beat the close with public
+pre-tip information").
