@@ -345,6 +345,27 @@ def evaluate(con: sqlite3.Connection, formula: dict, rows: list[dict],
     out = paths.DATA / "nba_walkforward_v1.json"
     out.write_text(json.dumps(ledger, indent=1), encoding="utf-8")
     print(f"ledger -> {out}")
+
+    # market structure on the open+close block (n = games with BOTH prices):
+    # the market's own open->close improvement and the formula's standing
+    # against each price level. Written here (not by an ad-hoc script) so a
+    # from-empty rebuild regenerates it byte-identically.
+    ms_block = [g for g in have_close if g in market_open]
+    ms = {
+        "n_test_games": len(ms_block),
+        "market_open_improves_to_close": paired_stats(arms["market_open"], arms["market_close"],
+                                                      labels, ms_block, dates),
+        "formula_vs_open": paired_stats(formula_probs, arms["market_open"], labels, ms_block, dates),
+        "formula_vs_close": paired_stats(formula_probs, arms["market_close"], labels, ms_block, dates),
+        "brier_levels": {
+            "formula": summarise(formula_probs, labels, ms_block),
+            "market_open": summarise(arms["market_open"], labels, ms_block),
+            "market_close": summarise(arms["market_close"], labels, ms_block),
+        },
+    }
+    ms_out = paths.DATA / "nba_market_structure_v1.json"
+    ms_out.write_text(json.dumps(ms, indent=1), encoding="utf-8")
+    print(f"market structure -> {ms_out}")
     return ledger
 
 

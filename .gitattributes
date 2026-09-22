@@ -1,0 +1,7 @@
+# Byte-frozen evidence must survive `git checkout` byte-identical: the repo's
+# hash guards (tests/evidence/*manifest*) sha256 raw file bytes. Without these
+# rules, core.autocrlf on Windows silently rewrites LF -> CRLF on fresh clones
+# and corrupts them (LightGBM's text model parser fatals on CRLF gbm.txt).
+data/** -text
+*.pkl binary
+*.parquet binary
