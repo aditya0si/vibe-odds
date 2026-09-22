@@ -66,6 +66,11 @@
    "bytes": 825,
    "claims": "Phase-2 tune gate (fit <= 2020-21, scored on 2021-22): A8 (A7 + schedule spots) 0.21598 vs A6 0.21591, verdict 'rejected' - the spots arm does not enter the Phase-2 freeze (docs/preregistration.md 13 arm admission log); its T3 prior is lowered accordingly. Development evidence only: claim_eligible=false."
   },
+  "sports/nba/data/nba_phase2_gate_g1.json": {
+   "sha256": "e0739950031a47e50da9114b80a29525a13ef766404cf70098bacb9c616c7ba2",
+   "bytes": 1676,
+   "claims": "Phase-2 tune gate (fit <= 2020-21, scored on 2021-22): G1 (monotone GBM + Hedge stack; the T2g/T3g tier) 0.21677 vs A6 0.21591, verdict 'rejected' - no g-tier arm is admitted. Components: formula 0.21573 / gbm 0.21731 / elo_baseline 0.22246. A superseded first run (0.21721, Hedge warm-up defect) is recorded inside. Development evidence only: claim_eligible=false."
+  },
   "sports/nba/data/nba_walkforward_v1.json": {
    "sha256": "3940dc22bb209f4e55653a39451be004a4644eb877d0b927087f637d70a181de",
    "bytes": 6461,

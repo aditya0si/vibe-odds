@@ -45,7 +45,8 @@ def gate_json(arm: str, a7_brier: float, a6_brier: float, verdict: str,
               n_fit: int, n_tune: int, features,
               season_tune: str = F.TUNE_SEASON,
               prev_arm: str | None = None,
-              prev_arm_brier: float | None = None) -> dict:
+              prev_arm_brier: float | None = None,
+              extra: dict | None = None) -> dict:
     rec = {
         "arm": arm,
         "gate_season": season_tune,
@@ -62,6 +63,8 @@ def gate_json(arm: str, a7_brier: float, a6_brier: float, verdict: str,
     if prev_arm is not None and prev_arm != BASELINE_ARM:
         rec["prev_arm"] = prev_arm
         rec["prev_arm_brier"] = round(prev_arm_brier, 5)
+    if extra:
+        rec.update(extra)
     return rec
 
 

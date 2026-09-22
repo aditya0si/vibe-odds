@@ -164,12 +164,22 @@ that window: Phase-2 re-scores there are published as **retrospective estimates*
 | --- | --- | --- | --- | --- |
 | A7 | A6 + player-impact absence values (impact_out_*) | 0.21573 | −0.00018 | **enter** (marginal; the prospective read judges it) |
 | A8 | A7 + schedule spots (travel/altitude/4-in-5/homestand) | 0.21598 | +0.00007 | **rejected** — not admitted to the Phase-2 freeze |
+| G1 | monotone GBM + Hedge stack over {A7 formula, GBM, Elo baseline} — the T2g/T3g tier | 0.21677 | +0.00086 | **rejected** — no g-tier arm is admitted. (A first run scored 0.21721 with a Hedge warm-up defect — in-sample component predictions over the fit window — superseded and recorded in the gate record.) |
 
 A8's rejection is the registered rule working as intended: the schedule-fatigue
 story (the one channel with a real T3 mechanism) does not survive as a feature
 arm here. Per the pre-registered plan its T3 prior is lowered accordingly; the
 T3 claim test will still run exactly once on the 2026-27 season, and a null
 result is a first-class, publishable outcome.
+
+G1's rejection retires the plan's "likely biggest" prior for the nonlinear arm:
+the monotone GBM alone (0.21731) loses to the transparent logistic (0.21573) on
+tune, and the cold-start Hedge mixture (weights 0.44 formula / 0.36 GBM / 0.19
+Elo baseline) cannot beat its own best component. Eta was fixed a priori at the
+core default and was NOT retuned after the gate failed. Consequence for the
+claim tiers: with no admitted g-tier arm, the 2026-27 claim read runs
+**T2′ / T2″ / T3 on the A7 formula arm only**; T2g/T3g have no arm to run and
+will be reported as not-run (not as failures).
 
 **Read schedule and power.** One primary read at the 2026-27 regular-season end (n ≈ 1,230; σ_d lock 0.08497;
 detectable Δ ≈ 0.0068 at 80% power). Pre-registered extension: if p < 0.10 but the CI crosses 0, extend to
