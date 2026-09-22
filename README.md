@@ -260,6 +260,44 @@ Live keys: `tennis_atp_us_open` (slams, BO5) + `tennis_atp_singles`. No WTA/doub
 Write endpoints (`/track`, `/settle`, `/learn`, `/rollback`) need
 `X-API-Key` once `VIBE_API_KEY` is set in `.env`.
 
+## From-empty rebuild (the v1 gate)
+
+The machine is reproducible from an empty checkout — this is the gate the
+`v1.0` tag stands on:
+
+```bash
+git clone <repo> && cd vibe-odds
+mkdir -p sports/nba/data
+cp ../nba.sqlite ../nba_walkforward_v1_contaminated.json sports/nba/data/
+cp ../.env .
+python -m venv .venv && .venv/Scripts/python.exe -m pip install -r requirements.txt
+.venv/Scripts/python.exe -c "import sqlite3; c=sqlite3.connect('sports/nba/data/nba.sqlite'); c.execute('DELETE FROM features'); c.commit()"
+.venv/Scripts/python.exe -m sports.nba.features.build --version v1
+.venv/Scripts/python.exe -m sports.nba.features.build --version v2
+.venv/Scripts/python.exe -m sports.nba.features.build --check-leakage --no-write
+.venv/Scripts/python.exe -m sports.nba.model.formula --fit
+.venv/Scripts/python.exe -m sports.nba.model.formula --sigma
+.venv/Scripts/python.exe -m sports.nba.model.formula --evaluate
+.venv/Scripts/python.exe -m sports.nba.model.formula --availability
+.venv/Scripts/python.exe -m sports.nba.model.formula --calibrate
+.venv/Scripts/python.exe tools/check_claims.py
+.venv/Scripts/python.exe -m pytest
+```
+
+It regenerates the features from the ingested DB first (the `DELETE FROM
+features` step — nothing is copied forward) and every frozen artifact
+comes back **byte-identical** to `tests/evidence/nba_frozen_manifest.json`.
+Inputs given to the gate: the ingested `nba.sqlite` (network fetches are
+not re-run), `.env`, and `nba_walkforward_v1_contaminated.json` — the one
+preserved-bug ledger, which is history: regenerating it would mean
+reintroducing the bug it documents.
+
+The gate found and we fixed two real reproducibility holes in `443e9c9`:
+Windows `autocrlf` corrupted `data/` evidence on fresh checkout (the
+committed `data/gbm.txt` then fatals LightGBM's model parser), and
+`nba_market_structure_v1.json` had no producer in the pipeline. Both now
+reproduce byte-exactly.
+
 ## How the model works (tennis only)
 - **Ratings**: surface-blended Elo + H2H + last-10 form/serve/fatigue + decayed
   opponent-adjusted point ratings (Barnett-Clarke style).
