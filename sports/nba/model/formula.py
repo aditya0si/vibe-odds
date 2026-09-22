@@ -28,7 +28,8 @@ from datetime import date as _date
 
 from core.odds import no_vig_probs
 from sports.nba.db import build, paths
-from sports.nba.features.build import FEATURE_VERSION
+from sports.nba.features.availability import AVAIL_KEYS
+from sports.nba.features.build import AVAIL_VERSION, FEATURE_VERSION
 
 TRAIN_END = "2020-21"
 TUNE_SEASON = "2021-22"
@@ -46,9 +47,22 @@ FORMULA_FEATURES = (
     "is_neutral",
 )
 
+# Arm A6 (EXPLORATORY, Step 3): the A5 inputs plus pre-game availability.
+# Rows where any availability key is None (non-authoritative inactive list or
+# missing denominator) are EXCLUDED - never imputed (see is_a6_eligible()).
+AVAIL_FEATURES = tuple(AVAIL_KEYS)
+A6_FEATURES = FORMULA_FEATURES + AVAIL_FEATURES
+
+# Calibration hyperparameters, fixed exactly as for A5 (standardised L2, C=1.0 -
+# the same protocol: no search on tune, no tuning on test, no threshold search).
+A6_C = 1.0
+
 
 def _feat(row: dict, name: str) -> float | None:
     """Derive a formula input from a raw feature payload (keeps the payload generic)."""
+    if name in AVAIL_FEATURES:
+        v = row.get(name)
+        return None if v is None else float(v)
     if name == "form_margin_diff":
         a, b = row.get("form_margin_home"), row.get("form_margin_away")
         return None if a is None or b is None else a - b
@@ -194,7 +208,8 @@ def paired_stats(pa: dict[str, float], pb: dict[str, float], labels: dict[str, i
 
 
 # ------------------------------------------------------------------ fitting
-def fit_formula(rows: list[dict], feature_names: tuple[str, ...] = FORMULA_FEATURES) -> dict:
+def fit_formula(rows: list[dict], feature_names: tuple[str, ...] = FORMULA_FEATURES,
+                c: float = 1.0) -> dict:
     """Standardised logistic regression (L2), coefficients published in original units."""
     from sklearn.linear_model import LogisticRegression
 
@@ -204,7 +219,7 @@ def fit_formula(rows: list[dict], feature_names: tuple[str, ...] = FORMULA_FEATU
     means = [sum(col) / n for col in zip(*X)]
     sds = [math.sqrt(sum((v - m) ** 2 for v in col) / max(1, n - 1)) or 1.0 for col, m in zip(zip(*X), means)]
     Xs = [[(v - m) / s for v, m, s in zip(row, means, sds)] for row in X]
-    clf = LogisticRegression(C=1.0, max_iter=2000)
+    clf = LogisticRegression(C=c, max_iter=2000)
     clf.fit(Xs, y)
     coefs = {name: float(c) for name, c in zip(feature_names, clf.coef_[0])}
     # back to original units: logit = b0 + sum(b_i * (x_i - m_i)/s_i)
@@ -333,12 +348,259 @@ def evaluate(con: sqlite3.Connection, formula: dict, rows: list[dict],
     return ledger
 
 
+# ------------------------------------------------------------------ arm A6
+# Arm A6 (Step 3) is EXPLORATORY: the formula plus pre-game availability. It is
+# never a registered claim (the T1/T2/T3 tiers are about A5 and stand as
+# published in data/nba_walkforward_v1.json, which this arm must not rewrite).
+A6_DISCLAIMER = "exploratory arm, not a registered claim"
+
+
+def is_a6_eligible(payload: dict) -> bool:
+    """True iff every A6 input is present. A single None availability key makes
+    the row ineligible - callers must EXCLUDE it, never impute (no zero-fill)."""
+    if _feat(payload, "form_margin_diff") is None or _feat(payload, "net_rtg_diff") is None:
+        return False
+    for name in A6_FEATURES:
+        if _feat(payload, name) is None:
+            return False
+    return True
+
+
+def load_availability_dataset(con: sqlite3.Connection,
+                              version: str = AVAIL_VERSION) -> tuple[list[dict], dict]:
+    """v2 rows with complete A6 inputs, plus the row counts actually used.
+
+    Exclusion (never imputation): rows missing early-season history or carrying
+    any None availability key (non-authoritative inactive list) are dropped and
+    counted in `excluded_*` - no value is ever filled in.
+    """
+    eligible: list[dict] = []
+    excluded_no_history = 0
+    excluded_avail_none = 0
+    for r in con.execute("SELECT payload FROM features WHERE feature_version=?", (version,)):
+        payload = json.loads(r["payload"])
+        a5_ok = (_feat(payload, "form_margin_diff") is not None
+                 and _feat(payload, "net_rtg_diff") is not None
+                 and all(_feat(payload, n) is not None for n in FORMULA_FEATURES))
+        if not a5_ok:
+            excluded_no_history += 1
+            continue
+        if any(payload.get(k) is None for k in AVAIL_FEATURES):
+            excluded_avail_none += 1
+            continue
+        payload["x"] = {name: _feat(payload, name) for name in A6_FEATURES}
+        eligible.append(payload)
+    eligible.sort(key=lambda row: (row["game_date"], row["game_id"]))
+    counts = {
+        "v2_rows_scanned": excluded_no_history + excluded_avail_none + len(eligible),
+        "eligible": len(eligible),
+        "excluded_no_history": excluded_no_history,
+        "excluded_avail_none": excluded_avail_none,
+    }
+    return eligible, counts
+
+
+def split_a6(rows: list[dict]) -> dict[str, list[dict]]:
+    """Frozen windows, same protocol as A5: fit on seasons <= 2020-21, tune on
+    2021-22 only, evaluate once on the frozen test block 2022-23..2025-26."""
+    return {
+        "train": [r for r in rows if r["season"] <= TRAIN_END],
+        "tune": [r for r in rows if r["season"] == TUNE_SEASON],
+        "test": [r for r in rows if r["season"] in TEST_SEASONS],
+    }
+
+
+def _exploratory_verdict(st: dict, a: str, b: str) -> str:
+    """One-line verdict for a paired test where positive mean_diff favours `a`."""
+    if not st.get("n"):
+        return f"inconclusive: no overlapping games for {a} vs {b}"
+    lo, hi = st["ci95_blocked"]
+    if lo > 0:
+        return f"{a} better than {b} (blocked 95% CI above zero, exploratory)"
+    if hi < 0:
+        return f"{b} better than {a} (blocked 95% CI below zero, exploratory)"
+    return f"inconclusive: {a} vs {b} CI straddles zero (exploratory)"
+
+
+def evaluate_availability(con: sqlite3.Connection, formula_a5: dict, rows_a6: list[dict],
+                          market_close: dict[str, float], market_open: dict[str, float]) -> dict:
+    """Fit A6 on seasons <= 2020-21, describe it on 2021-22, evaluate once on the
+    frozen test block, and write data/nba_availability_v1.json (never touching
+    the published A5 ledger). All paired tests reuse paired_stats() - the same
+    blocked bootstrap (blocks of 10 games by date) as the published ledger."""
+    parts = split_a6(rows_a6)
+    train, tune, test = parts["train"], parts["tune"], parts["test"]
+    assert all(r["season"] <= TRAIN_END for r in train), "A6 fit window leaked past 2020-21"
+    assert all(r["season"] == TUNE_SEASON for r in tune)
+    assert all(r["season"] in TEST_SEASONS for r in test)
+
+    a6 = fit_formula(train, A6_FEATURES, c=A6_C)
+    a6["tuned_on"] = TUNE_SEASON
+    a6["C"] = A6_C
+    a6["arm"] = "A6"
+
+    labels = {r["game_id"]: r["home_win"] for r in rows_a6}
+    dates = {r["game_id"]: r["game_date"] for r in rows_a6}
+    probs_a6 = {r["game_id"]: predict(a6, r) for r in rows_a6}
+    probs_a5 = {r["game_id"]: predict(formula_a5, r) for r in rows_a6}
+
+    def side_by_side(games: list[str]) -> dict:
+        return {"A5": summarise(probs_a5, labels, games),
+                "A6": summarise(probs_a6, labels, games)}
+
+    seasons = [TUNE_SEASON, *TEST_SEASONS]
+    by_season = {}
+    for season in seasons:
+        games = [r["game_id"] for r in rows_a6 if r["season"] == season]
+        entry = side_by_side(games)
+        entry["n_eligible"] = len(games)
+        by_season[season] = entry
+    test_games = [r["game_id"] for r in test]
+    pooled = side_by_side(test_games)
+    tune_games = [r["game_id"] for r in tune]
+
+    have_close = [g for g in test_games if g in market_close]
+    have_open = [g for g in test_games if g in market_open]
+    st_a6_vs_a5 = paired_stats(probs_a6, probs_a5, labels, test_games, dates)
+    st_a6_vs_open = paired_stats(probs_a6, market_open, labels,
+                                 [g for g in have_open if g in probs_a6], dates)
+    st_a6_vs_close = paired_stats(probs_a6, market_close, labels,
+                                  [g for g in have_close if g in probs_a6], dates)
+    tune_check = paired_stats(probs_a6, probs_a5, labels, tune_games, dates)
+
+    brier_a5 = pooled["A5"].get("brier")
+    brier_a6 = pooled["A6"].get("brier")
+    open_tab = summarise(market_open, labels, [g for g in have_open if g in probs_a6])
+    gap_a5 = (brier_a5 - open_tab["brier"]) if brier_a5 and open_tab.get("brier") else None
+    gap_a6 = (brier_a6 - open_tab["brier"]) if brier_a6 and open_tab.get("brier") else None
+    if gap_a5 is not None and gap_a6 is not None:
+        if gap_a6 < gap_a5 - 1e-9:
+            verdict = (
+                f"Availability narrows the pooled test Brier gap to the opening line from "
+                f"{gap_a5:.5f} (A5) to {gap_a6:.5f} (A6), but does not close it (exploratory).")
+        elif gap_a6 > gap_a5 + 1e-9:
+            verdict = (
+                f"Availability does not close the pooled test Brier gap to the opening line: "
+                f"{gap_a5:.5f} (A5) vs {gap_a6:.5f} (A6) (exploratory).")
+        else:
+            verdict = ("Availability leaves the pooled test Brier gap to the opening line "
+                       "unchanged (exploratory).")
+    else:
+        verdict = "inconclusive: missing Brier values for the gap comparison (exploratory)."
+
+    artifact = {
+        "disclaimer": A6_DISCLAIMER,
+        "exploratory": True,
+        "generated_by": "python -m sports.nba.model.formula --availability",
+        "arm": "A6",
+        "registered_claims_untouched": "T1/T2/T3 are about A5; see data/nba_walkforward_v1.json",
+        "windows": {"fit": f"seasons <= {TRAIN_END}", "tune": TUNE_SEASON,
+                    "test": list(TEST_SEASONS)},
+        "hyperparameters": {"C": A6_C, "procedure": "standardised L2 logistic, fixed as for A5; "
+                            "tune season used for descriptive validation only; no test tuning, "
+                            "no threshold search"},
+        "formula_a6": {"features": a6["features"], "coef_raw": a6["coef_raw"],
+                       "intercept_raw": a6["intercept_raw"], "means": a6["means"], "sds": a6["sds"],
+                       "n_train": a6["n_train"], "train_end": TRAIN_END, "tuned_on": TUNE_SEASON},
+        "formula_a5_reference": {"features": formula_a5["features"],
+                                 "coef_raw": formula_a5["coef_raw"],
+                                 "intercept_raw": formula_a5["intercept_raw"],
+                                 "n_train": formula_a5.get("n_train")},
+        "row_counts": {
+            "eligible_train": len(train), "eligible_tune": len(tune),
+            "eligible_test": len(test),
+            "test_with_close": len(have_close), "test_with_open": len(have_open),
+        },
+        "by_season_A5_vs_A6": by_season,
+        "pooled_test_A5_vs_A6": pooled,
+        "tune_descriptive_A6_vs_A5": tune_check,
+        "paired_tests": {
+            "A6_vs_A5": {"comparison": "A6 vs A5 (does availability improve the formula?)",
+                         "stats": st_a6_vs_a5,
+                         "verdict": _exploratory_verdict(st_a6_vs_a5, "A6", "A5")},
+            "A6_vs_market_open": {"comparison": "A6 vs market open (EXPLORATORY T2-prime; "
+                                  "the registered T2 is about A5 and stands as published)",
+                                  "stats": st_a6_vs_open,
+                                  "verdict": _exploratory_verdict(st_a6_vs_open, "A6", "market open")},
+            "A6_vs_market_close": {"comparison": "A6 vs market close (EXPLORATORY T3-prime; "
+                                   "the registered T3 is about A5 and stands as published)",
+                                   "stats": st_a6_vs_close,
+                                   "verdict": _exploratory_verdict(st_a6_vs_close, "A6", "market close")},
+        },
+        "brier_gap_to_open": {"A5_minus_open": gap_a5, "A6_minus_open": gap_a6,
+                              "open_test_brier": open_tab.get("brier"),
+                              "open_test_n": open_tab.get("n")},
+        "verdict": verdict,
+    }
+    out = paths.DATA / "nba_availability_v1.json"
+    out.write_text(json.dumps(artifact, indent=1), encoding="utf-8")
+    print(f"availability ledger -> {out}")
+    return artifact
+
+
+def ablation(v1_rows: list[dict], a6_rows: list[dict]) -> dict:
+    """Drop-one-signal ablation (Step 4a): refit without each feature on the fit
+    window, record pooled + per-season test Brier delta vs the full model
+    (positive delta = the dropped signal helped). Fixed C, no test tuning."""
+    out: dict = {
+        "disclaimer": A6_DISCLAIMER,
+        "exploratory": True,
+        "generated_by": "python -m sports.nba.model.formula --availability",
+        "protocol": {"fit": f"seasons <= {TRAIN_END}", "test": list(TEST_SEASONS),
+                     "C": A6_C, "delta": "Brier(dropped) - Brier(full) on the test block"},
+    }
+
+    def run(rows: list[dict], features: tuple[str, ...]) -> dict:
+        train = [r for r in rows if r["season"] <= TRAIN_END]
+        test = [r for r in rows if r["season"] in TEST_SEASONS]
+        labels = {r["game_id"]: r["home_win"] for r in rows}
+
+        def briers(model: dict) -> dict:
+            probs = {r["game_id"]: predict(model, r) for r in rows}
+            res = {}
+            games_all = [r["game_id"] for r in test]
+            ps = [probs[g] for g in games_all]
+            ys = [labels[g] for g in games_all]
+            res["pooled"] = round(sum(brier(p, y) for p, y in zip(ps, ys)) / len(ps), 5)
+            for season in TEST_SEASONS:
+                gs = [r["game_id"] for r in test if r["season"] == season]
+                res[season] = round(
+                    sum(brier(probs[g], labels[g]) for g in gs) / len(gs), 5)
+            res["n_test"] = len(games_all)
+            return res
+
+        full = fit_formula(train, features, c=A6_C)
+        base = briers(full)
+        entry = {"n_train": full["n_train"], "full_test_brier": base, "by_feature": {}}
+        for drop in features:
+            kept = tuple(f for f in features if f != drop)
+            refit = fit_formula(train, kept, c=A6_C)
+            got = briers(refit)
+            entry["by_feature"][drop] = {
+                "delta_pooled": round(got["pooled"] - base["pooled"], 5),
+                "delta_by_season": {s: round(got[s] - base[s], 5) for s in TEST_SEASONS},
+                "dropped_test_brier_pooled": got["pooled"],
+            }
+        return entry
+
+    out["A5"] = run(v1_rows, FORMULA_FEATURES)
+    out["A6"] = run(a6_rows, A6_FEATURES)
+    dest = paths.DATA / "nba_ablation_v1.json"
+    dest.write_text(json.dumps(out, indent=1), encoding="utf-8")
+    print(f"ablation -> {dest}")
+    return out
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="NBA formula: fit, evaluate, measure sigma_d")
     ap.add_argument("--fit", action="store_true")
     ap.add_argument("--sigma", action="store_true")
     ap.add_argument("--evaluate", action="store_true",
                     help="produce the pre-registered T1/T2/T3 ledger (run ONCE, on the full test block)")
+    ap.add_argument("--availability", action="store_true",
+                    help="fit/evaluate the EXPLORATORY A6 arm + ablation; writes "
+                         "nba_availability_v1.json and nba_ablation_v1.json, never "
+                         "touches nba_walkforward_v1.json")
     ap.add_argument("--version", default=FEATURE_VERSION)
     args = ap.parse_args(argv)
 
@@ -427,6 +689,43 @@ def main(argv: list[str] | None = None) -> int:
               "vs elo", ledger["tiers"]["T1_beats_naive_baselines"]["elo_only_brier"])
         print("T2 (vs opening line):", ledger["tiers"]["T2_beats_opening_line"])
         print("T3 (vs closing line):", ledger["tiers"]["T3_beats_closing_line"])
+        return 0
+
+    if args.availability:
+        # EXPLORATORY arm A6 + ablation. The A5 side reuses the PUBLISHED
+        # coefficients (formula_v1.json) as pure arithmetic - A5 is not refit
+        # and the registered ledger is never rewritten by this path.
+        formula_a5 = json.loads((paths.DATA / FORMULA_PATH).read_text(encoding="utf-8"))
+        assert list(formula_a5["features"]) == list(FORMULA_FEATURES)
+        v1_rows = load_dataset(con, FEATURE_VERSION)
+        a6_rows, a6_counts = load_availability_dataset(con, AVAIL_VERSION)
+        print(f"availability dataset: {a6_counts['eligible']} eligible v2 rows "
+              f"(excluded no-history={a6_counts['excluded_no_history']}, "
+              f"excluded avail-None={a6_counts['excluded_avail_none']})")
+        market_open = market_probs(con, "open", books_only=False)
+        market_close = market_probs(con, "close", books_only=True)
+        artifact = evaluate_availability(con, formula_a5, a6_rows, market_close, market_open)
+        abl = ablation(v1_rows, a6_rows)
+        pooled = artifact["pooled_test_A5_vs_A6"]
+        print("\nA5 vs A6 on the frozen test block (A6-eligible games only):")
+        print(f"  {'season':<10} {'n':>5}  {'A5 brier':>9} {'A6 brier':>9}  "
+              f"{'A5 acc':>7} {'A6 acc':>7}  {'A5 ece':>7} {'A6 ece':>7}")
+        for season, entry in artifact["by_season_A5_vs_A6"].items():
+            a5s, a6s = entry["A5"], entry["A6"]
+            print(f"  {season:<10} {entry['n_eligible']:>5}  {a5s['brier']:>9} {a6s['brier']:>9}  "
+                  f"{a5s['acc']:>7} {a6s['acc']:>7}  {a5s['ece']:>7} {a6s['ece']:>7}")
+        print(f"  {'pooled':<10} {pooled['A5']['n']:>5}  {pooled['A5']['brier']:>9} "
+              f"{pooled['A6']['brier']:>9}  {pooled['A5']['acc']:>7} {pooled['A6']['acc']:>7}  "
+              f"{pooled['A5']['ece']:>7} {pooled['A6']['ece']:>7}")
+        for name, t in artifact["paired_tests"].items():
+            s = t["stats"]
+            print(f"{name}: mean_diff={s['mean_diff']} ci95={s['ci95_blocked']} n={s['n']} "
+                  f"-> {t['verdict']}")
+        print("verdict:", artifact["verdict"])
+        print("ablation deltas (pooled test Brier, dropped - full):")
+        for arm in ("A5", "A6"):
+            ds = {f: v["delta_pooled"] for f, v in abl[arm]["by_feature"].items()}
+            print(f"  {arm}: " + ", ".join(f"{f}={d:+.5f}" for f, d in ds.items()))
         return 0
 
     print("nothing to do: pass --fit or --sigma")
