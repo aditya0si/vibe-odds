@@ -21,6 +21,11 @@
    "bytes": 3356,
    "claims": "v3 as-of feature build (v2 keys + signed player-impact absence values). Phase-2 A7 arm input (docs/preregistration.md 13). Same coverage block as v2 - impact shares the authoritative-list rule, so the eligible-row set is identical."
   },
+  "sports/nba/data/features_v4_evidence.json": {
+   "sha256": "3ed324f5e874d53ed5c80eb1708d2403da86d95c6025cd5f31eb991af5cb27d7",
+   "bytes": 3356,
+   "claims": "v4 as-of feature build (v3 keys + schedule spots: 5-day travel, altitude venue, 4-in-5 / 3-in-4 away, homestand/roadtrip runs). Phase-2 A8 arm input (docs/preregistration.md 13). Same coverage block as v2/v3."
+  },
   "sports/nba/data/formula_v1.json": {
    "sha256": "cfe5d4804cea7b41adbd5122143312ca97d25277c6095c51015fd81fcf9af1c6",
    "bytes": 1040,
@@ -51,10 +56,15 @@
    "bytes": 1093,
    "claims": "Market structure on the 4,888-game open+close block: Brier levels for formula/open/close and the market's own open-to-close improvement."
   },
-  "sports/nba/data/nba_phase2_gate.json": {
+  "sports/nba/data/nba_phase2_gate_a7.json": {
    "sha256": "08418d1c9cb669c39cd4a5ff25bd720c7e9d84c4654b8e0943400db720c61663",
    "bytes": 610,
-   "claims": "Phase-2 tune gate (fit <= 2020-21, scored on 2021-22): A7 (impact absences) 0.21573 vs A6 0.21591, verdict 'enter' under the pre-registered strict-improvement rule (docs/preregistration.md 13). Development evidence only: claim_eligible=false."
+   "claims": "Phase-2 tune gate (fit <= 2020-21, scored on 2021-22): A7 (impact absences) 0.21573 vs A6 0.21591, verdict 'enter' under the pre-registered strict-improvement rule (docs/preregistration.md 13). Development evidence only: claim_eligible=false. Record renamed per-arm from nba_phase2_gate.json (bytes unchanged)."
+  },
+  "sports/nba/data/nba_phase2_gate_a8.json": {
+   "sha256": "23c00867b7c2f0c57ce10aa16ca82ebb2f32f908244e24aee99e9b92346f44af",
+   "bytes": 825,
+   "claims": "Phase-2 tune gate (fit <= 2020-21, scored on 2021-22): A8 (A7 + schedule spots) 0.21598 vs A6 0.21591, verdict 'rejected' - the spots arm does not enter the Phase-2 freeze (docs/preregistration.md 13 arm admission log); its T3 prior is lowered accordingly. Development evidence only: claim_eligible=false."
   },
   "sports/nba/data/nba_walkforward_v1.json": {
    "sha256": "3940dc22bb209f4e55653a39451be004a4644eb877d0b927087f637d70a181de",

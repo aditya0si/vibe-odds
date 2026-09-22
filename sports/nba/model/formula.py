@@ -79,11 +79,12 @@ def _feat(row: dict, name: str) -> float | None:
     return None if row.get(name) is None else float(row[name])
 
 
-def load_dataset(con: sqlite3.Connection, version: str = FEATURE_VERSION) -> list[dict]:
+def load_dataset(con: sqlite3.Connection, version: str = FEATURE_VERSION,
+                 feature_names=FORMULA_FEATURES) -> list[dict]:
     rows = []
     for r in con.execute("SELECT payload FROM features WHERE feature_version=?", (version,)):
         row = json.loads(r["payload"])
-        row["x"] = {name: _feat(row, name) for name in FORMULA_FEATURES}
+        row["x"] = {name: _feat(row, name) for name in feature_names}
         if any(v is None for v in row["x"].values()):
             continue                      # first games of a season have no history yet
         rows.append(row)

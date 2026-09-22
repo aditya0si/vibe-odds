@@ -158,6 +158,19 @@ that window: Phase-2 re-scores there are published as **retrospective estimates*
 **Arm admission gate.** An arm enters the Phase-2 freeze only if it beats A6 on the 2021-22 tune season
 (pre-registered accept rule; recorded in a Phase-2 ledger).
 
+**Arm admission log** (each a tune-only gate run; outcomes, not claims):
+
+| arm | features | tune Brier 21-22 | vs A6 (0.21591) | verdict |
+| --- | --- | --- | --- | --- |
+| A7 | A6 + player-impact absence values (impact_out_*) | 0.21573 | −0.00018 | **enter** (marginal; the prospective read judges it) |
+| A8 | A7 + schedule spots (travel/altitude/4-in-5/homestand) | 0.21598 | +0.00007 | **rejected** — not admitted to the Phase-2 freeze |
+
+A8's rejection is the registered rule working as intended: the schedule-fatigue
+story (the one channel with a real T3 mechanism) does not survive as a feature
+arm here. Per the pre-registered plan its T3 prior is lowered accordingly; the
+T3 claim test will still run exactly once on the 2026-27 season, and a null
+result is a first-class, publishable outcome.
+
 **Read schedule and power.** One primary read at the 2026-27 regular-season end (n ≈ 1,230; σ_d lock 0.08497;
 detectable Δ ≈ 0.0068 at 80% power). Pre-registered extension: if p < 0.10 but the CI crosses 0, extend to
 2027-28 (n ≈ 2,460, detectable Δ ≈ 0.0048) and read once on the pooled window. σ_d re-locked once on 2021-22

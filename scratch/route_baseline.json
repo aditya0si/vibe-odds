@@ -1,0 +1,17 @@
+{
+ "/": {
+  "status": 200,
+  "len": 32310,
+  "sha": "05652ef15ca50fc3"
+ },
+ "/api/health": {
+  "status": 200,
+  "len": 130,
+  "sha": "a0be3aa38c398ff9"
+ },
+ "/api/model": {
+  "status": 200,
+  "len": 5766,
+  "sha": "839a6f78887cc265"
+ }
+}
