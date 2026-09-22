@@ -4,6 +4,10 @@ Splits are TIME-based (train <=2022, valid 2023, test >=2024) — never random.
 The validation year is strictly before the 2024-25 sim window, so even
 early-stopping leaks nothing the simulator will be judged on.
 python -m backend.gbm.train [--no-save]
+
+The fit engine lives in ``core.boosted`` (map step 9). Tennis keeps the frozen
+literals (map R3/R4): CAT/DROP, the A/B/C/D column sets, the monotone map and
+the GBM params — never reorder or edit them.
 """
 
 from __future__ import annotations
@@ -11,6 +15,8 @@ from __future__ import annotations
 import argparse
 import json
 from pathlib import Path
+
+from core.boosted import brier  # noqa: F401  (historical: train.brier)
 
 DATA = Path(__file__).resolve().parents[2] / "data"
 PARQUET = DATA / "features.parquet"
@@ -48,15 +54,22 @@ MONO = {"elo_surf_diff": 1, "elo_overall_diff": 1, "elo_fast_diff": 1,
         "markov_p_fast": 1, "serve_edge_fast": 1, "return_state_diff": 1}
 
 
+def make_params(feats, seed: int = 7) -> dict:
+    """Tennis GBM params (frozen protocol literal) + per-feature monotone map."""
+    return {"objective": "binary", "metric": "None", "verbosity": -1,
+            "num_leaves": 63, "min_data_in_leaf": 150, "feature_fraction": 0.8,
+            "bagging_fraction": 0.8, "bagging_freq": 1, "lambda_l2": 5.0,
+            "monotone_constraints": [MONO.get(f, 0) for f in feats],
+            "seed": seed, "deterministic": True}
+
+
 def load_frame():
     import pandas as pd
-
     df = pd.read_parquet(PARQUET)
     feats = [c for c in df.columns if c not in DROP]
     for c in CAT:
         df[c] = df[c].astype("category")
     return df, feats
-
 
 def splits(df):
     tr = df[df["date"] < 20230101]
@@ -65,39 +78,13 @@ def splits(df):
     return tr, va, te
 
 
-def brier(ps, ys) -> float:
-    import numpy as np
-
-    ps = np.asarray(ps, dtype=float)
-    ys = np.asarray(ys, dtype=float)
-    return float(((ps - ys) ** 2).mean())
-
-
-def _brier_feval(preds, ds):
-    import numpy as np
-
-    y = ds.get_label()
-    return ("brier", float(((np.asarray(preds) - np.asarray(y)) ** 2).mean()), False)
-
-
 def _fit(tr, va, feats, seed: int = 7):
-    import lightgbm as lgb
-
-    dtr = lgb.Dataset(tr[feats], label=tr["y"], categorical_feature=CAT)
-    dva = lgb.Dataset(va[feats], label=va["y"], categorical_feature=CAT, reference=dtr)
-    params = {"objective": "binary", "metric": "None", "verbosity": -1,
-              "num_leaves": 63, "min_data_in_leaf": 150, "feature_fraction": 0.8,
-              "bagging_fraction": 0.8, "bagging_freq": 1, "lambda_l2": 5.0,
-              "monotone_constraints": [MONO.get(f, 0) for f in feats],
-              "seed": seed, "deterministic": True}
-    return lgb.train(params, dtr, num_boost_round=2000, valid_sets=[dva],
-                     feval=_brier_feval,
-                     callbacks=[lgb.early_stopping(100, verbose=False)])
+    from core.boosted import fit_binary
+    return fit_binary(tr, va, feats, cat=CAT, params=make_params(feats, seed))
 
 
 def train(save: bool = True, verbose: bool = True, colset: str | None = None) -> dict:
     from backend.model.calibrate import ece
-
     df, feats = load_frame()
     if colset is not None:
         feats = list(SETS[colset])
@@ -138,7 +125,6 @@ def train(save: bool = True, verbose: bool = True, colset: str | None = None) ->
         gate = out["test"]["brier"] < 0.215 and out["test"]["ece"] < 0.03
         print("GATE (brier<0.215 & ece<0.03):", "PASS" if gate else "REVIEW")
     return out
-
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser()

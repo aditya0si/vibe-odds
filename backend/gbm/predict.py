@@ -1,4 +1,8 @@
-"""Live GBM scoring: same columns as training, native SHAP via pred_contrib."""
+"""Live GBM scoring: same columns as training, native SHAP via pred_contrib.
+
+The scoring engine lives in ``core.boosted`` (map step 9). Tennis keeps the
+frozen ``HUMAN`` feature-name map and the model/meta paths.
+"""
 
 from __future__ import annotations
 
@@ -6,7 +10,6 @@ import json
 from pathlib import Path
 
 import lightgbm as lgb
-import pandas as pd
 
 DATA = Path(__file__).resolve().parents[2] / "data"
 
@@ -31,7 +34,6 @@ HUMAN = {
     "best_of": "format", "level_mult": "event level", "round": "round",
 }
 
-
 def _load():
     global _MODEL, _META
     if _MODEL is None:
@@ -39,18 +41,8 @@ def _load():
         _META = json.loads((DATA / "gbm_features.json").read_text())
     return _MODEL, _META
 
-
 def score_row(row: dict) -> dict:
     """row: feature dict (a-perspective). Returns prob + top SHAP drivers."""
+    from core.boosted import score_row as _score
     model, meta = _load()
-    feats = meta["features"]
-    df = pd.DataFrame([{k: row.get(k) for k in feats}])
-    for c in meta["categorical"]:
-        cats = meta.get("rounds" if c == "round" else "surfaces", [])
-        df[c] = pd.Categorical(df[c], categories=cats)
-    p = float(model.predict(df[feats])[0])
-    contrib = model.predict(df[feats], pred_contrib=True)[0]
-    names = model.feature_name()
-    pairs = sorted(zip(names, contrib[:-1]), key=lambda x: -abs(x[1]))
-    drivers = [{"feature": HUMAN.get(n, n), "push": round(float(v), 3)} for n, v in pairs[:4]]
-    return {"p": p, "drivers": drivers}
+    return _score(model, meta, row, human=HUMAN)
