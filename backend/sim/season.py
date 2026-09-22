@@ -36,6 +36,8 @@ LEDGER = DATA / "sim_2024_2025.json"
 CUTOFF = 20240101
 CAL_MIN_N = 500
 
+from core.sim import EvModel, block_ci, conf_table, per_surface, sign_test, summ
+
 
 def _sha(p: Path) -> str | None:
     return hashlib.sha256(p.read_bytes()).hexdigest()[:12] if p.exists() else None
@@ -106,41 +108,6 @@ def arm_predict(arm: dict, probs: dict, surface: str) -> float:
     return p
 
 
-def _block_ci(arms: dict, a: str, b: str, n_boot: int = 2000, seed: int = 7) -> dict:
-    """Block-bootstrap 95% CI on mean Brier(a) - mean Brier(b), negative favors a.
-
-    Blocks are (year-month, tournament): resampling matches would pretend
-   Serial form/player dependence away. Deterministic seed.
-    """
-    import random as _random
-
-    ha = [h for h in arms[a]["hist"] if h is not None]
-    hb = [h for h in arms[b]["hist"] if h is not None]
-    n = min(len(ha), len(hb))
-    ha, hb = ha[:n], hb[:n]
-    blocks: dict[tuple, list] = defaultdict(list)
-    for i in range(n):
-        t = ha[i][6] if len(ha[i]) > 6 else "?"
-        blocks[(ha[i][0] // 100, t)].append(i)
-    keys = list(blocks)
-    rng = _random.Random(seed)
-    diffs = []
-    for _ in range(n_boot):
-        idx = []
-        for _ in range(len(keys)):
-            idx.extend(blocks[keys[rng.randrange(len(keys))]])
-        da = sum(ha[i][2] for i in idx) / len(idx)
-        db = sum(hb[i][2] for i in idx) / len(idx)
-        diffs.append(da - db)
-    diffs.sort()
-    mean = sum(ha[i][2] for i in range(n)) / n - sum(hb[i][2] for i in range(n)) / n
-    lo, hi = diffs[int(0.025 * n_boot)], diffs[int(0.975 * n_boot) - 1]
-    return {"arms": f"{a}-vs-{b}", "n": n, "blocks": len(keys),
-            "mean_diff": round(mean, 5), "ci95": [round(lo, 5), round(hi, 5)],
-            "verdict": "a better" if hi < 0 else
-                       ("b better" if lo > 0 else "no significant difference")}
-
-
 def run(since: int = CUTOFF, last: int = 2025, save: bool = True,
         verbose: bool = True, max_matches: int = 0, use_cal: bool = False,
         haircut: float = 0.0, price_slip: float = 0.0) -> dict:
@@ -179,7 +146,8 @@ def run(since: int = CUTOFF, last: int = 2025, save: bool = True,
         elo_arm["elo"].update(m["winner"], m["loser"], m["surface"], m["level_mult"],
                               m["best_of"], m["retirement"], False)
 
-    policy = Policy()  # fresh: exercises the live post/pass loop on adaptive
+    policy = Policy()
+    ev = EvModel()  # fresh: exercises the live post/pass loop on adaptive
     cur_month = None
     scored = 0
     upsets = 0
@@ -219,23 +187,13 @@ def run(since: int = CUTOFF, last: int = 2025, save: bool = True,
             if mp is None:
                 q = market.get((m["date"], b, a))
                 mp = (1 - q) if q is not None else None
-            if mp is not None:
-                line_a, line_src = mp, "market"
-            else:
-                line_a, line_src = p_by_arm.get("elo", 0.5), "elo"
-            line_a = min(0.97, max(0.03, line_a))
-            pick_a = p_ad >= 0.5
-            p_pick = p_ad if pick_a else 1 - p_ad
-            line_pick = line_a if pick_a else 1 - line_a
-            odds = 1.0 / line_pick
-            edge = p_pick * odds - 1.0
-            conf = max(p_ad, 1 - p_ad)
+            line_a, line_src = ev.line_for(mp, p_by_arm.get("elo", 0.5))
+            t = ev.score_row(p_ad, line_a, y)
+            edge, conf = t["edge"], t["conf"]
+            odds, stake = t["odds"], t["stake"]
+            won, profit = t["won"], t["profit"]
             dec = policy.decide(m["surface"], edge, conf)
             bk = bucket(m["surface"], edge, conf)
-            from core.odds import kelly_fraction
-            stake = kelly_fraction(p_pick, odds)  # half-Kelly units
-            won = (p_ad >= 0.5) == (y == 1)
-            profit = stake * (odds - 1.0) if won else -stake
             # W3 stress leg (accounting only): worse price + payout haircut
             stress_profit = None
             if haircut or price_slip:
@@ -282,35 +240,6 @@ def run(since: int = CUTOFF, last: int = 2025, save: bool = True,
         if max_matches and scored >= max_matches:
             break
 
-    def summ(hist):
-        s = [h for h in hist if h is not None]
-        n = len(s)
-        return {"n": n,
-                "acc": round(sum(h[3] for h in s) / n, 4) if n else 0,
-                "brier": round(sum(h[2] for h in s) / n, 4) if n else 0}
-
-    def per_surface(hist):
-        out = {}
-        by_s: dict[str, list] = defaultdict(list)
-        for h in hist:
-            if h is not None:
-                by_s[h[1]].append(h)
-        for s, ss in by_s.items():
-            out[s] = {"n": len(ss),
-                      "acc": round(sum(h[3] for h in ss) / len(ss), 4),
-                      "brier": round(sum(h[2] for h in ss) / len(ss), 4)}
-        return out
-
-    def conf_table(hist):
-        s = [h for h in hist if h is not None]
-        out = {}
-        for thresh in (0.55, 0.60, 0.65):
-            sel = [h for h in s if max(h[4], 1 - h[4]) >= thresh]
-            out[f">={thresh}"] = {"n": len(sel),
-                                  "acc": round(sum(h[3] for h in sel) / len(sel), 4) if sel else 0,
-                                  "brier": round(sum(h[2] for h in sel) / len(sel), 4) if sel else 0}
-        return out
-
     res = {"cutoff": since, "last": last, "use_market": use_market,
            "line_note": "betting leg uses market close where present, else elo-arm fair price (no vig). Skill-vs-line, not real profit.",
            "arms": {k: summ(v["hist"]) for k, v in arms.items()},
@@ -319,23 +248,17 @@ def run(since: int = CUTOFF, last: int = 2025, save: bool = True,
            "adaptive_upsets": upsets,
            "weights_final": {s: {k: round(v, 3) for k, v in w.items()}
                              for s, w in adaptive["ens"].surf.items()}}
-    # paired sign test on PER-MATCH Brier (labeled: this is NOT mean-Brier
-    # evidence — wins-small-often/loses-big-rarely passes it while losing the mean)
     ah = arms["adaptive"]["hist"]
     fh = arms["frozen"]["hist"]
-    pairs = [(x, z) for x, z in zip(ah, fh) if x is not None and z is not None]
-    wins = sum(1 for x, z in pairs if x[2] < z[2])
-    ties = sum(1 for x, z in pairs if x[2] == z[2])
-    n_eff = len(pairs) - ties
-    z = ((wins - n_eff / 2) / math.sqrt(n_eff / 4)) if n_eff else 0.0
-    res["paired"] = {"n": len(pairs), "adaptive_brier_wins": wins, "ties": ties,
-                     "z": round(z, 2),
-                     "test": "sign test on per-match Brier differences (median signal, not mean evidence)",
-                     "verdict": "adaptive learns" if z > 1.96 else
-                                ("frozen better" if z < -1.96 else "no significant difference")}
-    res["paired_mean"] = _block_ci(arms, "adaptive", "frozen")
-    res["gbm_vs_adaptive"] = _block_ci(arms, "gbm", "adaptive")
-    res["gbm_vs_frozen"] = _block_ci(arms, "gbm", "frozen")
+    st = sign_test(ah, fh, "adaptive", "frozen")
+    res["paired"] = {"n": st["n"], "adaptive_brier_wins": st["wins"], "ties": st["ties"],
+                     "z": st["z"], "test": st["test"], "verdict": st["verdict"]}
+    res["paired_mean"] = block_ci(arms["adaptive"]["hist"], arms["frozen"]["hist"],
+                                  "adaptive-vs-frozen")
+    res["gbm_vs_adaptive"] = block_ci(arms["gbm"]["hist"], arms["adaptive"]["hist"],
+                                      "gbm-vs-adaptive")
+    res["gbm_vs_frozen"] = block_ci(arms["gbm"]["hist"], arms["frozen"]["hist"],
+                                    "gbm-vs-frozen")
     # paper-trading summary (policy-gated, adaptive only)
     if bet:
         profit = sum(b["profit"] for b in bet)
