@@ -148,7 +148,7 @@ def run(since: int = CUTOFF, last: int = 2025, save: bool = True,
     price_slip: fraction worsening the taken price (stale/unavailable best).
     Both default 0 (clean paper). Nonzero runs are STRESS experiments: they
     only add res['stress'], never replace the main betting leg."""
-    from backend.model import calibrate as CAL
+    from core import calibration as CAL
     from backend.policy.bandit import Policy, bucket
     from backend.ratings.elo import SurfaceElo
     from backend.ratings.loader import load_years

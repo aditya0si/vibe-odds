@@ -10,7 +10,7 @@ python -m backend.model.cal_validate
 
 from __future__ import annotations
 
-from backend.model import calibrate as CAL
+from core import calibration as CAL
 
 
 def _ece(ps, ys, n_bins: int = 10) -> float:

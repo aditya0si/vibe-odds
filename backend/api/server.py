@@ -411,7 +411,7 @@ def rollback(payload: dict, x_api_key: str | None = Header(default=None)):
     """Restore a learned-state file from its newest backup. target: weights|calibration|policy."""
     _require_key(x_api_key)
     from core.io import rollback as _rb
-    from backend.model import calibrate as _cal
+    from core import calibration as _cal
     from backend.model.ensemble import WEIGHTS_PATH
     from backend.policy.bandit import PATH as _pol
     targets = {"weights": WEIGHTS_PATH, "calibration": _cal.CAL_PATH, "policy": _pol}

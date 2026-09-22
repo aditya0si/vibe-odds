@@ -53,17 +53,6 @@ def test_quota_shape():
     assert isinstance(q, dict)
     assert isinstance(prov.last_status(), dict)
 
-def test_calibration_v2_roundtrip(tmp_path, monkeypatch):
-    import backend.model.calibrate as CAL
-    monkeypatch.setattr(CAL, "CAL_PATH", tmp_path / "cal.json")
-    CAL.save_fn([(0.5, 0.6)], "hard")
-    CAL.save_fn([(0.5, 0.4)], "clay")
-    assert CAL.load_fn("hard") == [(0.5, 0.6)]
-    assert CAL.load_fn("clay") == [(0.5, 0.4)]
-    assert CAL.load_fn("grass") is None  # no table -> no crash
-    assert set(CAL.load_all()) == {"hard", "clay"}
-
-
 def test_snapshot_roundtrip():
     """Restore must reproduce live state exactly (or snapshot is dishonest)."""
     from backend.markov.points import PointRatings

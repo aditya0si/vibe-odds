@@ -15,7 +15,7 @@ import argparse
 from collections import defaultdict
 
 from backend.markov.points import PointRatings
-from backend.model import calibrate as CAL
+from core import calibration as CAL
 from backend.model.ensemble import Ensemble
 from backend.model.signals import SIGNALS, Ctx
 from backend.model.upsets import analyze, log_upset, pattern_summary, recent_upsets

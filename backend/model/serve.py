@@ -18,7 +18,7 @@ import time
 from pathlib import Path
 
 from backend.markov.points import PointRatings
-from backend.model import calibrate as CAL
+from core import calibration as CAL
 from backend.model.ensemble import Ensemble, WEIGHTS_PATH
 from backend.model.signals import SIGNALS, Ctx
 from backend.ratings.elo import SurfaceElo
