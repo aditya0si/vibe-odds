@@ -11,30 +11,20 @@ python -m backend.model.cal_validate
 from __future__ import annotations
 
 from core import calibration as CAL
+from core.trainers import brier_pairs as _brier
+from core.trainers import fit_logistic_scale, logit, sigmoid as sig
 
 
 def _ece(ps, ys, n_bins: int = 10) -> float:
     return CAL.ece(list(ps), list(ys), n_bins)
 
 
-def _brier(ps, ys) -> float:
-    return sum((p - y) ** 2 for p, y in zip(ps, ys)) / len(ps)
-
-
 def run(verbose: bool = True) -> dict:
     import math
 
-    from sklearn.linear_model import LogisticRegression
 
     from backend.model.signals import new_ctx, replay_ctx, sig_gbm
     from backend.ratings.loader import load_years
-
-    def logit(p):
-        p = min(0.999, max(0.001, p))
-        return math.log(p / (1 - p))
-
-    def sig(x):
-        return 1.0 / (1.0 + math.exp(-x))
 
     ctx = new_ctx()
     fit, test = [], []
@@ -54,12 +44,9 @@ def run(verbose: bool = True) -> dict:
 
     pf = [p for p, _, _ in fit]
     yf = [y for _, y, _ in fit]
-    Xf = [[logit(p)] for p in pf]
-    temp = LogisticRegression(C=1e6).fit(Xf, yf)
-    ta, tb = float(temp.coef_[0][0]), float(temp.intercept_[0])
-    # 2-param logistic with L2 (temperature is the C->inf special case)
-    lr = LogisticRegression(C=1.0).fit(Xf, yf)
-    la, lb = float(lr.coef_[0][0]), float(lr.intercept_[0])
+    # temperature = C->inf special case; 2-param logistic with L2
+    ta, tb = fit_logistic_scale(pf, yf, 1e6)
+    la, lb = fit_logistic_scale(pf, yf, 1.0)
     iso = CAL.fit_isotonic(pf, yf)
 
     def apply(name, p):

@@ -19,6 +19,7 @@ from backend.model.signals import SIGNALS, Ctx
 from backend.ratings.elo import SurfaceElo
 from backend.ratings.features import FormTracker, HeadToHead
 from backend.ratings.loader import load_years
+from core.report import ablation_rows
 
 
 def run(since: int = 20240101, last: int = 2025, verbose: bool = True) -> dict:
@@ -46,15 +47,7 @@ def run(since: int = 20240101, last: int = 2025, verbose: bool = True) -> dict:
                 bri[v][1] += 1
                 ens[v].update(p, m["winner"] == a, m["surface"])
         replay_ctx(ctx, m)
-    base = bri["full"][0] / bri["full"][1]
-    rows = []
-    for v in variants:
-        b = bri[v][0] / bri[v][1]
-        rows.append({"variant": v, "n": bri[v][1],
-                     "acc": round(acc[v][0] / acc[v][1], 4),
-                     "brier": round(b, 4),
-                     "delta_brier": round(b - base, 5)})
-    rows.sort(key=lambda r: -r["delta_brier"])
+    rows, base = ablation_rows(acc, bri)
     res = {"since": since, "last": last, "full_brier": round(base, 4), "rows": rows}
     if verbose:
         print(f"full Brier {base:.4f} (n={bri['full'][1]}). +delta = dropping it HURT (signal earns keep).")

@@ -16,6 +16,7 @@ from collections import defaultdict
 
 from backend.markov.points import PointRatings
 from core import calibration as CAL
+from core.trainers import refit_isotonic
 from backend.model.ensemble import Ensemble
 from backend.model.signals import SIGNALS, Ctx
 from backend.model.upsets import analyze, log_upset, pattern_summary, recent_upsets
@@ -94,27 +95,15 @@ def run(since: int = 20260101, last: int = 2026, save: bool = True,
     if scored > 500:
         cal_report = {}
         for s, ps in surf_ps.items():
-            ys = surf_ys[s]
-            if len(ps) < CAL_MIN_N:
-                cal_report[s] = {"n": len(ps), "status": "fallback-global (too few)"}
-                continue
-            h = len(ps) // 2
-            fn = CAL.fit_isotonic(ps[:h], ys[:h])
-            cal = [CAL.apply_isotonic(fn, p) for p in ps[h:]]
-            cal_report[s] = {"n": len(ps),
-                             "ece_raw": round(CAL.ece(ps[h:], ys[h:]), 4),
-                             "ece_cal": round(CAL.ece(cal, ys[h:]), 4)}
-            if save:
+            report, fn = refit_isotonic(ps, surf_ys[s], CAL_MIN_N)
+            cal_report[s] = report
+            if save and fn is not None:
                 CAL.save_fn(fn, s)
         # global fallback table from all surfaces
         if len(all_ps) >= CAL_MIN_N:
-            h = len(all_ps) // 2
-            gfn = CAL.fit_isotonic(all_ps[:h], all_ys[:h])
-            gcal = [CAL.apply_isotonic(gfn, p) for p in all_ps[h:]]
-            cal_report["_global"] = {"n": len(all_ps),
-                                     "ece_raw": round(CAL.ece(all_ps[h:], all_ys[h:]), 4),
-                                     "ece_cal": round(CAL.ece(gcal, all_ys[h:]), 4)}
-            if save:
+            report, gfn = refit_isotonic(all_ps, all_ys, CAL_MIN_N)
+            cal_report["_global"] = report
+            if save and gfn is not None:
                 CAL.save_fn(gfn, "_global")
         res["calibration"] = cal_report
         res["ece_calibrated"] = round(CAL.ece(

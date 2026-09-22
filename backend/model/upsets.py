@@ -12,6 +12,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+from core.report import log_json_list, recent_json, upset_patterns
+
 UPSETS_PATH = Path(__file__).resolve().parents[2] / "data" / "upsets.json"
 UPSET_CONF = 0.60
 
@@ -54,20 +56,11 @@ def analyze(a: str, b: str, surface: str, probs: dict[str, float | None],
 
 
 def log_upset(report: dict, cap: int = 200) -> None:
-    from core.io import atomic_write_json
-    try:
-        data = json.loads(UPSETS_PATH.read_text())
-    except Exception:
-        data = []
-    data.append(report)
-    atomic_write_json(UPSETS_PATH, data[-cap:], backup=False)
+    log_json_list(UPSETS_PATH, report, cap)
 
 
 def recent_upsets(n: int = 20) -> list[dict]:
-    try:
-        return json.loads(UPSETS_PATH.read_text())[-n:][::-1]
-    except Exception:
-        return []
+    return recent_json(UPSETS_PATH, n)
 
 
 def pattern_summary() -> dict:
@@ -76,11 +69,4 @@ def pattern_summary() -> dict:
         data = json.loads(UPSETS_PATH.read_text())
     except Exception:
         return {}
-    wrong_count: dict[str, int] = {}
-    surf_count: dict[str, int] = {}
-    for u in data:
-        surf_count[u.get("surface", "?")] = surf_count.get(u.get("surface", "?"), 0) + 1
-        for w in u.get("wrong", []):
-            wrong_count[w["signal"]] = wrong_count.get(w["signal"], 0) + 1
-    return {"n_upsets": len(data), "by_surface": surf_count,
-            "wrong_counts": dict(sorted(wrong_count.items(), key=lambda x: -x[1]))}
+    return upset_patterns(data)
