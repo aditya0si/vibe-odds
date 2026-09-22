@@ -19,6 +19,7 @@ load_dotenv()
 from core.odds import (best_per_outcome, ev_per_unit, find_arbitrage,
                                kelly_fraction, no_vig_probs)
 from core.api import require_write_key, serve_frontend
+from backend.api.adapter import TennisAdapter
 from backend.api import analytics as _analytics
 from backend.providers import the_odds_api as prov
 from core import tracker
@@ -26,7 +27,7 @@ from core import tracker
 app = FastAPI(title="Vibe-Odds (tennis)")
 BASE = Path(__file__).resolve().parents[2]
 FRONT = BASE / "frontend"
-serve_frontend(app, FRONT)
+serve_frontend(app, FRONT, config=TennisAdapter().config)
 
 GROUPS = ["usopen", "tennis"]
 WRITE_KEY = os.getenv("VIBE_API_KEY", "")
