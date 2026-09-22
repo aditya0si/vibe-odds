@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NBA Winner Formula — evidence</title>
+<style>
+:root{--bg:#f1f5f9;--card:#fff;--line:#e2e8f0;--txt:#0f172a;--mut:#64748b;
+--grn:#15803d;--grnbg:#dcfce7;--red:#b91c1c;--redbg:#fee2e2;--navy:#1d4ed8;--navybg:#dbeafe;--radius:12px}
+*{box-sizing:border-box}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;margin:0;background:var(--bg);color:var(--txt);font-size:15px;line-height:1.45}
+header{position:sticky;top:0;background:var(--card);border-bottom:1px solid var(--line);padding:10px 16px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.brand{font-weight:800;font-size:18px}
+nav{display:flex;gap:6px;flex-wrap:wrap}
+nav button{background:#f1f5f9;border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:14px}
+nav button.on{background:var(--txt);color:#fff}
+main{max-width:1100px;margin:0 auto;padding:16px;display:grid;gap:16px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:14px;display:grid;gap:8px}
+h2{margin:0;font-size:17px} h3{margin:6px 0 0;font-size:14px;color:var(--mut)}
+table{border-collapse:collapse;width:100%;font-size:13.5px}
+th,td{text-align:left;padding:5px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:600}
+.pass{color:var(--grn);background:var(--grnbg);padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.fail{color:var(--red);background:var(--redbg);padding:2px 8px;border-radius:999px;font-size:12px;font-weight:700}
+.note{color:var(--mut);font-size:12.5px}
+.muted{color:var(--mut)}
+pre{white-space:pre-wrap;background:#f8fafc;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12.5px;margin:0}
+</style></head>
+<body>
+<header>
+  <div class="brand" id="title">NBA Winner Formula</div>
+  <nav id="tabs"></nav>
+</header>
+<main id="main"><div class="card">loading…</div></main>
+<script>
+"use strict";
+const A = window.__ADAPTER__ || {api:{}, tabs:[]};
+const $ = (t, cls) => { const e = document.createElement(t); if (cls) e.className = cls; return e; };
+const esc = s => String(s).replace(/[&<>]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+let DATA = {};
+
+async function jget(url) {
+  try {
+    const r = await fetch(url);
+    if (!r.ok) return {error: "HTTP " + r.status};
+    return await r.json();
+  } catch (e) { return {error: String(e)}; }
+}
+function tbl(headers, rows) {
+  const t = $("table");
+  const hr = $("tr"); headers.forEach(h => { const th = $("th"); th.textContent = h; hr.appendChild(th); });
+  const thd = $("thead"); thd.appendChild(hr); t.appendChild(thd);
+  const tb = $("tbody");
+  rows.forEach(r => { const tr = $("tr"); r.forEach(c => { const td = $("td"); td.textContent = (c === null || c === undefined) ? "—" : c; tr.appendChild(td); }); tb.appendChild(tr); });
+  t.appendChild(tb); return t;
+}
+function card(title, node, note) {
+  const c = $("div", "card"); const h = $("h2"); h.textContent = title; c.appendChild(h);
+  if (note) { const n = $("div", "note"); n.textContent = note; c.appendChild(n); }
+  c.appendChild(node); return c;
+}
+const f4 = v => (typeof v === "number") ? v.toFixed(4) : v;
+const f3 = v => (typeof v === "number") ? v.toFixed(3) : v;
+
+function renderMatches() {
+  const rows = (DATA.board && DATA.board.board) || [];
+  const main = $("div");
+  if (!rows.length) main.appendChild(card("Pre-tip log", $("div", "muted"),
+    "no rows yet — 2026-27 tips off in October; log with python -m sports.nba.live_log"));
+  else main.appendChild(card("Pre-tip log (the only true out-of-sample record)",
+    tbl(["game", "tipoff (UTC)", "logged at (UTC)", "P(home)", "pick", "settled", "correct"],
+        rows.map(r => [r.game_id, r.tipoff_ts, r.logged_at, f4(r.prob_home), r.pick,
+                       r.settled ? r.settled.home_score + "-" + r.settled.away_score : "—",
+                       r.correct === undefined ? "—" : (r.correct ? "✓" : "✗")])),
+    "a row is rejected unless logged_at < tipoff_ts"));
+  return main;
+}
+
+function renderTeams() {
+  const t = DATA.teams || {}; const main = $("div");
+  main.appendChild(card("Home teams win " + ((t.home_win_rate || 0) * 100).toFixed(1) + "% of regular-season games",
+    tbl(["team", "wins", "games", "win rate"], (t.teams || []).map(x => [x.team, x.wins, x.games, f3(x.win_rate)])),
+    "source: games table (as-ingested), " + (t.n_games || 0) + " regular-season games 2005-06..2025-26"));
+  return main;
+}
+
+function renderModel() {
+  const m = DATA.model || {}; const f = m.formula || {}; const main = $("div");
+  const feats = f.features || []; const coefs = f.coef_raw || {};
+  const w = $("div");
+  w.appendChild(tbl(["feature", "weight"], feats.map(k => [k, f3(coefs[k])])));
+  w.appendChild($("div", "note")).textContent =
+    "P(home win) = sigmoid(" + f3(f.intercept_raw) + " + Σ weight·x), fit on " + f.n_train + " games (≤ " + f.train_end + "), tuned on " + f.tuned_on + ". Raw probabilities ship — calibrators were tested and rejected.";
+  main.appendChild(card("The formula (published coefficients)", w));
+  const arms = m.pooled_all_test || {};
+  main.appendChild(card("Registered verdicts — frozen test block",
+    tbl(["arm", "brier", "accuracy", "ece"],
+        Object.keys(arms).map(k => [k, f4(arms[k].brier), f4(arms[k].acc), f4(arms[k].ece)])),
+    "n=" + JSON.stringify(m.n_test_games) + " · T1 beats naive baselines ✅ · T2 beats the opening line ❌ · T3 beats the close ❌ — the gap is information, not calibration"));
+  const tiers = m.tiers || {};
+  const trows = Object.keys(tiers).map(k => {
+    const t = tiers[k];
+    return [k, t.claim || "", t.pass === true ? "PASS" : (t.pass === false ? "FAIL" : "—"), JSON.stringify(t)];
+  });
+  main.appendChild(card("Claim ladder (pre-registered)", tbl(["tier", "claim", "verdict", "detail"], trows)));
+  return main;
+}
+
+function renderExperiments() {
+  const e = DATA.experiments || {}; const main = $("div");
+  const av = e.availability || {};
+  main.appendChild(card("A6 — availability arm (exploratory)",
+    $("pre").appendChild(document.createTextNode(JSON.stringify({verdict: av.verdict, paired_tests: av.paired_tests, brier_gap_to_open: av.brier_gap_to_open}, null, 1))).parentNode,
+    av.disclaimer || ""));
+  const cal = e.calibration || {};
+  main.appendChild(card("Calibration bake-off — decision: " + (cal.decision || "?"),
+    $("pre").appendChild(document.createTextNode(JSON.stringify({rule: cal.rule, decision: cal.decision, test_evaluation: cal.test_evaluation}, null, 1))).parentNode,
+    cal.disclaimer || ""));
+  const abl = e.ablation || {};
+  const ablPre = $("pre"); ablPre.textContent = JSON.stringify(abl, null, 1);
+  main.appendChild(card("Drop-one-signal ablation (exploratory)", ablPre,
+    "A5 full test Brier " + f4((abl.A5 || {}).full_test_brier)));
+  return main;
+}
+
+function renderSim() {
+  const s = DATA.sim || {}; const main = $("div");
+  main.appendChild(card("Walk-forward ledger (2022-23..2025-26)",
+    $("pre").appendChild(document.createTextNode(JSON.stringify(s, null, 1))).parentNode,
+    "the pre-registered walk-forward — T1/T2/T3 live here"));
+  return main;
+}
+
+function renderMethodology() {
+  const meta = DATA.meta || {}; const st = DATA.stats || {}; const main = $("div");
+  const d = $("div");
+  d.appendChild($("pre")).textContent = JSON.stringify({scope: meta.scope, artifacts: meta.artifacts}, null, 1);
+  main.appendChild(card("Method — artifacts and provenance", d,
+    "every number on this site is derived from these ledgers or the as-ingested DB; nothing is hand-typed"));
+  if (st.db_counts) main.appendChild(card("Database", tbl(["table", "rows"],
+    Object.keys(st.db_counts).map(k => [k, st.db_counts[k]])),
+    "SQLite with as-of timestamps; regular-season moneyline winner (incl. OT) only"));
+  const rel = DATA.rel || {};
+  main.appendChild(card("Reliability (test block, re-derived)", tbl(["bin", "n", "mean P", "win rate"],
+    (rel.bins || []).map(b => [f3(b.lo) + "–" + f3(b.hi), b.n, f4(b.mean_p), f4(b.rate)])), rel.note || ""));
+  return main;
+}
+
+const RENDER = {Matches: renderMatches, Teams: renderTeams, Model: renderModel,
+                Experiments: renderExperiments, Methodology: renderMethodology};
+
+function show(tab) {
+  document.querySelectorAll("nav button").forEach(b => b.classList.toggle("on", b.textContent === tab));
+  const main = document.getElementById("main"); main.innerHTML = "";
+  main.appendChild((RENDER[tab] || renderMatches)());
+}
+
+async function boot() {
+  document.getElementById("title").textContent = A.title || "NBA Winner Formula";
+  const tabs = A.tabs || ["Matches", "Teams", "Model", "Experiments", "Methodology"];
+  const nav = document.getElementById("tabs");
+  tabs.forEach(t => { const b = $("button"); b.textContent = t; b.onclick = () => show(t); nav.appendChild(b); });
+  const api = A.api || {};
+  const [meta, board, model, exps, teams, sim, stats, rel] = await Promise.all([
+    jget(api.site_meta || "/api/site_meta"), jget(api.board || "/api/board"),
+    jget(api.model || "/api/model"), jget(api.experiments || "/api/experiments"),
+    jget(api.teams || "/api/teams"), jget(api.sim || "/api/sim"),
+    jget(api.stats || "/api/stats"), jget(api.reliability || "/api/reliability")]);
+  DATA = {meta, board, model, experiments: exps, teams, sim, stats, rel};
+  show(tabs[0]);
+}
+boot();
+</script>
+</body></html>

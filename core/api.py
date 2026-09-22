@@ -22,14 +22,19 @@ def require_write_key(x_api_key: str | None, write_key: str) -> None:
         raise HTTPException(status_code=401, detail="bad or missing X-API-Key")
 
 
-def install_read_only(app) -> None:
-    """Mount the read-only guard: 405 on anything but GET/HEAD/OPTIONS."""
+def install_read_only(app, exempt: tuple[str, ...] = ()) -> None:
+    """Mount the read-only guard: 405 on anything but GET/HEAD/OPTIONS.
+
+    ``exempt`` path prefixes are the explicit write lanes (e.g. the keyed
+    live-log settle endpoint) — everything else stays read-only.
+    """
 
     from fastapi.responses import JSONResponse
 
     @app.middleware("http")
     async def _guard(request, call_next):
-        if request.method not in SAFE_METHODS:
+        if request.method not in SAFE_METHODS and not any(
+                request.url.path.startswith(x) for x in exempt):
             return JSONResponse({"detail": "read-only API"}, status_code=405)
         return await call_next(request)
 
