@@ -13,13 +13,12 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Query
-from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
 
 load_dotenv()
 
 from core.odds import (best_per_outcome, ev_per_unit, find_arbitrage,
                                kelly_fraction, no_vig_probs)
+from core.api import require_write_key, serve_frontend
 from backend.api import analytics as _analytics
 from backend.providers import the_odds_api as prov
 from core import tracker
@@ -27,26 +26,14 @@ from core import tracker
 app = FastAPI(title="Vibe-Odds (tennis)")
 BASE = Path(__file__).resolve().parents[2]
 FRONT = BASE / "frontend"
-if FRONT.exists():
-    app.mount("/static", StaticFiles(directory=str(FRONT)), name="static")
+serve_frontend(app, FRONT)
 
 GROUPS = ["usopen", "tennis"]
 WRITE_KEY = os.getenv("VIBE_API_KEY", "")
 
 
 def _require_key(x_api_key: str | None) -> None:
-    if not WRITE_KEY:
-        return  # local dev: open, but /api/health says auth:false
-    if x_api_key != WRITE_KEY:
-        raise HTTPException(status_code=401, detail="bad or missing X-API-Key")
-
-
-@app.get("/")
-def root():
-    idx = FRONT / "index.html"
-    if idx.exists():
-        return FileResponse(str(idx))
-    return {"ok": True, "hint": "frontend/index.html missing"}
+    require_write_key(x_api_key, WRITE_KEY)
 
 
 @app.get("/api/health")
