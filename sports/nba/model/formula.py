@@ -604,6 +604,242 @@ def ablation(v1_rows: list[dict], a6_rows: list[dict]) -> dict:
     return out
 
 
+# ------------------------------------------------------------------ calibration (Step 4)
+# Calibration bake-off on the frozen TUNE season only. Three variants per arm
+# (raw / Platt / isotonic) are fitted on the 2021-22 predictions, scored on
+# 2021-22, and the locked rule ships at most one of them per arm. The single
+# test-block evaluation of the shipped variant goes in
+# nba_calibration_v1.json; the registered A5 ledger is never touched.
+CALIBRATION_PATH = "nba_calibration_v1.json"
+CALIBRATION_VARIANTS = ("raw", "platt", "isotonic")
+CALIBRATION_DISCLAIMER = ("calibration decision made on the tune season only; "
+                          "test evaluation is this arm's single evaluation")
+CALIBRATION_RULE = ("ship a calibrator only if its tune Brier is strictly lower than raw "
+                    "AND its tune ECE is not worse; if Platt and isotonic both qualify, "
+                    "ship the simpler (Platt); otherwise ship raw")
+
+
+def _logit(p: float) -> float:
+    p = min(max(float(p), 1e-9), 1.0 - 1e-9)
+    return math.log(p / (1.0 - p))
+
+
+def _sigmoid(z: float) -> float:
+    if z >= 0:
+        return 1.0 / (1.0 + math.exp(-z))
+    e = math.exp(z)
+    return e / (1.0 + e)
+
+
+def calibrator_fit_rows(rows: list[dict]) -> list[dict]:
+    """The calibrator fit set is the frozen tune season (2021-22) and nothing else."""
+    fit = [r for r in rows if r["season"] == TUNE_SEASON]
+    assert fit, f"no {TUNE_SEASON} rows to fit a calibrator on"
+    assert all(r["season"] == TUNE_SEASON for r in fit), "calibrator fit leaked out of the tune season"
+    return fit
+
+
+def calibrator_fit_pairs(rows: list[dict], probs: dict[str, float],
+                         labels: dict[str, int]) -> tuple[list[float], list[int]]:
+    """(probabilities, outcomes) for the tune season ONLY - the calibrator's whole fit set."""
+    fit = calibrator_fit_rows(rows)
+    return [probs[r["game_id"]] for r in fit], [labels[r["game_id"]] for r in fit]
+
+
+def fit_calibrator_models(probs: list[float], labels: list[int]) -> dict:
+    """Fit raw (identity), Platt (logistic on logit(p)) and isotonic on the given pairs.
+
+    These pairs must come from ``calibrator_fit_pairs`` - the caller never hands a
+    season other than 2021-22. The fitted isotonic step function is published as its
+    (increasing) thresholds so the artifact stays JSON-serialisable and reproducible.
+    """
+    from sklearn.isotonic import IsotonicRegression
+    from sklearn.linear_model import LogisticRegression
+
+    xs = [[_logit(p)] for p in probs]
+    platt = LogisticRegression(C=1e6, max_iter=2000).fit(xs, labels)
+    iso = IsotonicRegression(out_of_bounds="clip").fit(probs, labels)
+    return {
+        "raw": {"kind": "raw"},
+        "platt": {"kind": "platt", "a": float(platt.coef_[0][0]),
+                  "b": float(platt.intercept_[0])},
+        "isotonic": {"kind": "isotonic",
+                     "x": [float(v) for v in iso.X_thresholds_],
+                     "y": [float(v) for v in iso.y_thresholds_]},
+    }
+
+
+def apply_calibrator(model: dict, p: float) -> float:
+    """Map a raw probability through the fitted calibrator (identity for raw)."""
+    kind = model["kind"]
+    if kind == "raw":
+        return float(p)
+    if kind == "platt":
+        return _sigmoid(model["a"] * _logit(p) + model["b"])
+    xs, ys = model["x"], model["y"]
+    if p <= xs[0]:
+        return float(ys[0])
+    if p >= xs[-1]:
+        return float(ys[-1])
+    import bisect
+    i = bisect.bisect_left(xs, p)
+    x0, x1 = xs[i - 1], xs[i]
+    if x1 <= x0:
+        return float(ys[i])
+    return float(ys[i - 1] + (ys[i] - ys[i - 1]) * (p - x0) / (x1 - x0))
+
+
+def decide_calibrator(tune_metrics: dict) -> str:
+    """The locked decision rule, executable on any {variant: {brier, ece}} table.
+
+    Ship a calibrator only if its tune Brier is strictly lower than raw AND its tune
+    ECE is not worse; if both calibrators qualify, ship the simpler one (Platt).
+    """
+    raw = tune_metrics["raw"]
+    for name in ("platt", "isotonic"):
+        m = tune_metrics[name]
+        if m["brier"] < raw["brier"] and m["ece"] <= raw["ece"]:
+            return name
+    return "raw"
+
+
+def _calibration_verdict(st: dict, a: str, b: str) -> str:
+    if not st.get("n"):
+        return f"inconclusive: no overlapping games for {a} vs {b}"
+    lo, hi = st["ci95_blocked"]
+    if lo > 0:
+        return f"{a} better than {b} (blocked 95% CI above zero, exploratory)"
+    if hi < 0:
+        return f"{b} better than {a} (blocked 95% CI below zero, exploratory)"
+    return f"inconclusive: {a} vs {b} CI straddles zero (exploratory)"
+
+
+def evaluate_calibration_arm(arm: str, rows: list[dict], model: dict,
+                             market_close: dict[str, float],
+                             market_open: dict[str, float]) -> dict:
+    """Bake off raw / Platt / isotonic on the tune season, then evaluate the shipped
+    variant once on the frozen test block. Never refits the base model."""
+    parts = split_rows(rows)
+    tune, test = parts["tune"], parts["test"]
+    labels = {r["game_id"]: r["home_win"] for r in rows}
+    dates = {r["game_id"]: r["game_date"] for r in rows}
+    probs = {r["game_id"]: predict(model, r) for r in rows}
+
+    tune_games = [r["game_id"] for r in tune]
+    fit_ps, fit_ys = calibrator_fit_pairs(rows, probs, labels)
+    assert len(fit_ps) == len(tune_games), "calibrator fit set is not exactly the tune season"
+    cals = fit_calibrator_models(fit_ps, fit_ys)
+
+    tune_table = {}
+    for variant in CALIBRATION_VARIANTS:
+        cal_probs = {g: apply_calibrator(cals[variant], probs[g]) for g in tune_games}
+        tune_table[variant] = summarise(cal_probs, labels, tune_games)
+    decision = decide_calibrator({v: tune_table[v] for v in CALIBRATION_VARIANTS})
+
+    test_games = [r["game_id"] for r in test]
+    raw_test = {g: probs[g] for g in test_games}
+    ship_test = {g: apply_calibrator(cals[decision], probs[g]) for g in test_games}
+    have_close = [g for g in test_games if g in market_close]
+    have_open = [g for g in test_games if g in market_open]
+
+    st_raw = paired_stats(ship_test, raw_test, labels, test_games, dates)
+    st_open = paired_stats(ship_test, market_open, labels, have_open, dates)
+    st_close = paired_stats(ship_test, market_close, labels, have_close, dates)
+
+    raw_tune, ship_tune = tune_table["raw"], tune_table[decision]
+    if decision == "raw":
+        reason = (f"raw wins: no calibrator had strictly lower tune Brier with not-worse "
+                  f"tune ECE (raw Brier {raw_tune['brier']}, ECE {raw_tune['ece']})")
+    else:
+        reason = (f"{decision} ships: tune Brier {ship_tune['brier']} < raw {raw_tune['brier']} "
+                  f"and tune ECE {ship_tune['ece']} <= raw {raw_tune['ece']}")
+
+    return {
+        "arm": arm,
+        "n_train": model.get("n_train"),
+        "tune": {v: tune_table[v] for v in CALIBRATION_VARIANTS},
+        "decision": decision,
+        "decision_reason": reason,
+        "shipped_calibrator": cals[decision],
+        "test_raw": summarise(raw_test, labels, test_games),
+        "test_shipped": summarise(ship_test, labels, test_games),
+        "paired_tests": {
+            "shipped_vs_raw": {
+                "comparison": f"shipped ({decision}) vs raw on the frozen test block",
+                "stats": st_raw, "verdict": _calibration_verdict(st_raw, f"shipped ({decision})", "raw")},
+            "shipped_vs_market_open": {
+                "comparison": f"shipped ({decision}) vs market open (EXPLORATORY T2-prime; "
+                              "the registered T2 is about A5 and stands as published)",
+                "stats": st_open, "verdict": _calibration_verdict(st_open, f"shipped ({decision})", "market open")},
+            "shipped_vs_market_close": {
+                "comparison": f"shipped ({decision}) vs market close (EXPLORATORY T3-prime; "
+                              "the registered T3 is about A5 and stands as published)",
+                "stats": st_close, "verdict": _calibration_verdict(st_close, f"shipped ({decision})", "market close")},
+        },
+        "row_counts": {"tune": len(tune_games), "test": len(test_games),
+                       "test_with_close": len(have_close), "test_with_open": len(have_open)},
+    }
+
+
+def evaluate_calibration(con: sqlite3.Connection) -> dict:
+    """Write data/nba_calibration_v1.json: the six-way tune bake-off, the per-arm
+    decision, the shipped variant's single test evaluation and paired tests. The
+    A5 side reuses the published formula_v1.json coefficients as pure arithmetic;
+    the registered ledger is never rewritten by this path."""
+    formula_a5 = json.loads((paths.DATA / FORMULA_PATH).read_text(encoding="utf-8"))
+    assert list(formula_a5["features"]) == list(FORMULA_FEATURES)
+    rows_a5 = load_dataset(con, FEATURE_VERSION)
+    rows_a6, _ = load_availability_dataset(con, AVAIL_VERSION)
+    a6 = fit_formula(split_a6(rows_a6)["train"], A6_FEATURES, c=A6_C)
+    a6["tuned_on"] = TUNE_SEASON
+    a6["arm"] = "A6"
+
+    market_open = market_probs(con, "open", books_only=False)
+    market_close = market_probs(con, "close", books_only=True)
+    a5 = evaluate_calibration_arm("A5", rows_a5, formula_a5, market_close, market_open)
+    a6ev = evaluate_calibration_arm("A6", rows_a6, a6, market_close, market_open)
+
+    def bakeoff(ev: dict) -> dict:
+        return {"n": ev["row_counts"]["tune"],
+                **{v: ev["tune"][v] for v in CALIBRATION_VARIANTS}}
+
+    def decision(ev: dict) -> dict:
+        return {"shipped": ev["decision"], "reason": ev["decision_reason"],
+                "tune_shipped": ev["tune"][ev["decision"]], "tune_raw": ev["tune"]["raw"]}
+
+    def test_eval(ev: dict) -> dict:
+        return {"shipped": ev["decision"], "raw": ev["test_raw"],
+                "shipped_metrics": ev["test_shipped"],
+                "paired_tests": ev["paired_tests"],
+                "shipped_calibrator": ev["shipped_calibrator"]}
+
+    artifact = {
+        "disclaimer": CALIBRATION_DISCLAIMER,
+        "generated_by": "python -m sports.nba.model.formula --calibrate",
+        "registered_claims_untouched": "T1/T2/T3 are about A5; see data/nba_walkforward_v1.json",
+        "windows": {"fit": f"seasons <= {TRAIN_END}", "tune": TUNE_SEASON, "test": list(TEST_SEASONS)},
+        "calibrator_fit": f"{TUNE_SEASON} predictions only",
+        "rule": CALIBRATION_RULE,
+        "bakeoff_tune": {"A5": bakeoff(a5), "A6": bakeoff(a6ev)},
+        "decision": {"A5": decision(a5), "A6": decision(a6ev)},
+        "test_evaluation": {"A5": test_eval(a5), "A6": test_eval(a6ev)},
+        "row_counts": {"A5": a5["row_counts"], "A6": a6ev["row_counts"]},
+        "formula_a6_n_train": a6["n_train"],
+        "notes": [
+            "The calibrators are fitted on the 2021-22 tune-season predictions and scored on "
+            "the same tune season, exactly as the locked rule specifies; the frozen test block "
+            "is read only once, for the shipped variant.",
+            "The registered A5 T1/T2/T3 verdicts in nba_walkforward_v1.json do not move and are "
+            "not restated as new claims here.",
+            "A6 is the exploratory availability arm; its numbers are exploratory too.",
+        ],
+    }
+    out = paths.DATA / CALIBRATION_PATH
+    out.write_text(json.dumps(artifact, indent=1), encoding="utf-8")
+    print(f"calibration -> {out}")
+    return artifact
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="NBA formula: fit, evaluate, measure sigma_d")
     ap.add_argument("--fit", action="store_true")
@@ -614,6 +850,10 @@ def main(argv: list[str] | None = None) -> int:
                     help="fit/evaluate the EXPLORATORY A6 arm + ablation; writes "
                          "nba_availability_v1.json and nba_ablation_v1.json, never "
                          "touches nba_walkforward_v1.json")
+    ap.add_argument("--calibrate", action="store_true",
+                    help="tune-season calibration bake-off (raw/Platt/isotonic, A5 and A6) + one "
+                         "test evaluation of the shipped variant; writes nba_calibration_v1.json, "
+                         "never touches nba_walkforward_v1.json")
     ap.add_argument("--version", default=FEATURE_VERSION)
     args = ap.parse_args(argv)
 
@@ -739,6 +979,22 @@ def main(argv: list[str] | None = None) -> int:
         for arm in ("A5", "A6"):
             ds = {f: v["delta_pooled"] for f, v in abl[arm]["by_feature"].items()}
             print(f"  {arm}: " + ", ".join(f"{f}={d:+.5f}" for f, d in ds.items()))
+        return 0
+
+    if args.calibrate:
+        artifact = evaluate_calibration(con)
+        print("\ntune-season bake-off (variant: Brier / logloss / ECE):")
+        for arm in ("A5", "A6"):
+            bake = artifact["bakeoff_tune"][arm]
+            for variant in CALIBRATION_VARIANTS:
+                m = bake[variant]
+                print(f"  {arm} {variant:<9} {m['brier']:>9} {m['logloss']:>9} {m['ece']:>9}")
+        for arm in ("A5", "A6"):
+            d = artifact["decision"][arm]
+            te = artifact["test_evaluation"][arm]
+            raw, ship = te["raw"], te["shipped_metrics"]
+            print(f"{arm}: ship {d['shipped']} | test raw brier={raw['brier']} ece={raw['ece']} "
+                  f"acc={raw['acc']} | shipped brier={ship['brier']} ece={ship['ece']} acc={ship['acc']}")
         return 0
 
     print("nothing to do: pass --fit or --sigma")

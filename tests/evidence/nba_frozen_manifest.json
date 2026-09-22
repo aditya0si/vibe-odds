@@ -36,6 +36,11 @@
    "bytes": 7104,
    "claims": "Exploratory A6 arm (A5 + availability): coefficients, per-season and pooled A5-vs-A6 metrics, paired tests, and the 0.00723 -> 0.00444 gap-to-open verdict (A6 pooled Brier 0.21053, A6-vs-A5 mean_diff 0.00279)."
   },
+  "sports/nba/data/nba_calibration_v1.json": {
+   "sha256": "2fba952773d4bf6308549ecba44f99d2d483b15dd3b87202bc2c523b0a5b43f9",
+   "bytes": 9950,
+   "claims": "Tune-only calibration bake-off: raw/Platt/isotonic for A5 and A6 fitted on 2021-22 (A5 ships isotonic, A6 ships Platt), their single frozen-test evaluation (A5 shipped Brier 0.21452 vs raw 0.21303; A6 shipped 0.21091 vs raw 0.21053) and paired tests. Registered A5 verdicts unchanged."
+  },
   "sports/nba/data/nba_market_structure_v1.json": {
    "sha256": "bbf6103ec923b6acf07385deeeec9c9c86a6b08c611a7a11ef81b3ec59c2dee1",
    "bytes": 1093,
