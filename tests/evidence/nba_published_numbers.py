@@ -18,9 +18,19 @@ TRAIN_END = "2020-21"
 TUNE_SEASON = "2021-22"
 TEST_SEASONS = ("2022-23", "2023-24", "2024-25", "2025-26")
 
-# --- sigma_d lock (docs/preregistration.md §5; measured on 2021-22) ---------
+# --- sigma_d (docs/preregistration.md §5; measured on 2021-22) --------------
+# The REGISTERED lock: the value written into the pre-registration before any
+# test season was seen. It is a frozen claim input, not a recompute, and it is
+# asserted against docs/preregistration.md §5 by the evidence guard.
 SIGMA_D_LOCK = 0.08497
 SIGMA_D_LOCK_N = 1227
+# The CURRENT code's books-only recompute on the same 2021-22 window, read back
+# from formula_v1_report.json["tuning_season_paired_formula_vs_market"]. It
+# differs from the registered lock because the market arm was later
+# decontaminated (in-play feed rows and model feeds excluded), which changes the
+# market losses sigma_d is measured against. Both values are published: the lock
+# is the claim input; this is what the current pipeline reproduces.
+SIGMA_D_CURRENT_CODE = 0.08522
 NEEDED_N_FOR_DELTA_005 = 2267
 
 # --- T1: calibrated and better than naive baselines -------------------------

@@ -16,6 +16,14 @@ REBASELINE RULE — a number may only move in a commit that says why:
     ``refit: sigma_d locked, T2 mean -0.00681 -> -0.0065``.
     Silent drift is exactly what this guard exists to stop.
 
+A pure hash rebaseline can still launder a *stale* artifact (one regenerated
+mid-ingest or before a data-arm fix) that no longer agrees with the claim
+ledger. ``test_formula_report_agrees_with_ledger`` therefore checks internal
+consistency between the frozen artifacts without re-running the fit: every
+metric shared by ``formula_v1_report.json`` and ``nba_walkforward_v1.json`` must
+be equal, and the report's per-season market row counts must sum to the ledger's
+closing-arm game count. A full determinism re-fit remains Step 9 work.
+
 The protected *tennis* files are already byte-checked by
 ``test_frozen_evidence.py`` and are deliberately not duplicated here.
 """
@@ -24,6 +32,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 
 import pytest
@@ -33,6 +42,7 @@ from tests.evidence import nba_published_numbers as NB
 ROOT = Path(__file__).resolve().parents[2]
 NBA_DATA = ROOT / "sports" / "nba" / "data"
 MANIFEST = Path(__file__).resolve().parent / "nba_frozen_manifest.json"
+PREREG = ROOT / "docs" / "preregistration.md"
 
 WF = "nba_walkforward_v1.json"
 MS = "nba_market_structure_v1.json"
@@ -147,15 +157,62 @@ def check_availability(av: dict, *, verdict: str, a5_gap: float,
 
 
 def check_windows(fv: dict, fr: dict, wf: dict, *, train_end: str, tune: str,
-                  test_seasons: tuple, sigma_d: float, sigma_d_n: int) -> None:
+                  test_seasons: tuple, sigma_d_current: float, sigma_d_n: int) -> None:
+    """The report's 2021-22 sigma is the CURRENT books-only recompute.
+
+    The registered lock (``NB.SIGMA_D_LOCK``) is checked against its source
+    (docs/preregistration.md §5) in ``test_sigma_d_lock_matches_preregistration``;
+    it is deliberately NOT re-derived from this artifact, which moved when the
+    market arm was decontaminated.
+    """
     assert fv["train_end"] == train_end
     assert fv["tuned_on"] == tune
     assert wf["formula"]["train_end"] == train_end
     assert wf["formula"]["tuned_on"] == tune
     assert tuple(wf["formula"]["test_seasons"]) == tuple(test_seasons)
-    lock = fr["tuning_season_paired_formula_vs_market"]
-    assert lock["sigma_d"] == sigma_d
-    assert lock["n"] == sigma_d_n
+    current = fr["tuning_season_paired_formula_vs_market"]
+    assert current["sigma_d"] == sigma_d_current
+    assert current["n"] == sigma_d_n
+
+
+def check_report_ledger_consistency(fr: dict, wf: dict) -> None:
+    """Cheap staleness guard: no re-fit, only cross-artifact consistency.
+
+    ``formula_v1_report.json`` and ``nba_walkforward_v1.json`` are produced by
+    the same ``--fit``/``--evaluate`` code path on the same frozen test block, so
+    every arm metric they share must be identical. A report regenerated
+    mid-ingest (e.g. odds for the newest seasons not yet loaded) or before the
+    market-arm contamination fix silently disagrees with the ledger — and would
+    otherwise be laundered by a hash rebaseline. A full determinism re-fit is
+    Step 9 work.
+    """
+    shared_arms = ("formula", "market_close", "elo_only", "climatological")
+    for arm in shared_arms:
+        assert fr["pooled_test"][arm] == wf["pooled_with_close"][arm], (
+            f"formula_v1_report pooled_test[{arm}] disagrees with the ledger's "
+            "pooled_with_close (same arm, same test block): stale report?"
+        )
+    assert fr["pooled_test_paired_formula_vs_market"] == (
+        wf["tiers"]["T3_beats_closing_line"]["formula_vs"]
+    ), "report vs-ledger T3 paired test drifted (same arm, same test block)"
+
+    test_seasons = tuple(wf["formula"]["test_seasons"])
+    market_n = {
+        season: fr["by_season"][season]["market_close (market)"]["n"]
+        for season in test_seasons
+    }
+    assert all(n > 0 for n in market_n.values()), (
+        f"a test season has no market rows in the report: {market_n}"
+    )
+    assert sum(market_n.values()) == wf["n_test_games"]["with_close"], (
+        f"per-season market rows {market_n} sum to {sum(market_n.values())}, but "
+        f"the ledger closes {wf['n_test_games']['with_close']} games"
+    )
+
+
+def test_formula_report_agrees_with_ledger() -> None:
+    """A stale (mid-ingest / pre-fix) report fails this even after a rebaseline."""
+    check_report_ledger_consistency(_load(FR), _load(WF))
 
 
 def test_t1_verdict_re_derived() -> None:
@@ -208,7 +265,27 @@ def test_sigma_d_lock_and_windows_re_derived() -> None:
         _load(FV), _load(FR), _load(WF),
         train_end=NB.TRAIN_END, tune=NB.TUNE_SEASON,
         test_seasons=NB.TEST_SEASONS,
-        sigma_d=NB.SIGMA_D_LOCK, sigma_d_n=NB.SIGMA_D_LOCK_N,
+        sigma_d_current=NB.SIGMA_D_CURRENT_CODE, sigma_d_n=NB.SIGMA_D_LOCK_N,
+    )
+
+
+def test_sigma_d_lock_matches_preregistration() -> None:
+    """The registered lock is asserted against docs/preregistration.md §5, not
+    against the artifact: the report now carries the books-only recompute
+    (``SIGMA_D_CURRENT_CODE``) after the market-arm decontamination. This test
+    deliberately does not edit the pre-registration (the owner logs that)."""
+    text = PREREG.read_text(encoding="utf-8")
+    m = re.search(
+        r"σ_d \(formula A5 vs market close\)\s*\|\s*\*\*([0-9.]+)\*\*\s*"
+        r"\(n\s*=\s*([0-9,]+)\)",
+        text,
+    )
+    assert m, "docs/preregistration.md §5 no longer records the sigma_d lock"
+    assert float(m.group(1)) == NB.SIGMA_D_LOCK
+    assert int(m.group(2).replace(",", "")) == NB.SIGMA_D_LOCK_N
+    assert NB.SIGMA_D_CURRENT_CODE != NB.SIGMA_D_LOCK, (
+        "the lock and the current recompute are expected to differ here; if they "
+        "converge, collapse the two names in nba_published_numbers.py deliberately"
     )
 
 
@@ -226,6 +303,14 @@ def test_negative_corrupt_tmp_copy_fails_hash(rel: str, tmp_path: Path) -> None:
     dst.write_bytes(bytes(corrupted))
     with pytest.raises(AssertionError):
         verify_artifact(dst, meta)
+
+
+def test_negative_inconsistent_report_trips() -> None:
+    """A report that drops a season's market rows must fail the consistency check."""
+    bad = json.loads(json.dumps(_load(FR)))
+    bad["by_season"]["2024-25"]["market_close (market)"] = {"n": 0}
+    with pytest.raises(AssertionError):
+        check_report_ledger_consistency(bad, _load(WF))
 
 
 def test_negative_wrong_published_literal_trips() -> None:

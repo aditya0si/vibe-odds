@@ -1,7 +1,7 @@
 {
  "note": "Frozen NBA evidence. sports/nba/data/ is gitignored, so the artifact bytes are rebuilt deterministically by the NBA pipeline and their sha256 is pinned here. Any drift fails tests/evidence/test_nba_frozen_evidence.py. Rebaseline ONLY in a commit that says which published number moved and why (same rule as tests/evidence/frozen_manifest.json).",
  "captured_at": "2026-09-22",
- "captured_on_commit": "4485589",
+ "captured_on_commit": "eff3763",
  "hash": "sha256 (full 64-hex) of file bytes",
  "paths": "relative to the repo root; sports/nba/data/ stays gitignored",
  "excludes": "cache/ and *.failures.jsonl operational logs (never evidence)",
@@ -22,9 +22,9 @@
    "claims": "Fitted A5 formula (market-free logistic): 7 named coefficients, intercept, standardiser means/sds, and the frozen train/tune windows."
   },
   "sports/nba/data/formula_v1_report.json": {
-   "sha256": "5b14bf4125af14407560d18302fb53ca68a4d19405112b1a36f03f94d5fd0ec2",
-   "bytes": 24558,
-   "claims": "A5 development report: per-season and pooled metrics, plus the 2021-22 sigma_d lock (0.08497, n=1,227) the significance test depends on."
+   "sha256": "87757fff416cc1a842ac33d2bd08b8fc6395779b98139ac6d2026ac1ef40403b",
+   "bytes": 24865,
+   "claims": "A5 development report: per-season and pooled metrics, plus the current books-only 2021-22 sigma_d recompute (0.08522, n=1,227). The registered pre-registration lock is 0.08497 (n=1,227); it was measured on the pre-contamination-fix market arm and is carried in docs/preregistration.md and tests/evidence/nba_published_numbers.py, not re-derived from this artifact."
   },
   "sports/nba/data/nba_ablation_v1.json": {
    "sha256": "ddc4efc788fabfac10eea7616bd6f2890696d7d214be258468792f199b780190",
