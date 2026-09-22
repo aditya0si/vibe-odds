@@ -12,9 +12,9 @@
    "claims": "v1 as-of feature build: 25,258 games, per-season game counts, home-court Elo edge (70.4 -> 56.5) and home-win rate (0.603 -> 0.544), final Elo top-10."
   },
   "sports/nba/data/features_v2_evidence.json": {
-   "sha256": "bb3f7e950f23e65f8ff18ae9ac114c1d43c98e07d65e8bd87f3c46538255bae5",
-   "bytes": 2502,
-   "claims": "v2 as-of feature build (v1 keys + availability): same per-season coverage and final Elo top-10; the A6 feature payload."
+   "sha256": "943077a0eb9026ed80df1dffdc99ad0101434f29a502fd4d3a33c2cf756dd537",
+   "bytes": 3356,
+   "claims": "v2 as-of feature build (v1 keys + availability): same per-season coverage and final Elo top-10, plus the availability_coverage block (publication rule, REPLACEMENT_LEVEL prior, 25,228 authoritative / 30 unknown games). The A6 feature payload."
   },
   "sports/nba/data/formula_v1.json": {
    "sha256": "cfe5d4804cea7b41adbd5122143312ca97d25277c6095c51015fd81fcf9af1c6",
@@ -27,14 +27,14 @@
    "claims": "A5 development report: per-season and pooled metrics, plus the current books-only 2021-22 sigma_d recompute (0.08522, n=1,227). The registered pre-registration lock is 0.08497 (n=1,227); it was measured on the pre-contamination-fix market arm and is carried in docs/preregistration.md and tests/evidence/nba_published_numbers.py, not re-derived from this artifact."
   },
   "sports/nba/data/nba_ablation_v1.json": {
-   "sha256": "ddc4efc788fabfac10eea7616bd6f2890696d7d214be258468792f199b780190",
-   "bytes": 5705,
-   "claims": "Drop-one-signal ablation for A5 and A6: pooled and per-season delta-Brier for every named feature (exploratory)."
+   "sha256": "81855370db61027b7dda9810f538e39cf3942f8307182cb7e5b7ce5d93bde9bf",
+   "bytes": 5697,
+   "claims": "Drop-one-signal ablation for A5 and A6: pooled and per-season delta-Brier for every named feature (exploratory). Regenerated after the replacement-level prior / publication-marker change."
   },
   "sports/nba/data/nba_availability_v1.json": {
-   "sha256": "2defcbbbf3121c0350e9d9137ffdb18fba09833d8dceb6125ba4a16c14d9cd64",
-   "bytes": 7101,
-   "claims": "Exploratory A6 arm (A5 + availability): coefficients, per-season and pooled A5-vs-A6 metrics, paired tests, and the 0.00723 -> 0.00460 gap-to-open verdict."
+   "sha256": "c71c8284b701fbf6abe38eb95d7a894e5c4a0eba256f5cc3241b901a019e37d9",
+   "bytes": 7104,
+   "claims": "Exploratory A6 arm (A5 + availability): coefficients, per-season and pooled A5-vs-A6 metrics, paired tests, and the 0.00723 -> 0.00444 gap-to-open verdict (A6 pooled Brier 0.21053, A6-vs-A5 mean_diff 0.00279)."
   },
   "sports/nba/data/nba_market_structure_v1.json": {
    "sha256": "bbf6103ec923b6acf07385deeeec9c9c86a6b08c611a7a11ef81b3ec59c2dee1",

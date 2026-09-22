@@ -403,6 +403,19 @@ def load_availability_dataset(con: sqlite3.Connection,
 def split_a6(rows: list[dict]) -> dict[str, list[dict]]:
     """Frozen windows, same protocol as A5: fit on seasons <= 2020-21, tune on
     2021-22 only, evaluate once on the frozen test block 2022-23..2025-26."""
+    return split_rows(rows)
+
+
+def split_rows(rows: list[dict]) -> dict[str, list[dict]]:
+    """The frozen fit/tune/test windows, in ONE place the tests can call.
+
+    The pre-registration's load-bearing honesty property is this membership:
+    fit on seasons <= TRAIN_END, tune on TUNE_SEASON only, evaluate once on the
+    frozen TEST_SEASONS block. Keeping it in a helper (rather than inline in
+    ``main``) means a single test exercises the real code path instead of a
+    restatement of it. Widening TRAIN_END puts a test season into ``train`` and
+    is caught by tests/sports/nba/test_fit_window.py.
+    """
     return {
         "train": [r for r in rows if r["season"] <= TRAIN_END],
         "tune": [r for r in rows if r["season"] == TUNE_SEASON],
@@ -609,8 +622,8 @@ def main(argv: list[str] | None = None) -> int:
     market = market_close_probs(con)
     print(f"dataset: {len(rows)} games with complete features; market close for {len(market)} games")
 
-    train = [r for r in rows if r["season"] <= TRAIN_END]
-    tune = [r for r in rows if r["season"] == TUNE_SEASON]
+    parts = split_rows(rows)
+    train, tune = parts["train"], parts["tune"]
     formula = fit_formula(train)
     formula["tuned_on"] = TUNE_SEASON
     print(f"fitted on {formula['n_train']} games (<= {TRAIN_END}); tuning season {TUNE_SEASON} n={len(tune)}")

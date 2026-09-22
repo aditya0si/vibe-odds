@@ -22,7 +22,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 README = (ROOT / "README.md").read_text(encoding="utf-8")
 MODELLING_CLAIM = 49
-NBA_ADAPTER_CLAIM = 40
+NBA_ADAPTER_CLAIM = 50
 
 NBA_MANIFEST = json.loads(
     (ROOT / "tests/evidence/nba_frozen_manifest.json").read_text(encoding="utf-8"))

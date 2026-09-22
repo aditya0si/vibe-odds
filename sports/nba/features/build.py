@@ -165,6 +165,11 @@ def build_rows(con: sqlite3.Connection, upto: str | None = None,
         "home_win_rate_by_season": {s: (sum(w) / len(w) if w else None) for s, w in sorted(season_home_wins.items())},
         "elo_final_top10": sorted(((t, round(r, 1)) for t, r in elo.ratings.items()), key=lambda x: -x[1])[:10],
     }
+    if version == AVAIL_VERSION:
+        # The coverage artifact's documented publication rule (availability.py):
+        # authoritative vs unknown inactive lists, so a future reader can tell why a
+        # row is numeric or None without reading the builder.
+        evidence["availability_coverage"] = AV.coverage_summary(con)
     if verbose:
         print(f"built {len(rows)} feature rows for {len(season_length)} seasons")
     return rows, evidence

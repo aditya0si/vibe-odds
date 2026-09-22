@@ -62,12 +62,12 @@ MARKET_OPEN_TO_CLOSE_CI = (-0.00543, -0.00236)
 
 # --- A6 availability arm (exploratory, not a registered claim) --------------
 A5_POOLED_BRIER = 0.21332
-A6_POOLED_BRIER = 0.21069
+A6_POOLED_BRIER = 0.21053
 A5_GAP_TO_OPEN = 0.00723
-A6_GAP_TO_OPEN = 0.00460
-A6_A5_MEAN_DIFF = 0.00263
-A6_A5_CI = (0.00146, 0.00383)
+A6_GAP_TO_OPEN = 0.00444
+A6_A5_MEAN_DIFF = 0.00279
+A6_A5_CI = (0.0016, 0.00401)
 A6_VERDICT = (
     "Availability narrows the pooled test Brier gap to the opening line from "
-    "0.00723 (A5) to 0.00460 (A6), but does not close it (exploratory)."
+    "0.00723 (A5) to 0.00444 (A6), but does not close it (exploratory)."
 )
