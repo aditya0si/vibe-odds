@@ -41,15 +41,26 @@ def _iso(dt: datetime) -> str:
     return dt.astimezone(timezone.utc).isoformat()
 
 
+def require_pre_tip(kind: str, game_id: str, tipoff_ts, at) -> datetime:
+    """The pre-tip discipline, shared by prediction rows and T-60 odds rows: a row
+    timestamped at or after tip-off is a result, not evidence. Raises LatePrediction;
+    returns the parsed timestamp on success."""
+    tip = _ts(tipoff_ts)
+    ts = _ts(at)
+    if ts >= tip:
+        raise LatePrediction(
+            f"refusing to store {kind} for {game_id}: at {_iso(ts)} >= tipoff {_iso(tip)}")
+    return ts
+
+
 def log_prediction(game_id: str, tipoff_ts, prob_home: float, *,
                    source: str = "formula_v1", logged_at=None,
                    out: Path | None = None) -> dict:
     """Append one pre-tip prediction row. Raises LatePrediction after tip-off."""
     tip = _ts(tipoff_ts)
-    logged = _ts(logged_at) if logged_at is not None else datetime.now(timezone.utc)
-    if logged >= tip:
-        raise LatePrediction(
-            f"refusing to log {game_id}: logged_at {_iso(logged)} >= tipoff {_iso(tip)}")
+    logged = require_pre_tip(
+        "prediction", game_id, tipoff_ts,
+        logged_at if logged_at is not None else datetime.now(timezone.utc))
     row = {"type": "predict", "game_id": game_id,
            "tipoff_ts": _iso(tip), "logged_at": _iso(logged),
            "prob_home": round(float(prob_home), 4),
