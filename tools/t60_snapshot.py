@@ -26,6 +26,9 @@ import sys
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
+if __package__ in (None, ""):                   # script mode (cron / manual): repo importable
+    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+
 from core.providers import odds_api as _core
 from sports.nba.db import build, paths
 from sports.nba.live_log import require_pre_tip

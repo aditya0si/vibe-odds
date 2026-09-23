@@ -56,6 +56,11 @@
    "bytes": 1093,
    "claims": "Market structure on the 4,888-game open+close block: Brier levels for formula/open/close and the market's own open-to-close improvement."
   },
+  "sports/nba/data/nba_phase2_arm_2026_27.json": {
+   "sha256": "4684ab5ab723b87dba6d45d2f80effa0732e310599817214f344d2e0e3ff46b8",
+   "bytes": 3276,
+   "claims": "season_gate.py -- the SEALED 2026-27 claim arm: the admitted A7 structure (17 frozen features), weights fit ONCE on the expanding window <= 2025-26 (n=25,212), sealed with body digest 2bf068c9b5cea7b51ff32e1d5981e1cb1d626e4a0f036de2d73082c33e6865e5. The single 2026-27 claim read (docs/preregistration.md 13) may only score against this arm; any refit during or after the season is retrospective work."
+  },
   "sports/nba/data/nba_phase2_gate_a7.json": {
    "sha256": "08418d1c9cb669c39cd4a5ff25bd720c7e9d84c4654b8e0943400db720c61663",
    "bytes": 610,
