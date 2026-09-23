@@ -75,3 +75,32 @@ the as-ingested DB at v1 freeze time (re-verify with
 - **OddsPortal** — scraping excluded on the same class of grounds.
 - **Kaggle mirror** — captcha wall + wrong seasons + no moneyline after Jan
   2023; unusable here without owner-supplied credentials.
+
+## T-60 injury-report channel — acquisition probe (plan Task 6, 2026-09-23)
+
+Question: can the T-60 official injury report (pre-game PROBABLE / QUESTIONABLE
+statuses) be acquired **free** — historical archive for gating, live capture for
+2026-27? Probe result:
+
+- **Live capture (2026-27): FREE.** The official NBA injury report is published
+  daily (official.nba.com; scrapable HTML/PDF) and team final reports are public.
+  A free daily capture can run inside the Task-8 live-ops loop as descriptive
+  logging. Cost: zero. (Nothing here is bought — the ruling is free-only.)
+- **Historical archive (needed to backtest the channel and pass the §13
+  arm-admission gate on 2021-22): NO CLEAN FREE SOURCE.**
+  - Official NBA: publishes daily; **no official archive**.
+  - Kaggle scraped sets (inactive-list activity 2010–2020; injury stats
+    1951–2023): transaction-type records of inactive-list moves, **not** daily
+    pre-game reports with statuses — and the "who actually sat" side is already
+    covered by our box-score `game_inactives` (25,181 rows).
+  - Wayback Machine snapshots of the official report page: coverage unverified
+    and known to be sporadic (the CDX probe timed out from here; even complete
+    CDX coverage would be a partial, unaligned sample).
+  - **Paid only**: Sportradar NBA Daily Injuries (per-date history behind a paid
+    key), SportsDataIO Vault ("10+ years historical — contact sales"; free trial
+    is scrambled/fictional data, explicitly not for analysis), Swish/similar.
+- **Consequence under the free-only ruling**: the T-60 injury channel cannot be
+  gated on tune 2021-22 (no data), therefore **it cannot enter the Phase-2
+  freeze and cannot be a claim arm**. Live capture may still run during 2026-27
+  as descriptive evidence for follow-up work. Reopening this requires an
+  explicit yes to a paid archive (fresh decision; nothing gets bought without it).
