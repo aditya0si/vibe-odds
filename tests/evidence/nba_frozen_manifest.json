@@ -71,6 +71,11 @@
    "bytes": 1676,
    "claims": "Phase-2 tune gate (fit <= 2020-21, scored on 2021-22): G1 (monotone GBM + Hedge stack; the T2g/T3g tier) 0.21677 vs A6 0.21591, verdict 'rejected' - no g-tier arm is admitted. Components: formula 0.21573 / gbm 0.21731 / elo_baseline 0.22246. A superseded first run (0.21721, Hedge warm-up defect) is recorded inside. Development evidence only: claim_eligible=false."
   },
+  "sports/nba/data/nba_phase2_retro.json": {
+   "sha256": "79d881d14e41587f51fd71866983081acc8d0764a3737af258640c0982112911",
+   "bytes": 1592,
+   "claims": "LABELED RETROSPECTIVE re-score of the Phase-2 arms on the BURNED window 2022-23..2025-26 (retro.py / formula.py --retro): burned_test_set=true and claim_eligible=false are set in exactly one place (retro_record) and asserted by tests/sports/nba/test_retro_label.py. Diagnostics and power inputs ONLY - the window's results were known before Phase-2 work began and no number here may ever be published as a claim test."
+  },
   "sports/nba/data/nba_walkforward_v1.json": {
    "sha256": "3940dc22bb209f4e55653a39451be004a4644eb877d0b927087f637d70a181de",
    "bytes": 6461,

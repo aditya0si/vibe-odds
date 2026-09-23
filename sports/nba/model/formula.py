@@ -876,8 +876,19 @@ def main(argv: list[str] | None = None) -> int:
                     help="tune-season calibration bake-off (raw/Platt/isotonic, A5 and A6) + one "
                          "test evaluation of the shipped variant; writes nba_calibration_v1.json, "
                          "never touches nba_walkforward_v1.json")
+    ap.add_argument("--retro", action="store_true",
+                    help="labeled retrospective re-score of the Phase-2 arms on the BURNED "
+                         "window (writes nba_phase2_retro.json with burned_test_set=true / "
+                         "claim_eligible=false; NEVER a claim test)")
     ap.add_argument("--version", default=FEATURE_VERSION)
     args = ap.parse_args(argv)
+
+    if args.retro:                       # standalone: loads and fits its own arms
+        from sports.nba.model.retro import retro
+        rec = retro(build.init(verbose=False))
+        print(f"burned_test_set={rec['burned_test_set']} claim_eligible={rec['claim_eligible']} "
+              f"n_retro={rec['n_retro']} -> nba_phase2_retro.json")
+        return 0
 
     con = build.init(verbose=False)
     rows = load_dataset(con, args.version)
