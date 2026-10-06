@@ -180,6 +180,14 @@ def stats_view() -> dict:
         counts = {t: con.execute(f"SELECT COUNT(*) AS n FROM {t}").fetchone()["n"]
                   for t in ("games", "odds_snapshots", "features", "game_inactives",
                             "game_traditional", "game_officials")}
+        # The games table now also carries SCHEDULED rows for an upcoming season (ingested
+        # from scheduleleaguev2 before tip-off, scores NULL until settled). Row count alone
+        # would let unplayed games be mistaken for a bigger played corpus, so split it out.
+        completed = con.execute(
+            "SELECT COUNT(*) AS n FROM games WHERE home_score IS NOT NULL"
+            " AND away_score IS NOT NULL").fetchone()["n"]
+        counts["games_completed"] = completed
+        counts["games_scheduled"] = counts["games"] - completed
         seasons = [{"season": r["season"], "n": r["n"]} for r in
                    con.execute("SELECT season, COUNT(*) n FROM games GROUP BY season ORDER BY season")]
     finally:

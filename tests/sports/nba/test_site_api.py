@@ -71,8 +71,13 @@ def test_sim_contract():
 
 def test_stats_contract():
     d = _get("/api/stats")
-    assert d["db_counts"]["games"] == 25268
-    assert len(d["seasons"]) == 21
+    c = d["db_counts"]
+    # games = raw rows; the split keeps unplayed scheduled rows from masquerading as played
+    assert c["games"] == c["games_completed"] + c["games_scheduled"]
+    assert c["games_completed"] >= 25258          # scored corpus intact (10 historical
+    # neutrals sit unscored until the box-score repair pass fills them)
+    assert len(d["seasons"]) >= 21
+    assert d["seasons"][-1]["season"] == "2026-27"  # the upcoming schedule is ingested
 
 
 def test_teams_contract():

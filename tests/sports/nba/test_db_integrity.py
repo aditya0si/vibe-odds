@@ -41,10 +41,17 @@ def test_every_season_has_the_expected_game_count(con) -> None:
 def test_scores_present_except_documented_neutral_site_games(con) -> None:
     """Neutral-site games (Paris / Mexico City / NBA Cup in Las Vegas) arrive from the game log
     without a home/away marker; the box-score ingest repairs them. Until it has, they are the
-    ONLY rows allowed to lack a score - anything else is a silent data bug."""
+    ONLY rows allowed to lack a score - anything else is a silent data bug.
+
+    Scope: seasons that have STARTED. A scheduled future-season game (the upcoming
+    schedule is ingested before tip-off, e.g. 2026-27) legitimately has no score yet,
+    so it is excluded from this gate; it gets one when the box-score ingest settles it."""
+    current = con.execute(
+        "SELECT MAX(season) FROM games WHERE home_score IS NOT NULL").fetchone()[0]
     missing = [dict(r) for r in con.execute(
         """SELECT game_id, season, is_neutral FROM games
-           WHERE season_type='regular' AND (home_score IS NULL OR away_score IS NULL)""")]
+           WHERE season_type='regular' AND (home_score IS NULL OR away_score IS NULL)
+             AND season <= ?""", (current,))]
     assert len(missing) <= 10, f"too many games without a score: {missing[:5]}"
     assert all(m["is_neutral"] == 1 or True for m in missing)  # repaired rows keep is_neutral=1
 

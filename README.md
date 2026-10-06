@@ -1,6 +1,6 @@
 # Vibe-Odds — a sport-agnostic prediction engine (ATP tennis + NBA moneyline)
 
-<!-- claims: modelling=119 evidence=90 nba=99 total=308 -->
+<!-- claims: modelling=119 evidence=90 nba=104 total=313 -->
 
 One engine, two sports: transparent, evidence-first prediction with frozen
 ledgers, pre-registered claims, and honest failure reporting. `core/` holds the
