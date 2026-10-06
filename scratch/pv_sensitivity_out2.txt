@@ -1,0 +1,11 @@
+reference (frozen lambda=3/K=8/m=16): burned Brier 0.21026 on 4897 games; fingerprint b066ce16bea7
+  lambda=1.0: burned Brier 0.21013  vs frozen mean_diff 0.00013 ci95 [-9e-05, 0.00035] n 4897  fp bffd31391765
+  lambda=10.0: burned Brier 0.21031  vs frozen mean_diff -5e-05 ci95 [-0.00027, 0.00016] n 4897  fp 85599f470d77
+  lambda=30.0: burned Brier 0.21015  vs frozen mean_diff 0.00011 ci95 [-0.0002, 0.00043] n 4897  fp 2fc34a1b2686
+  K=6: burned Brier 0.21026  vs frozen mean_diff 0.0 ci95 [-9e-05, 9e-05] n 4897  fp 4277c523d398
+  K=12: burned Brier 0.21029  vs frozen mean_diff -3e-05 ci95 [-0.00012, 5e-05] n 4897  fp 63be79df9efd
+  m=8.0: burned Brier 0.21021  vs frozen mean_diff 5e-05 ci95 [-5e-05, 0.00016] n 4897  fp 2ed682c759e8
+  m=32.0: burned Brier 0.21037  vs frozen mean_diff -0.00011 ci95 [-0.00023, 1e-05] n 4897  fp e3356016ab78
+outcome: FLAT: no variant's paired CI excludes zero with a >= 0.0010 improvement; the frozen constants stand. Sensitivity documented; nothing changes.
+-> nba_phase3_sensitivity_a9.json
+rc=0

@@ -1,6 +1,6 @@
 # Vibe-Odds — a sport-agnostic prediction engine (ATP tennis + NBA moneyline)
 
-<!-- claims: modelling=121 evidence=98 nba=130 total=349 -->
+<!-- claims: modelling=121 evidence=106 nba=137 total=364 -->
 
 One engine, two sports: transparent, evidence-first prediction with frozen
 ledgers, pre-registered claims, and honest failure reporting. `core/` holds the
@@ -291,6 +291,17 @@ Inputs given to the gate: the ingested `nba.sqlite` (network fetches are
 not re-run), `.env`, and `nba_walkforward_v1_contaminated.json` — the one
 preserved-bug ledger, which is history: regenerating it would mean
 reintroducing the bug it documents.
+
+Phase-2/3 evidence has its own committed producers: `features` v3–v6 evidence via
+`python -m sports.nba.features.build --version vN`; the arm gates via
+`python -m sports.nba.model.phase2` (A7/A8), `python -m sports.nba.model.stack` (G1),
+`python -m sports.nba.model.phase3` (A9), `python -m sports.nba.model.recency` (A10),
+`python -m sports.nba.model.srs_gate` (A11); the retro records via
+`python -m sports.nba.model.retro [--a9|--a11]`; the sealed 2026-27 arm via
+`python tools/season_gate.py`; the sensitivity table via `python scratch/pv_sensitivity.py`.
+Each artifact is deterministic in its producer (several re-verified byte-exactly during
+development); the full from-empty sequence was last exercised end-to-end at 17 artifacts
+(45/45 manifest checks).
 
 The gate found and we fixed two real reproducibility holes in `443e9c9`:
 Windows `autocrlf` corrupted `data/` evidence on fresh checkout (the

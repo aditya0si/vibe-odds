@@ -69,3 +69,26 @@ def test_retro_a9_writes_a_labeled_record(tmp_path, monkeypatch):
     assert back["burned_test_set"] is True
     assert set(back["arms_brier"]) >= {"A9_formula", "A9b_formula", "A7_formula"}
     assert back["arms_brier"]["A9_formula"] == 0.25          # (0.5-1)^2 per game
+
+
+def test_retro_a11_writes_a_labeled_record(tmp_path, monkeypatch):
+    """The A11 retro path goes through the same labeling builder (stubbed fits; real labels)."""
+    import sports.nba.model.retro as R
+    from sports.nba.model import formula as F
+
+    rows = [{"game_id": f"g{i}", "season": "2022-23", "game_date": "2023-01-01",
+             "home_win": 1, "x": {}} for i in range(3)]
+    monkeypatch.setattr(F, "load_dataset", lambda con, version=None, feature_names=None: rows)
+    monkeypatch.setattr(F, "fit_formula", lambda rows_, feats=None: {})
+    monkeypatch.setattr(F, "predict", lambda formula, row: 0.5)
+    monkeypatch.setattr(F, "market_probs", lambda con, kind=None, books_only=True: {})
+    monkeypatch.setattr(F, "paired_stats",
+                        lambda pa, pb, labels, games, dates, block=10: {"n": 0})
+
+    out = tmp_path / "nba_phase3_retro_a11.json"
+    rec = R.retro_a11(None, out=out)
+    assert rec["burned_test_set"] is True and rec["claim_eligible"] is False
+    back = json.loads(out.read_text(encoding="utf-8"))
+    assert back["burned_test_set"] is True
+    assert set(back["arms_brier"]) >= {"A11_formula", "A7_formula"}
+    assert back["arms_brier"]["A11_formula"] == 0.25

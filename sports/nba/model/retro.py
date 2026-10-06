@@ -2,6 +2,7 @@
 
     python -m sports.nba.model.retro        # writes sports/nba/data/nba_phase2_retro.json
     python -m sports.nba.model.retro --a9   # writes sports/nba/data/nba_phase3_retro_a9.json
+    python -m sports.nba.model.retro --a11  # writes sports/nba/data/nba_phase3_retro_a11.json
 
 We have seen 2022-23 -> 2025-26 results (docs/preregistration.md §13, burned-window
 rule). Everything this module produces is a RETROSPECTIVE ESTIMATE for diagnostics
@@ -14,6 +15,7 @@ Arms re-scored (fitted <= 2020-21, structure frozen):
   G1_stack   - the rejected nonlinear arm (monotone GBM + Hedge; diagnostic)
   A9_formula  - the rejected Phase-3 candidate (pv_* REPLACES the absence family)
   A9b_formula - the additive Phase-3 candidate (A7 + pv_*); best tune number so far
+  A11_formula - the SRS team-ratings candidate (A7 + srs_diff; features v6)
 Paired stats are the module's standard ones (paired_stats: mean_diff, sigma_d,
 blocked bootstrap CI): vs market open (T2' analogue), vs market mid (T2''
 analogue - only eras with a mid snapshot), vs market close (T3 analogue).
@@ -26,12 +28,14 @@ import sys
 from sports.nba.db import build, paths
 from sports.nba.model import formula as F
 from sports.nba.model import phase3 as P3
+from sports.nba.model import srs_gate as SG
 from sports.nba.model import stack as S
 from sports.nba.model.phase2 import A7_FEATURES
 
 RETRO_SEASONS = ("2022-23", "2023-24", "2024-25", "2025-26")
 RETRO_PATH = paths.DATA / "nba_phase2_retro.json"
 RETRO_A9_PATH = paths.DATA / "nba_phase3_retro_a9.json"
+RETRO_A11_PATH = paths.DATA / "nba_phase3_retro_a11.json"
 LABEL = ("RETROSPECTIVE ESTIMATES ONLY - the 2022-23..2025-26 window is burned "
          "(its results were known before Phase-2 work began). No number here may "
          "ever be published as a claim test.")
@@ -160,8 +164,58 @@ def retro_a9(con, out=None) -> dict:
     return rec
 
 
+def retro_a11(con, out=None) -> dict:
+    """Re-score the A11 candidate (SRS team ratings, v6) on the burned window.
+
+    Same mandatory labels as every retro path (retro_record), same paired stats.
+    Frozen Phase-2/3 artifacts are never touched by this path.
+    """
+    rows6 = F.load_dataset(con, version="v6", feature_names=SG.A11_FEATURES)
+    fit6 = [r for r in rows6 if r["season"] <= F.TRAIN_END]
+    retro6 = [r for r in rows6 if r["season"] in RETRO_SEASONS]
+    labels = {r["game_id"]: r["home_win"] for r in retro6}
+    dates = {r["game_id"]: r["game_date"] for r in retro6}
+    games = [r["game_id"] for r in retro6]
+    a11 = F.fit_formula(fit6, tuple(SG.A11_FEATURES))
+    p_a11 = {r["game_id"]: F.predict(a11, r) for r in retro6}
+
+    rows3 = F.load_dataset(con, version="v3", feature_names=A7_FEATURES)
+    fit3 = [r for r in rows3 if r["season"] <= F.TRAIN_END]
+    retro3 = [r for r in rows3 if r["season"] in RETRO_SEASONS]
+    a7 = F.fit_formula(fit3, tuple(A7_FEATURES))
+    p_a7 = {r["game_id"]: F.predict(a7, r) for r in retro3}
+
+    mkt = {kind: F.market_probs(con, kind) for kind in ("open", "close")}
+
+    def block(pa: dict[str, float], pb: dict[str, float]) -> list[str]:
+        return [g for g in games if g in pa and g in pb]
+
+    briers = {
+        "A11_formula": _brier(p_a11, labels, games),
+        "A7_formula": _brier(p_a7, labels, games),
+        "market_open": _brier(mkt["open"], labels, games),
+        "market_close": _brier(mkt["close"], labels, games),
+    }
+    paired = {
+        "a11_vs_a7": F.paired_stats(p_a11, p_a7, labels, block(p_a11, p_a7), dates),
+        "a11_vs_open": F.paired_stats(p_a11, mkt["open"], labels, block(p_a11, mkt["open"]), dates),
+        "a11_vs_close": F.paired_stats(p_a11, mkt["close"], labels, block(p_a11, mkt["close"]), dates),
+    }
+    rec = retro_record(len(games), briers, paired)
+    (out or RETRO_A11_PATH).write_text(json.dumps(rec, indent=1), encoding="utf-8")
+    return rec
+
+
 def main() -> int:
     con = build.init(verbose=False)
+    if "--a11" in sys.argv:
+        rec = retro_a11(con)
+        print(f"burned_test_set={rec['burned_test_set']} claim_eligible={rec['claim_eligible']}")
+        print(f"n_retro={rec['n_retro']}  -> {RETRO_A11_PATH.name}")
+        print(json.dumps(rec["arms_brier"], indent=1))
+        for k, v in rec["paired"].items():
+            print(f"  {k}: mean_diff={v.get('mean_diff')} ci95={v.get('ci95_blocked')} n={v.get('n')}")
+        return 0
     if "--a9" in sys.argv:
         rec = retro_a9(con)
         print(f"burned_test_set={rec['burned_test_set']} claim_eligible={rec['claim_eligible']}")

@@ -31,6 +31,11 @@
    "bytes": 5815,
    "claims": "v5 as-of feature build (v1 keys + player-value availability, the A9 candidate): sparse ridge lineup values (margin ~ minutes-share; lambda=3 frozen at the first refit by 5-fold time-blocked CV under the stability-preferring 2%-of-minimum rule), 20 season-boundary refits, k-means archetype shrinkage (K=8, seed 7), per-refit priors; same publication rule as v2/v3 (25,228 authoritative / 30 unknown)."
   },
+  "sports/nba/data/features_v6_evidence.json": {
+   "sha256": "be21e99a3f3381a1f38f680d4351b1a203f40f29d40b0355704b41a9d0dd5598",
+   "bytes": 6216,
+   "claims": "v6 feature evidence: every v3 key plus the schedule-adjusted team ratings (srs_home/away/diff) from features/team_ratings.py; 25,258 rows over 21 seasons; 21 season-boundary refits; leakage check 0 mismatches over 15,156 rebuilt rows. A11 candidate input."
+  },
   "sports/nba/data/formula_v1.json": {
    "sha256": "cfe5d4804cea7b41adbd5122143312ca97d25277c6095c51015fd81fcf9af1c6",
    "bytes": 1040,
@@ -96,10 +101,25 @@
    "bytes": 1374,
    "claims": "Phase-3 candidate gate (A10; fit <= 2020-21, tune 2021-22, one run): recency-weighted fitting with the half-life chosen by fit-window 5-fold time-blocked CV over a pre-stated grid. RESULT: the CV is monotone against decay and selects NO decay (H=16/None tie at 0.20835; H=1 0.21000) - A10 is arithmetically identical to A7 and its 'enter' verdict re-states A7's entry, not a new admission (the record carries that note). claim_eligible=false."
   },
+  "sports/nba/data/nba_phase3_gate_a11.json": {
+   "sha256": "40380525159da54f8d47cb953da2c2ce365bd956eac828992723edd9cbabefc4",
+   "bytes": 1118,
+   "claims": "Phase-3 candidate gate (A11; fit <= 2020-21, tune 2021-22, one run): A7 + srs_diff (features v6) scores 0.21565 vs A6 0.21591 -> ENTER (marginal; -0.00008 vs A7). The burned-window check (nba_phase3_retro_a11.json) shows the tune edge does NOT replicate (a11_vs_a7 -0.0001, CI straddling zero) - redundancy with Elo, as the record's note pre-stated. claim_eligible=false."
+  },
   "sports/nba/data/nba_phase3_retro_a9.json": {
    "sha256": "bea1c740f7227da0f3579b561ae18039a1d739cd9ef286763f877b7fe53ac900",
    "bytes": 1451,
    "claims": "LABELED RETROSPECTIVE re-score of the Phase-3 candidates on the BURNED window 2022-23..2025-26 (retro.py --a9; labels set in retro_record, asserted by test_retro_label.py): A9 0.21023 / A9b 0.21026 / A7 0.21039; a9b_vs_a7 mean_diff +0.00013, CI [-0.00034, +0.00065] (indistinguishable); both still lose to open (-0.0037) and close (-0.0078). Diagnostics only - never a claim."
+  },
+  "sports/nba/data/nba_phase3_retro_a11.json": {
+   "sha256": "eccae1ea15a282220ac7edc53de751a49653afc5da28417154e46e487d9f0e69",
+   "bytes": 1068,
+   "claims": "LABELED RETROSPECTIVE (burned 2022-23..2025-26; burned_test_set=true, claim_eligible=false): A11 0.21049 / A7 0.21039; a11_vs_a7 -0.0001 CI [-0.00023, +3e-05] (indistinguishable; point estimate slightly worse); a11_vs_open -0.00398 [-0.00673, -0.00126]; a11_vs_close -0.00797. Diagnostics only - never a claim."
+  },
+  "sports/nba/data/nba_phase3_sensitivity_a9.json": {
+   "sha256": "edde56bec47df3c3f1ef3d12ee970aa8b36d6bbfc98a0bf39ad4559b7edf346f",
+   "bytes": 3270,
+   "claims": "R3 iteration 2 (BURNED WINDOW diagnostics; burned_test_set=true, claim_eligible=false): A9b sensitivity to the frozen player-value constants (lambda/K/m, one-at-a-time). FLAT: every variant's paired CI vs the frozen arm straddles zero; the largest |mean_diff| is 0.00013 vs the pre-stated 0.0010 material bar; 8 distinct fingerprints prove each forced constant took effect (no silent no-op). The frozen constants stand."
   },
   "sports/nba/data/nba_walkforward_v1.json": {
    "sha256": "3940dc22bb209f4e55653a39451be004a4644eb877d0b927087f637d70a181de",

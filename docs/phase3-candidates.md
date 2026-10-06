@@ -53,7 +53,9 @@ the additive form produced the best tune number any arm has shown.
 - The additive tune advantage (−0.00070 vs A6) does **not replicate** on the burned window
   (vs A7: +0.00013, CI straddling zero). Treat A9b as a **low-prior candidate**, not a
   demonstrated improvement.
-- Neither form closes a meaningful share of the ~0.008 market gap.
+- Neither form closes a meaningful share of the ~0.008 market gap — and the R3
+  exploration (log below) finds no route to it either: recency weighting is a null, the
+  value-model constants are insensitive, and SRS-style team ratings are redundant with Elo.
 - Process note: the deletion test (`test_player_value_leakage.py`) caught two real bug
   classes before any gate ran — a position-keyed value lookup that silently degraded to the
   prior, and a shape-dependent `sparse_cg` float path that leaked the future into
@@ -70,6 +72,29 @@ decay (H=1 0.21000 → H=16/no-decay 0.20835), so *no decay* is selected — A10
 identical to A7 and its "enter" verdict re-states A7's entry, not a new admission (the record
 carries a note saying so). Recency weighting is retired for this program. Record:
 `nba_phase3_gate_a10.json`.
+
+**Iteration 2 — λ/K/m sensitivity, A9b (2026-10-07).** One-at-a-time variants around the
+frozen constants (λ ∈ {1, 10, 30}; K ∈ {6, 12}; m ∈ {8, 32}), each rebuilt in memory and
+scored on the BURNED window (the burned window may be used for selection; the tune season is
+reserved for one-shot gates). **Result: flat.** Every variant's paired CI vs the frozen arm
+straddles zero; the largest |mean_diff| is 0.00013 against the pre-stated 0.0010 material
+bar. Eight distinct fingerprints prove each forced constant took effect — the failure mode
+this probe was built to exclude is a wrapper that silently no-ops (the module constants are
+bound as default arguments at def time, so monkeypatching them alone would do exactly
+that). The frozen constants stand; the arm is insensitive to them. Record:
+`nba_phase3_sensitivity_a9.json`.
+
+**Iteration 3 — A11, SRS-style team ratings (2026-10-07).** One variable against A7:
+`+srs_diff`, an as-of opponent-adjusted team rating from a small team-level ridge
+(features/team_ratings.py, features v6; expanding window, no decay per iteration 1).
+**Result: a marginal tune enter that does not replicate.** Tune 0.21565 vs A6 0.21591 —
+enter by the letter of the rule, but only −0.00008 vs A7; burned window: A11 0.21049 vs
+A7 0.21039, `a11_vs_a7` −0.0001 CI [−0.00023, +3e-05] — indistinguishable, point estimate
+slightly worse. The pre-stated reading holds: the signal is redundant with Elo/net-rating.
+Records: `nba_phase3_gate_a11.json`, `nba_phase3_retro_a11.json`. (Process note: the v6
+window test caught a real wiring bug BEFORE the gate ran — the availability/impact
+producers never ran for v6, so every v6 row was all-None; fixed, rebuilt, leakage-clean,
+and the counts pin 19,085/1,230.)
 
 ## Registration options (user decision; none executed)
 
