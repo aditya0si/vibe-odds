@@ -1,0 +1,35 @@
+fit window: 19118 games <= 2020-21
+player-rows: 476684  (5.1s)
+players: 1747
+design: (19118, 1747), nnz=397404  (10.2s)
+  lambda=    1.0: cv_rmse=11.0139
+  lambda=    3.0: cv_rmse=11.0180
+  lambda=   10.0: cv_rmse=11.1388
+  lambda=   30.0: cv_rmse=11.3097
+  lambda=  100.0: cv_rmse=11.4834
+  lambda=  300.0: cv_rmse=11.5756
+chosen lambda=1.0 (cv_rmse 11.0139)  (11.3s)
+intercept (HCA pts) = +2.30
+top-8 by V: [(2544, 23.6, 43545), (1885, 23.46, 18526), (101108, 22.68, 37756), (708, 21.24, 20835), (202335, 21.12, 14920), (203497, 20.43, 16180), (1628978, 20.11, 3746), (200758, 20.09, 11538)]
+(a) split-half reliability by lambda (n=1108 players >=300 min per half):
+    lambda=   1.0: weighted=0.675 plain=0.641
+    lambda=   3.0: weighted=0.796 plain=0.769
+    lambda=  10.0: weighted=0.872 plain=0.852
+    lambda=  30.0: weighted=0.900 plain=0.884
+    lambda= 100.0: weighted=0.908 plain=0.896
+(b) rank corr over 1186 players (>=500 min): V vs production=0.351, V vs plus/minus proxy=0.668
+(c) top-3 disagreement over 480 team-seasons: sets differ=466 (97.1%); mean overlap=0.40
+(d) archetypes: n=1186 players, K=8 silhouette=0.169
+    cluster 0: n= 81  meanV=+4.544
+    cluster 1: n=134  meanV=+4.101
+    cluster 2: n=211  meanV=+2.693
+    cluster 3: n= 79  meanV=+7.764
+    cluster 4: n=170  meanV=+2.991
+    cluster 5: n=158  meanV=+3.953
+    cluster 6: n=225  meanV=+1.100
+    cluster 7: n=128  meanV=+6.626
+    cluster-mean spread: std=2.004 vs overall |V| spread (weighted sd)=8.064
+
+DECISION: reliability=0.675 (need >=0.60); top-3 disagreement=97.1% (need >=15%) -> PROCEED
+(14.5s)
+feasibility_exit=0
