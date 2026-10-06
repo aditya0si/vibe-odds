@@ -81,10 +81,15 @@ def test_nba_artifact_bytes_unchanged(rel: str, meta: dict) -> None:
 
 def test_manifest_covers_every_nba_evidence_json() -> None:
     """A new *.json artifact cannot appear without being frozen."""
+    # Operational state, never evidence: espn_events.json is a rebuildable
+    # event-map cache (tools/t60_snapshot.py map) and games_today.json is the
+    # odds tick's transient input. Documented in docs/runbooks/season-2026-27.md.
+    operational = {"sports/nba/data/espn_events.json", "sports/nba/data/games_today.json"}
     present = {
         str(p.relative_to(ROOT)).replace("\\", "/")
         for p in NBA_DATA.rglob("*.json")
         if "cache" not in p.parts
+        and str(p.relative_to(ROOT)).replace("\\", "/") not in operational
     }
     unknown = sorted(present - set(ARTIFACTS))
     assert not unknown, (

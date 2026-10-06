@@ -1,7 +1,9 @@
-"""Daily season ops: schedule emission, sealed-arm prediction logging, refresh.
+"""Daily season ops: window-keyed schedule emission, sealed-arm verify, refresh.
 
-Uses a temp SQLite DB shaped like the real one (games/teams/features) so no
-production data is touched and no network is needed.
+Uses a temp SQLite DB shaped like the real one (games/teams) so no production
+data is touched and no network is needed. The removed `predict` subcommand is
+guarded by a test: live prediction logging from the sealed arm is impossible by
+construction (10/17 features are post-game-only), see tools/season_ops.py.
 """
 from __future__ import annotations
 
@@ -34,80 +36,50 @@ def make_con() -> sqlite3.Connection:
         "INSERT INTO games VALUES (?,?,?,?,?,?,?,?,?)",
         [("g1", "2026-27", "regular", "2026-10-27", "2026-10-27T19:00:00Z", 2, 1, None, None),
          ("g2", "2026-27", "regular", "2026-10-27", "2026-10-27T23:00:00Z", 3, 4, None, None),
-         ("g3", "2026-27", "regular", "2026-10-28", "2026-10-28T00:30:00Z", 1, 2, None, None)])
+         ("g3", "2026-27", "regular", "2026-10-28", "2026-10-28T00:30:00Z", 1, 2, None, None),
+         ("g4", "2026-27", "regular", "2026-10-28", None, 1, 3, None, None),
+         ("g5", "2025-26", "regular", "2026-10-27", "2026-10-27T23:10:00Z", 4, 3, 100, 99)])
     con.commit()
     return con
 
 
-def test_schedule_emits_full_names_and_today_only():
+def test_games_near_window_includes_midnight_crosser():
+    """The UTC-date bug: g3 tips at 00:30Z the NEXT UTC day and must be included."""
     con = make_con()
-    out = SO.cmd_schedule(con, "2026-10-27", None)
-    assert out["n_games"] == 2                                   # g3 is next day
-    assert out["games"][0]["home_team"] == "Detroit Pistons"
-    assert out["games"][0]["away_team"] == "Boston Celtics"
-    assert out["games"][0]["tipoff_ts"] == "2026-10-27T19:00:00Z"
+    got = SO.games_near(con, "2026-10-27T22:30:00Z")
+    ids = [g["game_id"] for g in got]
+    assert ids == ["g2", "g3"]                   # g1 too early; g4 no tipoff; g5 other season
+    assert got[0]["home_team"] == "New York Knicks"
+    assert got[0]["away_team"] == "Philadelphia 76ers"
+
+
+def test_games_near_respects_window_edges():
+    con = make_con()
+    assert [g["game_id"] for g in SO.games_near(con, "2026-10-27T21:45:00Z")] == ["g2", "g3"]
+    # g2 (23:00) falls out once it is more than 1h in the past
+    assert [g["game_id"] for g in SO.games_near(con, "2026-10-28T00:15:00Z")] == ["g3"]
 
 
 def test_schedule_writes_games_json(tmp_path):
     con = make_con()
     p = tmp_path / "games.json"
-    SO.cmd_schedule(con, "2026-10-27", str(p))
+    out = SO.cmd_schedule(con, "2026-10-27T22:30:00Z", str(p))
+    assert out["n_games"] == 2 and out["written_to"] == str(p)
     back = json.loads(p.read_text(encoding="utf-8"))
-    assert back[0]["game_id"] == "g1" and len(back) == 2
+    assert [g["game_id"] for g in back] == ["g2", "g3"]
+    assert back[0]["tipoff_ts"] == "2026-10-27T23:00:00Z"
 
 
-def _seed_features(con, rows):
-    for gid, r in rows.items():
-        con.execute("INSERT INTO features VALUES (?,?,?,?,?)",
-                    (gid, "v3", "2026-10-27T00:00:00Z", "2026-10-27T00:00:00Z",
-                     json.dumps(r)))
-    con.commit()
-
-
-def test_predict_logs_sealed_arm_before_tip(tmp_path, monkeypatch):
-    con = make_con()
-    rows = syn(40)
-    arm = fit_claim_arm(rows)
-    # features keyed by the schedule's game_ids
-    _seed_features(con, {"g1": rows[0], "g2": rows[1]})
-    monkeypatch.setattr(SO.live_log, "LOG_PATH", tmp_path / "log.jsonl")
-    out = SO.cmd_predict(con, "2026-10-27", arm)
-    assert out["n_logged"] == 2 and not out["skipped"]
-    for e in out["logged"]:
-        assert 0.0 < e["prob_home"] < 1.0
-    # rows actually landed in the log, before tip
-    events = [json.loads(l) for l in (tmp_path / "log.jsonl").read_text().splitlines() if l.strip()]
-    assert len(events) == 2 and all(e["type"] == "predict" for e in events)
-    assert all(e["source"] == "sealed_a7_2026_27" for e in events)
-
-
-def test_predict_skips_games_without_features(tmp_path, monkeypatch):
-    con = make_con()
-    rows = syn(10)
-    arm = fit_claim_arm(rows)
-    _seed_features(con, {"g1": rows[0]})                 # g2 has no features
-    monkeypatch.setattr(SO.live_log, "LOG_PATH", tmp_path / "log.jsonl")
-    out = SO.cmd_predict(con, "2026-10-27", arm)
-    assert out["n_logged"] == 1
-    assert out["skipped"] == [{"game_id": "g2", "reason": "no v3 features yet"}]
-
-
-def test_predict_dry_run_writes_nothing(tmp_path, monkeypatch):
-    con = make_con()
-    rows = syn(10)
-    arm = fit_claim_arm(rows)
-    _seed_features(con, {"g1": rows[0]})
-    monkeypatch.setattr(SO.live_log, "LOG_PATH", tmp_path / "log.jsonl")
-    out = SO.cmd_predict(con, "2026-10-27", arm, dry_run=True)
-    assert out["n_logged"] == 1 and out["logged"][0]["dry_run"] is True
-    assert not (tmp_path / "log.jsonl").exists()
-
-
-def test_predict_refuses_tampered_arm(tmp_path, monkeypatch):
-    con = make_con()
-    rows = syn(10)
-    arm = fit_claim_arm(rows)
-    _seed_features(con, {"g1": rows[0]})
-    monkeypatch.setattr(SO.live_log, "LOG_PATH", tmp_path / "log.jsonl")
+def test_verify_accepts_sealed_arm_and_rejects_tamper():
+    arm = fit_claim_arm(syn(40))
+    out = SO.cmd_verify(arm)
+    assert out["verified"] is True and out["digest"] == arm["digest"]
     with pytest.raises(RuntimeError, match="digest mismatch"):
-        SO.cmd_predict(con, "2026-10-27", dict(arm, n_fit=arm["n_fit"] + 1))
+        SO.cmd_verify(dict(arm, n_fit=arm["n_fit"] + 1))
+
+
+def test_predict_subcommand_is_gone():
+    """Structural: A7's avail/impact features are post-game-only; no live log exists."""
+    assert not hasattr(SO, "cmd_predict")
+    with pytest.raises(SystemExit):
+        SO.main(["predict", "--date", "2026-10-27"])

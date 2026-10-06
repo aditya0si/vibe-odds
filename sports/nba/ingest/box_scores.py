@@ -214,6 +214,8 @@ def ingest(con: sqlite3.Connection, seasons: list[str], workers: int = 4, limit:
         ids = [r["game_id"] for r in con.execute(
             f"""SELECT g.game_id FROM games g
                WHERE g.season=? AND g.season_type='regular'
+                 AND (g.home_score IS NOT NULL
+                      OR EXISTS (SELECT 1 FROM {table} t0 WHERE t0.game_id=g.game_id))
                  AND (? OR NOT EXISTS (SELECT 1 FROM {table} t WHERE t.game_id=g.game_id))
                ORDER BY g.game_date""", (s, 1 if force else 0))]
         if limit:
