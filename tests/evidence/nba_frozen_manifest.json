@@ -26,6 +26,11 @@
    "bytes": 3356,
    "claims": "v4 as-of feature build (v3 keys + schedule spots: 5-day travel, altitude venue, 4-in-5 / 3-in-4 away, homestand/roadtrip runs). Phase-2 A8 arm input (docs/preregistration.md 13). Same coverage block as v2/v3."
   },
+  "sports/nba/data/features_v5_evidence.json": {
+   "sha256": "e26676e30d7363cfaaa00076683b7b219b5222854802f263c39f6c4d7601ca59",
+   "bytes": 5815,
+   "claims": "v5 as-of feature build (v1 keys + player-value availability, the A9 candidate): sparse ridge lineup values (margin ~ minutes-share; lambda=3 frozen at the first refit by 5-fold time-blocked CV under the stability-preferring 2%-of-minimum rule), 20 season-boundary refits, k-means archetype shrinkage (K=8, seed 7), per-refit priors; same publication rule as v2/v3 (25,228 authoritative / 30 unknown)."
+  },
   "sports/nba/data/formula_v1.json": {
    "sha256": "cfe5d4804cea7b41adbd5122143312ca97d25277c6095c51015fd81fcf9af1c6",
    "bytes": 1040,
@@ -80,6 +85,16 @@
    "sha256": "79d881d14e41587f51fd71866983081acc8d0764a3737af258640c0982112911",
    "bytes": 1592,
    "claims": "LABELED RETROSPECTIVE re-score of the Phase-2 arms on the BURNED window 2022-23..2025-26 (retro.py / formula.py --retro): burned_test_set=true and claim_eligible=false are set in exactly one place (retro_record) and asserted by tests/sports/nba/test_retro_label.py. Diagnostics and power inputs ONLY - the window's results were known before Phase-2 work began and no number here may ever be published as a claim test."
+  },
+  "sports/nba/data/nba_phase3_gate_a9.json": {
+   "sha256": "0cf6aec0014a0c21c9a276fff95b45f96df4a8915798b85a0da0f4fe0a41b1ab",
+   "bytes": 1778,
+   "claims": "Phase-3 candidate gate (A9; fit <= 2020-21, scored on 2021-22, tune-only, one run): the pv_* family REPLACING the absence metrics scores 0.2162 vs A6 0.21591 -> REJECTED; the additive variant A9b (A7 + pv_*) scores 0.21521 (best tune number so far; informational, never gating). Candidate status: unregistered - may not inform any claim until a Phase-3 registration exists (docs/phase3-candidates.md). claim_eligible=false."
+  },
+  "sports/nba/data/nba_phase3_retro_a9.json": {
+   "sha256": "bea1c740f7227da0f3579b561ae18039a1d739cd9ef286763f877b7fe53ac900",
+   "bytes": 1451,
+   "claims": "LABELED RETROSPECTIVE re-score of the Phase-3 candidates on the BURNED window 2022-23..2025-26 (retro.py --a9; labels set in retro_record, asserted by test_retro_label.py): A9 0.21023 / A9b 0.21026 / A7 0.21039; a9b_vs_a7 mean_diff +0.00013, CI [-0.00034, +0.00065] (indistinguishable); both still lose to open (-0.0037) and close (-0.0078). Diagnostics only - never a claim."
   },
   "sports/nba/data/nba_walkforward_v1.json": {
    "sha256": "3940dc22bb209f4e55653a39451be004a4644eb877d0b927087f637d70a181de",

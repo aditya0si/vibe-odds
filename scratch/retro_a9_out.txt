@@ -1,0 +1,18 @@
+burned_test_set=True claim_eligible=False
+n_retro=4897  -> nba_phase3_retro_a9.json
+{
+ "A9_formula": 0.21023,
+ "A9b_formula": 0.21026,
+ "A7_formula": 0.21039,
+ "market_open": 0.20186,
+ "market_mid": null,
+ "market_close": 0.20219
+}
+  a9_vs_open: mean_diff=-0.00374 ci95=[-0.0065, -0.00099] n=3652
+  a9_vs_close: mean_diff=-0.00776 ci95=[-0.00983, -0.00563] n=4877
+  a9b_vs_open: mean_diff=-0.00377 ci95=[-0.00648, -0.00106] n=3652
+  a9b_vs_close: mean_diff=-0.00777 ci95=[-0.00979, -0.00568] n=4877
+  a9b_vs_a7: mean_diff=0.00013 ci95=[-0.00034, 0.00065] n=4897
+rc=0
+bea1c740f7227da0f3579b561ae18039a1d739cd9ef286763f877b7fe53ac900 *sports/nba/data/nba_phase3_retro_a9.json
+1451 sports/nba/data/nba_phase3_retro_a9.json

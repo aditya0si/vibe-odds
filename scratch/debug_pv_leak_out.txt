@@ -1,0 +1,21 @@
+mismatches: 130
+differing keys: {'pv_missing_home': 48, 'pv_missing_diff': 106, 'pv_top_out_home': 14, 'pv_share_home': 46, 'pv_share_diff': 98, 'pv_top_out_away': 19, 'pv_missing_away': 59, 'pv_share_away': 54}
+by season: {'2006-07': 1, '2009-10': 30, '2010-11': 86, '2011-12': 5, '2012-13': 8}
+0020601179 2006-07
+   pv_missing_home: full=-3.379 trunc=-3.3791
+   pv_missing_diff: full=-0.0418 trunc=-0.0417
+0020900149 2009-10
+   pv_top_out_home: full=0 trunc=1
+0020900216 2009-10
+   pv_missing_home: full=-5.6828 trunc=-2.9742
+   pv_share_home: full=0.0 trunc=1.0
+   pv_top_out_home: full=0 trunc=1
+   pv_missing_diff: full=-1.8943 trunc=-4.6029
+   pv_share_diff: full=0.0 trunc=-1.0
+0020900269 2009-10
+   pv_top_out_home: full=1 trunc=0
+0020900275 2009-10
+   pv_top_out_away: full=0 trunc=1
+0020900285 2009-10
+   pv_top_out_home: full=1 trunc=0
+rc=0

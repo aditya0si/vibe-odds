@@ -1,0 +1,5 @@
+built 25258 feature rows for 21 seasons
+evidence -> features_v5_evidence.json
+home win rate (non-neutral) by season: 2005-06:0.603, 2006-07:0.591, 2007-08:0.601, 2008-09:0.608, 2009-10:0.594, 2010-11:0.604, 2011-12:0.586, 2012-13:0.612, 2013-14:0.580, 2014-15:0.575, 2015-16:0.589, 2016-17:0.584, 2017-18:0.579, 2018-
+caecf5ffa1d51f94db6a90feeccc7a539761487118ea0eb0727985cf31f3367c *sports/nba/data/features_v5_evidence.json
+rc=0
