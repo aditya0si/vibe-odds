@@ -91,6 +91,11 @@
    "bytes": 1778,
    "claims": "Phase-3 candidate gate (A9; fit <= 2020-21, scored on 2021-22, tune-only, one run): the pv_* family REPLACING the absence metrics scores 0.2162 vs A6 0.21591 -> REJECTED; the additive variant A9b (A7 + pv_*) scores 0.21521 (best tune number so far; informational, never gating). Candidate status: unregistered - may not inform any claim until a Phase-3 registration exists (docs/phase3-candidates.md). claim_eligible=false."
   },
+  "sports/nba/data/nba_phase3_gate_a10.json": {
+   "sha256": "f7801581e1adf4daa7d14ec5b764ce4a0a86a34464e7d33e2364c33e48eea9c7",
+   "bytes": 1374,
+   "claims": "Phase-3 candidate gate (A10; fit <= 2020-21, tune 2021-22, one run): recency-weighted fitting with the half-life chosen by fit-window 5-fold time-blocked CV over a pre-stated grid. RESULT: the CV is monotone against decay and selects NO decay (H=16/None tie at 0.20835; H=1 0.21000) - A10 is arithmetically identical to A7 and its 'enter' verdict re-states A7's entry, not a new admission (the record carries that note). claim_eligible=false."
+  },
   "sports/nba/data/nba_phase3_retro_a9.json": {
    "sha256": "bea1c740f7227da0f3579b561ae18039a1d739cd9ef286763f877b7fe53ac900",
    "bytes": 1451,

@@ -60,6 +60,17 @@ the additive form produced the best tune number any arm has shown.
   4th-decimal rounding (fixed by restricting each refit to active columns; the pass is now
   build-invariant, proved by both deletion cuts).
 
+## R3 iteration log (exploration; each candidate gets its own one-shot gate)
+
+**Iteration 1 — A10, recency-weighted fitting (2026-10-07).** One variable against A7: the
+same features and logistic, with the fit weighted `w = 0.5 ** (season_age / H)`; H chosen by
+5-fold time-blocked CV over the fit window (grid fixed a priori: H ∈ {1, 2, 3, 5, 8, 16, no
+decay}; ties break toward less decay). **Result: a null.** The CV curve is monotone against
+decay (H=1 0.21000 → H=16/no-decay 0.20835), so *no decay* is selected — A10 is arithmetically
+identical to A7 and its "enter" verdict re-states A7's entry, not a new admission (the record
+carries a note saying so). Recency weighting is retired for this program. Record:
+`nba_phase3_gate_a10.json`.
+
 ## Registration options (user decision; none executed)
 
 - **R1 — register Phase 3** (e.g. claim season 2027-28, fit ≤ 2026-27 expanding, tune 21-22

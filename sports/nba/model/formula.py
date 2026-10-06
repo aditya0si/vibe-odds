@@ -210,8 +210,14 @@ def paired_stats(pa: dict[str, float], pb: dict[str, float], labels: dict[str, i
 
 # ------------------------------------------------------------------ fitting
 def fit_formula(rows: list[dict], feature_names: tuple[str, ...] = FORMULA_FEATURES,
-                c: float = 1.0) -> dict:
-    """Standardised logistic regression (L2), coefficients published in original units."""
+                c: float = 1.0, sample_weight: list[float] | None = None) -> dict:
+    """Standardised logistic regression (L2), coefficients published in original units.
+
+    ``sample_weight`` (optional, one per row) enters the logistic fit ONLY - the
+    standardisation stays unweighted, so the published means/sds stay comparable
+    across weighted and unweighted fits. Default None reproduces the unweighted
+    fit exactly.
+    """
     from sklearn.linear_model import LogisticRegression
 
     X = [[r["x"][n] for n in feature_names] for r in rows]
@@ -221,7 +227,7 @@ def fit_formula(rows: list[dict], feature_names: tuple[str, ...] = FORMULA_FEATU
     sds = [math.sqrt(sum((v - m) ** 2 for v in col) / max(1, n - 1)) or 1.0 for col, m in zip(zip(*X), means)]
     Xs = [[(v - m) / s for v, m, s in zip(row, means, sds)] for row in X]
     clf = LogisticRegression(C=c, max_iter=2000)
-    clf.fit(Xs, y)
+    clf.fit(Xs, y, sample_weight=sample_weight)
     coefs = {name: float(c) for name, c in zip(feature_names, clf.coef_[0])}
     # back to original units: logit = b0 + sum(b_i * (x_i - m_i)/s_i)
     coefs_raw = {name: coefs[name] / s for name, s in zip(feature_names, sds)}
