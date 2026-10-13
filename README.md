@@ -1,6 +1,6 @@
 # Vibe-Odds — a sport-agnostic prediction engine (ATP tennis + NBA moneyline)
 
-<!-- claims: modelling=121 evidence=106 nba=137 total=364 -->
+<!-- claims: modelling=144 evidence=106 nba=143 total=393 -->
 
 One engine, two sports: transparent, evidence-first prediction with frozen
 ledgers, pre-registered claims, and honest failure reporting. `core/` holds the
@@ -156,7 +156,7 @@ disclosure list below.
 cd vibe-odds
 python -m venv .venv && .venv/Scripts/python.exe -m pip install -r requirements.txt
 copy .env.example .env            # optional: ODDS_API_KEY for live odds
-python -m pytest -q               # 251 tests, must be green
+python -m pytest -q               # 393 tests, must be green
 python -m sports.nba.server       # evidence site + read-only API on :8010
 python -m sports.nba.live_log --game-id 0022300310 --tipoff 2023-12-14T00:00:00Z --prob 0.119
 # post-tip predictions are REJECTED (LatePrediction): pre-registration is enforced in code

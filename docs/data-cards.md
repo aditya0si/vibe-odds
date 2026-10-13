@@ -104,3 +104,34 @@ statuses) be acquired **free** — historical archive for gating, live capture f
   freeze and cannot be a claim arm**. Live capture may still run during 2026-27
   as descriptive evidence for follow-up work. Reopening this requires an
   explicit yes to a paid archive (fresh decision; nothing gets bought without it).
+
+## 7. `prop_lines` — player-prop prices (prospective, 2026-27 only)
+
+- **Status at wiring time (2026-10-13): 0 rows.** Created by
+  `python -m sports.nba.db.build migrate`; fills from the first pre-tip capture.
+  This is prospective evidence, not history — nothing above derives from it, and
+  no claim reads it.
+- **Grain**: one row per (game, source, book, player, market, side, line,
+  snapshot_kind). The PK includes `line` deliberately: a MOVED line is a new row
+  (that is what makes a 14.5 → 23.5 ladder reconstructable), while re-capturing
+  the same price is a no-op.
+- **Sources** (free tiers only; clients in `core/providers/`):
+  - `sharpapi` — reachable on this network. 12 req/min, 2 books, 60 s data
+    delay, pre-match only, no documented monthly request cap. Key travels in the
+    `X-API-Key` header, never the URL.
+  - `sportsgameodds` — 9 books + settlement data, 2,500 objects/month. Blocked
+    locally (Sophos gambling category), so captured from the GitHub Actions
+    runner with the key as a repo secret.
+  - Excluded by the local network filter and therefore absent: The Odds API,
+    DraftKings, FanDuel, BetMGM, ESPN BET, PrizePicks (geo-block), plus every
+    consumer prop-research site probed on 2026-10-13.
+- **Dropped rows carry a reason** in `sports/nba/data/props_dropped.jsonl`:
+  post-tip, unresolved game/team join, missing or placeholder price (0, exactly
+  1.0), suspended market, unmappable source shape. Nothing is imputed and no
+  price is ever invented.
+- **Gaps**: no free historical prop lines exist anywhere (the ladder starts at
+  the first capture), so a prop model validates against `game_traditional`
+  outcomes today and against captured prices only from opening night onward.
+  `player_key` is `core.names.canonical(player_name)`; a source spelling that
+  canonicalizes differently needs a curated registry row — the unknown-flag
+  fires before any join rather than fragmenting a player into a fresh prior.

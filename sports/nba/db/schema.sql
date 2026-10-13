@@ -153,6 +153,38 @@ CREATE TABLE IF NOT EXISTS odds_snapshots (
 );
 CREATE INDEX IF NOT EXISTS idx_odds_kind ON odds_snapshots(snapshot_kind, source);
 
+-- Player-prop prices (2026-27 props capture). One row per
+-- (game, source, book, player, market, side, line, kind): a MOVED line adds a
+-- row instead of overwriting, which is what makes the 14.5 -> 23.5 ladder
+-- reconstructable. Re-capturing the same price is idempotent (INSERT OR IGNORE).
+-- `player_key` is core.names.canonical(player_name) - the only join seam to our
+-- own game_traditional history; `book` stays the source spelling for audit.
+CREATE TABLE IF NOT EXISTS prop_lines (
+    game_id          TEXT NOT NULL REFERENCES games(game_id),
+    source           TEXT NOT NULL,               -- sharpapi | sportsgameodds
+    book             TEXT NOT NULL,
+    player_name      TEXT NOT NULL,               -- spelling as published
+    player_key       TEXT NOT NULL,               -- canonical name (core.names)
+    market           TEXT NOT NULL,               -- points | rebounds | assists | threes | pra | ...
+    market_type      TEXT NOT NULL,               -- source-native (player_points, ...)
+    side             TEXT NOT NULL,               -- over | under
+    line             REAL NOT NULL,
+    price_decimal    REAL,
+    price_raw        TEXT,
+    implied_prob     REAL,                        -- the BOOK's implied probability (vigged)
+    is_alternate_line INTEGER,
+    market_segment   TEXT,                        -- full_game | 1st_half | ...
+    event_start_time TEXT,                        -- ISO tip-off as the source reports it
+    source_ts        TEXT,                        -- provider refresh time (feed freshness)
+    flags            TEXT,                        -- JSON of source flags kept for audit
+    captured_at      TEXT,                        -- only when the source gives a snapshot time
+    snapshot_kind    TEXT NOT NULL,               -- t60 (our pre-tip quoted capture) | close
+    asof_ts          TEXT NOT NULL,
+    PRIMARY KEY (game_id, source, book, player_key, market_type, side, line, snapshot_kind)
+);
+CREATE INDEX IF NOT EXISTS idx_prop_lines_player ON prop_lines(player_key, market, snapshot_kind);
+CREATE INDEX IF NOT EXISTS idx_prop_lines_kind   ON prop_lines(snapshot_kind, source);
+
 -- Team-level line per game, parsed from the cached LeagueGameFinder payloads
 -- (FGA/FTA/OREB/TOV are enough to derive possessions, pace, ORtg/DRtg without
 -- needing the per-game box-score ingest - which is the slow, rate-limited path).

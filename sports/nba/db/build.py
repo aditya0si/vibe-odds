@@ -79,15 +79,37 @@ def status() -> int:
     return 0
 
 
+def migrate(verbose: bool = True, con: sqlite3.Connection | None = None) -> sqlite3.Connection:
+    """Apply schema.sql to an EXISTING database (every statement is CREATE IF NOT EXISTS).
+
+    `init()` deliberately skips the script on a populated DB: executescript takes the
+    write lock, and a concurrent ingest legitimately holds it. This command is the
+    operator's explicit version of that step, used when schema.sql grows a table and the
+    live DB has to gain it without a rebuild (e.g. prop_lines, 2026-10-13).
+    """
+    owns = con is None
+    con = con or connect()
+    con.executescript(paths.SCHEMA.read_text(encoding="utf-8"))
+    con.commit()
+    if verbose:
+        print(f"schema migrated -> {paths.DB}")
+    if owns:
+        con.close()
+    return con
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="NBA database build/status tooling")
-    ap.add_argument("command", choices=("init", "from-empty", "status"))
+    ap.add_argument("command", choices=("init", "from-empty", "status", "migrate"))
     args = ap.parse_args(argv)
     if args.command == "init":
         init()
         return 0
     if args.command == "from-empty":
         from_empty()
+        return 0
+    if args.command == "migrate":
+        migrate()
         return 0
     return status()
 
