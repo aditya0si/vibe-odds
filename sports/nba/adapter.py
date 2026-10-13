@@ -4,7 +4,7 @@ from __future__ import annotations
 
 
 class NbaAdapter:
-    title = "NBA Winner Formula — evidence"
+    title = "Court Evidence — NBA"
     short = "nba"
 
     @property

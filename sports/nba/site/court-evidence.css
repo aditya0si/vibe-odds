@@ -1,0 +1,234 @@
+/* Court Evidence — shared visual system (evidence-notebook identity). */
+
+:root {
+  --bg: #F6F5F0;
+  --panel: #FFFFFF;
+  --ink: #17212B;
+  --muted: #475569;
+  --line: #CBD5E1;
+  --blue: #1D4ED8;
+  --amber: #92400E;
+  --red: #991B1B;
+  --amber-bg: #FEF3C7;
+  --red-bg: #FEE2E2;
+  --blue-bg: #DBEAFE;
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+  --radius: 8px;
+  --max: 1200px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--ink);
+  color: #fff;
+  padding: var(--s2) var(--s3);
+  z-index: 100;
+}
+.skip-link:focus { left: var(--s3); top: var(--s3); }
+
+a { color: var(--blue); }
+
+.site-header {
+  position: sticky;
+  top: 0;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line);
+  padding: var(--s3) var(--s4);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--s3);
+  align-items: baseline;
+}
+.brand { font-weight: 800; font-size: 20px; letter-spacing: -0.01em; }
+.brand .sport { color: var(--muted); font-weight: 600; }
+
+.sport-nav { display: flex; flex-wrap: wrap; gap: var(--s1); margin-left: auto; }
+.sport-nav button {
+  font: inherit;
+  min-height: 44px;
+  padding: var(--s2) var(--s4);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+}
+.sport-nav button[aria-current="page"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+.layout {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: var(--s4);
+  display: grid;
+  gap: var(--s4);
+  grid-template-columns: minmax(0, 1fr) 320px;
+}
+.layout.no-rail { grid-template-columns: minmax(0, 1fr); }
+@media (max-width: 1024px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+main { display: grid; gap: var(--s4); min-width: 0; grid-template-columns: minmax(0, 1fr); }
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--s4);
+  display: grid;
+  gap: var(--s3);
+  min-width: 0;
+  /* Explicit zero-minimum implicit track: a bare direct resource wrapper
+     otherwise propagates descendant table min-content width into the track. */
+  grid-template-columns: minmax(0, 1fr);
+}
+/* Direct children (incl. the unclassed resource wrapper) must be allowed to
+   shrink below their content; min-width:0 on the card alone is not enough. */
+.card > * { min-width: 0; }
+.card > h2 { margin: 0; font-size: 18px; }
+.card > h3 { margin: 0; font-size: 15px; color: var(--muted); }
+
+.rail { display: grid; gap: var(--s4); align-content: start; min-width: 0; }
+.rail .card { background: #FBFAF6; }
+
+.provenance { font-size: 13px; color: var(--muted); }
+.provenance dt { font-weight: 600; }
+.provenance dd { margin: 0 0 var(--s2); }
+
+.note { color: var(--muted); font-size: 13.5px; }
+.muted { color: var(--muted); }
+
+/* Long real identifiers (tier keys, artifact commands, sub-second ISO stamps)
+   must wrap inside prose/provenance instead of pushing the grid track wider.
+   `anywhere` also reduces the intrinsic min-content contribution. */
+p, li, dd, dt, caption, .note, .provenance, .meta, .banner, .structured { overflow-wrap: anywhere; }
+
+.badge {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 2px var(--s2);
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  color: var(--muted);
+}
+.badge.historical { background: var(--blue-bg); color: var(--blue); border-color: var(--blue); }
+.badge.pass { background: #DCFCE7; color: #14532D; border-color: #86EFAC; }
+.badge.fail { background: var(--red-bg); color: var(--red); border-color: #FCA5A5; }
+.badge.unknown, .badge.scheduled { background: var(--amber-bg); color: var(--amber); border-color: #FCD34D; }
+.badge.quarantine { background: var(--red-bg); color: var(--red); border-color: #FCA5A5; }
+
+.banner {
+  border-radius: var(--radius);
+  padding: var(--s3);
+  border: 1px solid var(--line);
+  background: var(--panel);
+}
+.banner.warn { background: var(--amber-bg); color: var(--amber); border-color: #FCD34D; }
+.banner.error { background: var(--red-bg); color: var(--red); border-color: #FCA5A5; }
+.banner.info { background: var(--blue-bg); color: var(--blue); border-color: var(--blue); }
+
+button.action, .linklike {
+  font: inherit;
+  min-height: 44px;
+  padding: var(--s2) var(--s4);
+  border: 1px solid var(--blue);
+  background: var(--panel);
+  color: var(--blue);
+  border-radius: var(--radius);
+  cursor: pointer;
+}
+button.action:focus-visible, .sport-nav button:focus-visible, input:focus-visible,
+summary:focus-visible, a:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 2px;
+}
+
+.filters { display: flex; flex-wrap: wrap; gap: var(--s2); }
+.filters button {
+  font: inherit;
+  min-height: 44px;
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+  cursor: pointer;
+}
+.filters button[aria-pressed="true"] { background: var(--blue); color: #fff; border-color: var(--blue); }
+
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  /* Constrain the region to the card content: the wide table scrolls INSIDE,
+     rather than expanding the containing grid track / page. */
+  max-width: 100%;
+  min-width: 0;
+}
+table { border-collapse: collapse; width: 100%; font-size: 14px; font-variant-numeric: tabular-nums; }
+caption { text-align: left; padding: var(--s2) var(--s3); color: var(--muted); font-size: 13.5px; }
+th, td { text-align: left; padding: var(--s2) var(--s3); border-bottom: 1px solid var(--line); white-space: nowrap; }
+th { color: var(--muted); font-weight: 600; }
+tbody tr:last-child td { border-bottom: none; }
+
+/* General meta row (refresh/provenance rows in any view — not only .row-card). */
+.meta { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--s2) var(--s4); }
+
+.row-cards { display: grid; gap: var(--s3); list-style: none; margin: 0; padding: 0; }
+.row-card { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s3); display: grid; gap: var(--s2); min-width: 0; }
+.row-card .meta { font-size: 13.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: var(--s2) var(--s4); }
+.row-card .p { font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.grid-2 { display: grid; gap: var(--s3); grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr)); }
+
+/* Recursive structured evidence panels (findings 2/3): nested numeric artifact
+   evidence renders as visible tables/key-values, never as an opaque string. */
+.structured { display: grid; gap: var(--s2); min-width: 0; }
+.structured > h4, .structured > h5 { margin: var(--s2) 0 0; font-size: 14px; color: var(--muted); }
+.structured .table-scroll { margin: var(--s1) 0; }
+
+details { border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s2) var(--s3); }
+summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; font-weight: 600; }
+pre { white-space: pre-wrap; word-break: break-word; background: #F8FAFC; border: 1px solid var(--line); border-radius: var(--radius); padding: var(--s3); font-size: 12.5px; margin: var(--s2) 0 0; }
+
+.form-inline { display: flex; flex-wrap: wrap; gap: var(--s2); align-items: end; }
+.form-inline label { display: grid; gap: var(--s1); font-size: 13.5px; color: var(--muted); }
+input[type="text"] {
+  font: inherit;
+  min-height: 44px;
+  padding: var(--s2) var(--s3);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  min-width: 220px;
+  background: #fff;
+  color: var(--ink);
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0);
+  white-space: nowrap; border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}
+@media (max-width: 400px) {
+  .layout { padding: var(--s3); }
+  input[type="text"] { min-width: 0; width: 100%; }
+}

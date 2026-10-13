@@ -71,4 +71,21 @@ def test_homepage_serves_adapter_config():
     assert s == 200
     assert b"window.__ADAPTER__" in b
     assert b'"sport": "tennis"' in b
-    assert b"ATP tennis analytics" in b   # page body intact
+    assert b"Court Evidence" in b            # visible title/body intact
+    assert b"/static/tennis-app.js" in b     # local module entry
+
+
+def test_nba_homepage_serves_adapter_config():
+    from fastapi import FastAPI
+    from sports.nba.adapter import NbaAdapter
+    from core.api import serve_frontend
+    front = Path(__file__).resolve().parents[2] / "sports" / "nba" / "site"
+    app = FastAPI()
+    serve_frontend(app, front, config=NbaAdapter().config)
+    s, b = _asgi(app, "GET", "/")
+    assert s == 200
+    html = b.decode("utf-8")
+    assert "window.__ADAPTER__" in html
+    assert b'"sport": "nba"' in b
+    assert "Court Evidence — NBA" in html
+    assert "/static/nba-app.js" in html

@@ -149,9 +149,70 @@ def test_index_headless_load():
     html = b.decode("utf-8")
     assert s == 200
     assert "window.__ADAPTER__" in html
-    for tab in TABS:
-        assert tab in html                       # 5 tabs wired
-    for ep in ("/api/site_meta", "/api/board", "/api/model", "/api/experiments",
-               "/api/teams", "/api/sim", "/api/stats", "/api/reliability"):
-        assert ep in html                        # fetch targets exist
-    assert "loading…" in html                    # boot state present
+    assert "/static/nba-app.js" in html                 # local module entry
+    assert "/static/court-evidence.css" in html         # local stylesheet
+    assert "Loading evidence…" in html                  # boot state present
+
+    # Endpoints come from the injected config, not from literals typed into the
+    # template; assert the wired routes rather than substrings of the page body.
+    cfg = json.loads(html.split("window.__ADAPTER__ = ", 1)[1].split(";</script>", 1)[0])
+    assert cfg["sport"] == "nba"
+    assert cfg["title"] == "Court Evidence — NBA"
+    assert cfg["tabs"] == TABS
+    for key, ep in cfg["api"].items():
+        assert ep.startswith("/api/"), f"{key} route not same-origin: {ep}"
+
+
+def test_nba_shell_adapter_title_and_static_assets():
+    s, b = _asgi(server.app, "GET", "/")
+    assert s == 200
+    html = b.decode("utf-8")
+    assert "Court Evidence — NBA" in html
+    assert "<main" in html or 'id="main"' in html
+    for asset in ("/static/nba-app.js", "/static/transport.js",
+                  "/static/request-state.js", "/static/nba-contract.js",
+                  "/static/court-evidence.css"):
+        st, body = _asgi(server.app, "GET", asset)
+        assert st == 200, f"{asset} -> {st}"
+        assert body, f"{asset} served empty"
+
+
+def test_nba_empty_log_contract(tmp_path, monkeypatch):
+    log = tmp_path / "empty.jsonl"
+    monkeypatch.setattr(server, "LOG", log)
+    d = _get("/api/board")
+    assert d == {"board": [], "n": 0}
+
+
+def test_nba_historical_error_http200():
+    s, b = _asgi(server.app, "GET", "/api/predict?game_id=NOPE")
+    assert s == 200                          # an unknown id is a 200 error body, not a prediction
+    body = json.loads(b)
+    assert "error" in body and body["game_id"] == "NOPE"
+
+
+def test_nba_tiers_use_passes():
+    d = _get("/api/model")
+    assert d["tiers"], "model has no tiers"
+    for key, tier in d["tiers"].items():
+        assert "passes" in tier, f"tier {key} is missing the frozen 'passes' verdict"
+        assert isinstance(tier["passes"], bool)
+        assert "pass" not in tier or tier.get("pass") is not tier["passes"], (
+            f"tier {key} exposes a legacy 'pass' key that must not be read as a verdict"
+        )
+
+
+def test_nba_null_bins_preserved():
+    from sports.nba import evidence
+    d = evidence.reliability_view(n_bins=50)   # force empty bins
+    empties = [b for b in d["bins"] if b["n"] == 0]
+    assert empties, "expected empty bins at 50 bins"
+    for b in empties:
+        assert b["mean_p"] is None and b["rate"] is None, "empty bin must stay a gap, not zero"
+
+
+def test_nba_scheduled_counts_are_separate():
+    d = _get("/api/stats")
+    c = d["db_counts"]
+    assert c["games"] == c["games_completed"] + c["games_scheduled"]
+    assert c["games_scheduled"] > 0            # 2026-27 schedule is ingested, unscored
