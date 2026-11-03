@@ -12,6 +12,10 @@ import pytest
 
 from sports.nba.db import paths
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 KNOWN_SEASON_GAMES = {
     "2005-06": 1230, "2006-07": 1230, "2007-08": 1230, "2008-09": 1230, "2009-10": 1230,
     "2010-11": 1230, "2011-12": 990, "2012-13": 1229, "2013-14": 1230, "2014-15": 1230,

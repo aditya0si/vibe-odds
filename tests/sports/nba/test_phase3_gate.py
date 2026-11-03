@@ -13,6 +13,10 @@ from sports.nba.model import formula as F
 from sports.nba.model import phase2 as P2
 from sports.nba.model import phase3 as P3
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 
 def test_a9_feature_families():
     assert P3.A9_FEATURES == tuple(F.FORMULA_FEATURES) + tuple(PV.PV_KEYS)

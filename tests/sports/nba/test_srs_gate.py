@@ -10,6 +10,10 @@ from sports.nba.db import paths
 from sports.nba.model import formula as F
 from sports.nba.model import srs_gate as G
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 
 def test_a11_record_labels_and_verdicts():
     enter = G.gate_json(arm_brier=0.21570, base_brier=0.21591, prev_brier=0.21573,

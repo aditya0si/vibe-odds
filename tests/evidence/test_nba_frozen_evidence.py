@@ -39,6 +39,10 @@ import pytest
 
 from tests.evidence import nba_published_numbers as NB
 
+from tests._nba_guard import ARTIFACTS_READY, ARTIFACTS_REASON
+
+pytestmark = pytest.mark.skipif(not ARTIFACTS_READY, reason=ARTIFACTS_REASON)
+
 ROOT = Path(__file__).resolve().parents[2]
 NBA_DATA = ROOT / "sports" / "nba" / "data"
 MANIFEST = Path(__file__).resolve().parent / "nba_frozen_manifest.json"

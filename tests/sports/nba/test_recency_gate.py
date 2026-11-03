@@ -11,6 +11,10 @@ from sports.nba.db import paths
 from sports.nba.model import formula as F
 from sports.nba.model import recency as R
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 
 def test_season_weights_shape_and_values():
     seasons = ["2018-19", "2019-20", "2020-21", "2018-19"]

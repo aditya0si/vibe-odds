@@ -11,6 +11,10 @@ from sports.nba import live_log
 from sports.nba import server
 from sports.nba.evidence import TABS
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 
 def _asgi(app, method="GET", path="/", headers=(), body=b""):
     chunks, status = [], {}

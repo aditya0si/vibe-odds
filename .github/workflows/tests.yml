@@ -1,0 +1,47 @@
+# Test suite gate.
+#
+# Before this existed the only workflow was `props-capture` (a scheduled data job),
+# so the repo had 66 test files and no CI check at all — and a fresh clone ran
+# 82 failures because the NBA dataset is gitignored and generated, not committed.
+#
+# Those data-dependent tests now skip with an explicit reason (see
+# tests/_nba_guard.py), so a green run here means: everything that CAN run on a
+# clean checkout passed. The skip count is printed so the gap is visible, not hidden.
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install pinned dependencies
+        run: python -m pip install --quiet -r requirements.txt
+
+      - name: Show what is being verified
+        run: |
+          python -V
+          python -m pytest --version
+
+      - name: Run the suite
+        run: python -m pytest tests -q -p no:cacheprovider -rs

@@ -22,6 +22,10 @@ import pytest
 from sports.nba.db import paths
 from sports.nba.features import player_value as PV
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 CUTS = ("2013-01-02", "2021-01-11")
 
 # Tables that carry a game's as-of inputs, in FK-safe deletion order (games itself last).

@@ -8,6 +8,10 @@ import pytest
 from sports.nba.db import paths
 from sports.nba.features import team_ratings as TR
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 GAMES = [
     ("g1", "S1", "2020-01-01", 1, 2, 110, 100),
     ("g2", "S1", "2020-01-02", 2, 1, 95, 105),

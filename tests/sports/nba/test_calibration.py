@@ -22,6 +22,10 @@ import pytest
 from sports.nba.db import paths
 from sports.nba.model import formula as F
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 ROOT = Path(__file__).resolve().parents[3]
 NBA_DATA = ROOT / "sports" / "nba" / "data"
 ARTIFACT = NBA_DATA / "nba_calibration_v1.json"

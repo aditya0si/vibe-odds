@@ -12,6 +12,10 @@ import pytest
 from sports.nba.db import paths
 from sports.nba.features import build as B
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 
 @pytest.fixture(scope="module")
 def con() -> sqlite3.Connection:

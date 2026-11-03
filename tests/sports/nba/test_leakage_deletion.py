@@ -27,6 +27,10 @@ import pytest
 from sports.nba.db import paths
 from sports.nba.features import build as B
 
+from tests._nba_guard import DATA_READY, DATA_REASON
+
+pytestmark = pytest.mark.skipif(not DATA_READY, reason=DATA_REASON)
+
 # One cut in 2012-13, one in 2020-21. Literal dates, chosen at ~30% and ~72% of
 # games, so the "future" being deleted is large (thousands of games) in both eras.
 CUTS = ("2013-01-02", "2021-01-11")
