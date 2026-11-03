@@ -13,24 +13,21 @@ import pytest
 def _asgi(app, method: str = "GET", path: str = "/"):
     chunks, status = [], {}
 
-    started = asyncio.Event()
     body_sent = {"v": False}
 
     async def receive():
-        # One request event, then wait for the response to start and report a
-        # disconnect. Starlette's FileResponse runs a listener that loops on
-        # receive() until it sees http.disconnect; returning http.request forever
-        # livelocks that listener and starves the streaming task.
         if not body_sent["v"]:
             body_sent["v"] = True
             return {"type": "http.request", "body": b"", "more_body": False}
-        await started.wait()
+        # Never resolves: Starlette cancels this listener once the response body
+        # finishes streaming. Blocking here (instead of returning http.request in a
+        # loop) is what lets the streaming task actually run.
+        await asyncio.Event().wait()
         return {"type": "http.disconnect"}
 
     async def send(m):
         if m["type"] == "http.response.start":
             status["s"] = m["status"]
-            started.set()
         elif m["type"] == "http.response.body":
             chunks.append(m.get("body", b""))
 
