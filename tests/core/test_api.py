@@ -14,6 +14,11 @@ def _asgi(app, method: str = "GET", path: str = "/"):
     chunks, status = [], {}
 
     async def receive():
+        # A real client sends nothing after the response starts. Starlette's
+        # FileResponse keeps a listener on receive() to notice aborts, and a
+        # receive() that answers "http.request" forever deadlocks that listener.
+        if status.get("s") is not None:
+            return {"type": "http.disconnect"}
         return {"type": "http.request", "body": b"", "more_body": False}
 
     async def send(m):
@@ -63,13 +68,6 @@ def test_read_only_guard_405s_writes():
     assert _asgi(app, "DELETE", "/x")[0] == 405
 
 
-@pytest.mark.skipif(
-    sys.platform.startswith("linux"),
-    reason=("FileResponse's anyio thread offload deadlocks on the Linux CI runner "
-            "(the test passes on Windows in <1s and never returns on ubuntu-latest); "
-            "tracked in FIXLOG.md — re-enable once the serve path is ported off "
-            "FileResponse's blocking read"),
-)
 def test_serve_frontend_serves_index_byte_equal(tmp_path):
     from fastapi import FastAPI
     from core.api import serve_frontend

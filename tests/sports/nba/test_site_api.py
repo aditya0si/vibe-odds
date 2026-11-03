@@ -23,6 +23,11 @@ def _asgi(app, method="GET", path="/", headers=(), body=b""):
         hdrs.append((b"content-type", b"application/json"))
 
     async def receive():
+        # A real client sends nothing after the response starts. Starlette's
+        # FileResponse keeps a listener on receive() to notice aborts, and a
+        # receive() that answers "http.request" forever deadlocks that listener.
+        if status.get("s") is not None:
+            return {"type": "http.disconnect"}
         return {"type": "http.request", "body": body, "more_body": False}
 
     async def send(m):
