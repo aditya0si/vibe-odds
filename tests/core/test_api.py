@@ -6,7 +6,7 @@ Drives the ASGI app directly (no httpx in the venv — no new deps).
 from __future__ import annotations
 
 import asyncio
-
+import sys
 import pytest
 
 
