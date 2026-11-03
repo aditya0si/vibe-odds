@@ -4,9 +4,11 @@
 # so the repo had 66 test files and no CI check at all — and a fresh clone ran
 # 82 failures because the NBA dataset is gitignored and generated, not committed.
 #
-# Those data-dependent tests now skip with an explicit reason (see
-# tests/_nba_guard.py), so a green run here means: everything that CAN run on a
-# clean checkout passed. The skip count is printed so the gap is visible, not hidden.
+# Those data-dependent tests now skip with an explicit reason (tests/_nba_guard.py),
+# so a green run means: everything that CAN run on a clean checkout passed.
+#
+# Two jobs: `pytest` gates every push/PR on the fast suite; `full` runs everything,
+# including the two CPU-bound simulations marked `slow`, nightly and on demand.
 name: tests
 
 on:
@@ -14,18 +16,21 @@ on:
     branches: [main]
   pull_request:
   workflow_dispatch:
+  schedule:
+    - cron: "0 3 * * *"     # nightly full run, including @pytest.mark.slow
 
 permissions:
   contents: read
 
 concurrency:
-  group: tests-${{ github.ref }}
+  group: tests-${{ github.ref }}-${{ github.event_name }}
   cancel-in-progress: true
 
 jobs:
   pytest:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -43,5 +48,24 @@ jobs:
           python -V
           python -m pytest --version
 
-      - name: Run the suite
-        run: python -m pytest tests -q -p no:cacheprovider -rs
+      - name: Run the suite (fast set)
+        run: python -m pytest tests -q -p no:cacheprovider -rs -m "not slow"
+
+  full:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install pinned dependencies
+        run: python -m pip install --quiet -r requirements.txt
+
+      - name: Run the whole suite, slow tests included
+        run: python -m pytest tests -q -p no:cacheprovider -rs --durations=15

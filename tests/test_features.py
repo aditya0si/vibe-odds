@@ -5,6 +5,7 @@ from backend.model.signals import Ctx
 from backend.ratings.elo import SurfaceElo
 from backend.ratings.features import FormTracker, HeadToHead
 from backend.ratings.loader import load_years
+import pytest
 
 
 def _ctx_upto(cutoff: int):
@@ -19,6 +20,7 @@ def _ctx_upto(cutoff: int):
     return Ctx(elo, h2h, form)
 
 
+@pytest.mark.slow
 def test_no_leakage():
     probe = None
     for m in load_years(2024, 2024):

@@ -1,6 +1,7 @@
 from backend.model.ensemble import DEFAULT_W
 from backend.sim.freeze import freeze
 from backend.sim.season import run
+import pytest
 
 
 def test_freeze_manifest():
@@ -9,6 +10,7 @@ def test_freeze_manifest():
     assert man["files"]["gbm.txt"] is not None
 
 
+@pytest.mark.slow
 def test_sim_smoke_no_save():
     res = run(20240101, 2024, save=False, verbose=False, max_matches=40)
     assert res["arms"]["adaptive"]["n"] == 40
