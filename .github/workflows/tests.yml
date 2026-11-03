@@ -56,8 +56,13 @@ jobs:
           python -V
           python -m pytest --version
 
+      - name: Install the timeout guard
+        run: python -m pip install --quiet pytest-timeout
+
       - name: Run the suite (fast set)
-        run: python -m pytest tests -q -p no:cacheprovider -rs -m "not slow"
+        # A hanging test must fail in 2 minutes with a stack dump naming it, not
+        # burn the whole job budget silently.
+        run: python -m pytest tests -q -p no:cacheprovider -rs -m "not slow" --timeout=120 --timeout-method=thread --durations=15
 
   full:
     if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
