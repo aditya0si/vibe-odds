@@ -49,11 +49,18 @@ def test_h2h_shape():
 
 def test_reliability_bins():
     r = A.reliability(10)
-    assert r["n"] > 10000
+    # The chart must describe the SAME matches as the headline Brier score: the
+    # held-out 2024-25 window, never the pre-2024 rows the model was fitted on.
+    assert r["window"] == "20240101-20260101"
+    cal = A._read_json("cal_validation.json")
+    assert r["n"] == cal["n_test"], "reliability n must equal the calibration test split"
     assert sum(b["n"] for b in r["bins"]) == r["n"]
     for b in r["bins"]:
         assert 0 <= b["p_mean"] <= 1 and 0 <= b["frac_pos"] <= 1
     assert 0 <= r["ece_oof"] < 0.05
+    assert r["brier_gbm"] is not None and r["brier_elo"] is not None
+    # the model must actually beat the Elo baseline on identical rows
+    assert r["brier_gbm"] <= r["brier_elo"]
 
 
 def test_calibration_badge_tiers():

@@ -203,6 +203,10 @@ def test_tennis_predict_unknown_id_falls_back(monkeypatch, controlled_predictor)
 def test_tennis_reliability_equal_count_contract():
     d = _get("/api/reliability?n_bins=10")
     assert d["n"] > 1000
+    # regression: the chart used to bin all 16,165 rows including pre-2024 fit data
+    assert d["window"] == "20240101-20260101"
+    assert d["n"] < 7000, "reliability must be restricted to the 2024-25 holdout"
+    assert d["brier_gbm"] <= d["brier_elo"]
     assert sum(b["n"] for b in d["bins"]) == d["n"]
     assert "ece_oof" in d
     for b in d["bins"]:

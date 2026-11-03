@@ -750,7 +750,7 @@ export function mountTennisApp({ root, adapter, client, now = () => Date.now() }
 
     const relCard = el("section", { cls: "card" });
     relCard.appendChild(el("h2", { text: "Reliability (out-of-fold)" }));
-    relCard.appendChild(el("p", { cls: "note", text: "Equal-count bins. Perfect calibration is y = x. Empty numeric fields stay —." }));
+    relCard.appendChild(el("p", { cls: "note", text: "Held-out 2024-25 matches only. Equal-count bins. Perfect calibration is y = x. Empty numeric fields stay —." }));
     relCard.appendChild(resourceBody(resources.reliability, "reliability", (p) => {
       const wrap = el("div");
       wrap.appendChild(tableFrom(

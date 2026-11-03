@@ -147,12 +147,27 @@ def h2h(a: str, b: str) -> dict:
             "by_surface": {s: ctx.h2h.lookup(a, b, s) for s in ("hard", "clay", "grass")}}
 
 
+# The evaluation split used everywhere else in this repo: fit on date < 2024,
+# test on 2024-01-01 .. 2025-12-31 (see backend/model/cal_validate.py and
+# backend/model/stack_fit.py). The reliability chart must show the SAME
+# population as the headline Brier score on the Model page; binning every row in
+# stack_oof.json quietly mixed in the pre-2024 matches the model was fitted on.
+HOLDOUT_START = 20240101
+HOLDOUT_END = 20260101
+
+
 @lru_cache(maxsize=8)
 def reliability(n_bins: int = 10) -> dict:
-    """Decile-binned GBM out-of-fold probs vs outcomes. Honest calibration plot data."""
+    """Equal-count-binned GBM probs vs outcomes on the held-out 2024-25 window.
+
+    Chart and headline score now describe the same matches. ``brier_gbm`` here
+    can be compared directly against ``brier_elo`` on identical rows, which is
+    the only way a Brier number means anything.
+    """
     oof = _read_json("stack_oof.json") or []
-    rows = [(r["gbm"], r["y"]) for r in oof
-            if r.get("gbm") is not None and r.get("y") in (0, 1)]
+    rows = [(r["gbm"], r["y"], r.get("elo")) for r in oof
+            if r.get("gbm") is not None and r.get("y") in (0, 1)
+            and HOLDOUT_START <= int(r.get("date") or 0) < HOLDOUT_END]
     rows.sort(key=lambda r: r[0])
     n_bins = max(5, min(int(n_bins), 20))
     bins, out = [], []
@@ -161,12 +176,31 @@ def reliability(n_bins: int = 10) -> dict:
         seg = rows[i:i + chunk]
         if not seg:
             continue
-        p_mean = sum(p for p, _ in seg) / len(seg)
-        frac = sum(y for _, y in seg) / len(seg)
+        p_mean = sum(p for p, _, _ in seg) / len(seg)
+        frac = sum(y for _, y, _ in seg) / len(seg)
         bins.append({"p_mean": round(p_mean, 4), "frac_pos": round(frac, 4), "n": len(seg)})
     ece = round(sum(b["n"] * abs(b["p_mean"] - b["frac_pos"]) for b in bins) / max(1, sum(b["n"] for b in bins)), 4)
-    return {"n": len(rows), "bins": bins, "ece_oof": ece,
-            "note": "GBM out-of-fold probs binned by predicted prob (equal-count bins). Perfect calibration = points on the diagonal."}
+    brier_gbm = round(sum((p - y) ** 2 for p, y, _ in rows) / len(rows), 4) if rows else None
+    elo_rows = [(e, y) for _, y, e in rows if e is not None]
+    brier_elo = round(sum((p - y) ** 2 for p, y in elo_rows) / len(elo_rows), 4) if elo_rows else None
+    # ECE as published by the calibration validation run (different binning from
+    # the equal-count chart bins), so the Model page and this card cannot
+    # disagree without a reader being able to see both numbers.
+    cal = _read_json("cal_validation.json") or {}
+    ece_reported = ((cal.get("methods") or {}).get("none") or {}).get("ece")
+    return {
+        "n": len(rows),
+        "bins": bins,
+        "ece_oof": ece,
+        "ece_cal_validation": ece_reported,
+        "brier_gbm": brier_gbm,
+        "brier_elo": brier_elo,
+        "n_elo": len(elo_rows),
+        "window": f"{HOLDOUT_START}-{HOLDOUT_END}",
+        "note": ("Held-out 2024-25 matches only (the split used for the headline Brier). "
+                 "GBM probabilities binned by predicted prob, equal-count bins. "
+                 "Perfect calibration = points on the diagonal."),
+    }
 
 
 def model_summary() -> dict:
