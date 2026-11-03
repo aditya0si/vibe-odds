@@ -61,7 +61,12 @@ jobs:
           python-version: "3.12"
       - name: Install capture deps (the tool needs requests only)
         run: python -m pip install --quiet "requests==2.33.0"
+      - name: Skip notice when the secret is absent
+        if: env.SHARPAPI_KEY == ''
+        run: |
+          echo "::warning::SHARPAPI_KEY is not configured — skipping capture. Add it in Settings -> Secrets and variables -> Actions to enable this job."
       - name: Capture the SharpAPI prop board
+        if: env.SHARPAPI_KEY != ''
         run: |
           python -m tools.props_capture capture --source sharpapi --limit 400
       - name: Report what prop_lines now holds
@@ -89,7 +94,12 @@ jobs:
           python-version: "3.12"
       - name: Install capture deps
         run: python -m pip install --quiet "requests==2.33.0"
+      - name: Skip notice when the secret is absent
+        if: env.SPORTSGAMEODDS_KEY == ''
+        run: |
+          echo "::warning::SPORTSGAMEODDS_KEY is not configured — skipping capture. Add it in Settings -> Secrets and variables -> Actions to enable this job."
       - name: Capture the SportsGameOdds board (props are on every plan)
+        if: env.SPORTSGAMEODDS_KEY != ''
         run: |
           python -m tools.props_capture capture --source sportsgameodds --limit 20
       - name: Dump the raw payload for field-mapping verification
